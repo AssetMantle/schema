@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>Modules</h1>
+  <h1>Schema</h1>
 
 ![GitHub Workflow Status](https://github.com/assetmantle/modules/actions/workflows/test.yml/badge.svg)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AssetMantle_modules&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AssetMantle_modules)
@@ -10,11 +10,11 @@
 
 </div>
 
-Node modules and client utilities to build AssetMantle platform node applications.
+Schema for AssetMantle modules.
 
 ## Contributing
 
-If you want to contribute to AssetMantle Modules, please read the instructions
+If you want to contribute to AssetMantle Schema, please read the instructions
 in [CODING_GUIDELINES.md](CODING_GUIDELINES.md).
 
 <div align="center">
