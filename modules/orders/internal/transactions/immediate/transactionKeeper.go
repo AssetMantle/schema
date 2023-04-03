@@ -31,7 +31,7 @@ import (
 
 type transactionKeeper struct {
 	mapper                helpers.Mapper
-	parameters            helpers.ParameterManager
+	parameterManager      helpers.ParameterManager
 	conformAuxiliary      helpers.Auxiliary
 	supplementAuxiliary   helpers.Auxiliary
 	transferAuxiliary     helpers.Auxiliary
@@ -67,7 +67,7 @@ func (transactionKeeper transactionKeeper) Handle(context context.Context, messa
 		Add(baseProperties.NewMetaProperty(constants.MakerIDProperty.GetKey(), baseData.NewIDData(message.FromID))).
 		Add(baseProperties.NewMetaProperty(constants.TakerIDProperty.GetKey(), baseData.NewIDData(message.TakerID)))
 
-	immutables := baseQualified.NewImmutables(baseLists.NewPropertyList(utilities.AnyPropertyListToPropertyList(append(immutableMetaProperties.GetList(), message.ImmutableProperties.GetList()...)...)...))
+	immutables := baseQualified.NewImmutables(immutableMetaProperties.Add(utilities.AnyPropertyListToPropertyList(message.ImmutableProperties.GetList()...)...))
 	orderID := baseIDs.NewOrderID(message.ClassificationID, immutables)
 	orders := transactionKeeper.mapper.NewCollection(context).Fetch(key.NewKey(orderID))
 
@@ -75,15 +75,15 @@ func (transactionKeeper transactionKeeper) Handle(context context.Context, messa
 		return nil, errorConstants.EntityAlreadyExists.Wrapf("order with ID %s already exists", orderID.AsString())
 	}
 
-	if message.ExpiresIn.Get() > transactionKeeper.parameters.GetParameter(constants.MaxOrderLifeProperty.GetID()).GetMetaProperty().GetData().Get().(data.HeightData).Get().Get() {
-		return nil, errorConstants.InvalidRequest.Wrapf("order expiry exceeds maximum allowed %d", transactionKeeper.parameters.GetParameter(constants.MaxOrderLifeProperty.GetID()).GetMetaProperty().GetData().Get().(data.HeightData).Get().Get())
+	if message.ExpiresIn.Get() > transactionKeeper.parameterManager.Fetch(context).GetParameter(constants.MaxOrderLifeProperty.GetID()).GetMetaProperty().GetData().Get().(data.HeightData).Get().Get() {
+		return nil, errorConstants.InvalidRequest.Wrapf("order expiry exceeds maximum allowed %d", transactionKeeper.parameterManager.Fetch(context).GetParameter(constants.MaxOrderLifeProperty.GetID()).GetMetaProperty().GetData().Get().(data.HeightData).Get().Get())
 	}
 
 	mutableMetaProperties := message.MutableMetaProperties.
 		Add(baseProperties.NewMetaProperty(constants.ExpiryHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(message.ExpiresIn.Get()+sdkTypes.UnwrapSDKContext(context).BlockHeight())))).
 		Add(baseProperties.NewMetaProperty(constants.MakerOwnableSplitProperty.GetKey(), baseData.NewDecData(makerOwnableSplit)))
 
-	mutables := baseQualified.NewMutables(baseLists.NewPropertyList(utilities.AnyPropertyListToPropertyList(append(mutableMetaProperties.GetList(), message.MutableProperties.GetList()...)...)...))
+	mutables := baseQualified.NewMutables(mutableMetaProperties.Add(utilities.AnyPropertyListToPropertyList(message.MutableProperties.GetList()...)...))
 
 	if _, err := transactionKeeper.conformAuxiliary.GetKeeper().Help(context, conform.NewAuxiliaryRequest(message.ClassificationID, immutables, mutables)); err != nil {
 		return nil, err
@@ -170,8 +170,8 @@ func (transactionKeeper transactionKeeper) Handle(context context.Context, messa
 	return newTransactionResponse(), nil
 }
 
-func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameters helpers.ParameterManager, auxiliaries []interface{}) helpers.Keeper {
-	transactionKeeper.mapper, transactionKeeper.parameters = mapper, parameters
+func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameterManager helpers.ParameterManager, auxiliaries []interface{}) helpers.Keeper {
+	transactionKeeper.mapper, transactionKeeper.parameterManager = mapper, parameterManager
 
 	for _, externalKeeper := range auxiliaries {
 		switch value := externalKeeper.(type) {

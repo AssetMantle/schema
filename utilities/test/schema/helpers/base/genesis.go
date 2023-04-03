@@ -2,14 +2,15 @@ package base
 
 import (
 	"context"
+
+	sdkCodec "github.com/cosmos/cosmos-sdk/codec"
+
 	baseData "github.com/AssetMantle/modules/schema/data/base"
 	"github.com/AssetMantle/modules/schema/errors/constants"
 	"github.com/AssetMantle/modules/schema/helpers"
 	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
 	baseParameters "github.com/AssetMantle/modules/schema/parameters/base"
-	baseTypes "github.com/AssetMantle/modules/schema/parameters/base"
 	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	sdkCodec "github.com/cosmos/cosmos-sdk/codec"
 )
 
 var _ helpers.Genesis = (*Genesis)(nil)

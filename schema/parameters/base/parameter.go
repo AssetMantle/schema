@@ -10,14 +10,13 @@ import (
 var _ helpers.Parameter = (*Parameter)(nil)
 
 func (m *Parameter) ValidateBasic() error {
-	// TODO call m.MetaProperty.ValidateBasic()
-	return nil
+	return m.MetaProperty.ValidateBasic()
 }
 func (m *Parameter) GetMetaProperty() properties.MetaProperty {
 	return m.MetaProperty
 }
 func (m *Parameter) Mutate(data data.Data) helpers.Parameter {
-	if m.MetaProperty.GetData().GetType().Compare(data.GetType()) == 0 {
+	if m.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
 		m.MetaProperty = base.NewMetaProperty(m.MetaProperty.GetKey(), data).(*base.MetaProperty)
 	}
 	return m

@@ -24,8 +24,8 @@ func (metaProperty *MetaProperty) ValidateBasic() error {
 	if err := metaProperty.Data.ValidateBasic(); err != nil {
 		return err
 	}
-	if metaProperty.Data.GetType().Compare(metaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat
+	if metaProperty.Data.GetTypeID().Compare(metaProperty.ID.TypeID) != 0 {
+		return errorConstants.IncorrectFormat.Wrapf("data type id does not match property type id")
 	}
 	return nil
 }
@@ -44,8 +44,8 @@ func (metaProperty *MetaProperty) GetDataID() ids.DataID {
 func (metaProperty *MetaProperty) GetKey() ids.StringID {
 	return metaProperty.ID.GetKey()
 }
-func (metaProperty *MetaProperty) GetType() ids.StringID {
-	return metaProperty.Data.GetType()
+func (metaProperty *MetaProperty) GetDataTypeID() ids.StringID {
+	return metaProperty.ID.GetDataTypeID()
 }
 func (metaProperty *MetaProperty) GetBondWeight() int64 {
 	return metaProperty.Data.GetBondWeight()
@@ -82,7 +82,7 @@ func NewMetaProperty(key ids.StringID, data data.Data) properties.MetaProperty {
 		panic(errorConstants.IncorrectFormat.Wrapf("meta property data or key cannot be nil"))
 	}
 	return &MetaProperty{
-		ID:   baseIDs.NewPropertyID(key, data.GetType()).(*baseIDs.PropertyID),
+		ID:   baseIDs.NewPropertyID(key, data.GetTypeID()).(*baseIDs.PropertyID),
 		Data: data.ToAnyData().(*base.AnyData),
 	}
 }

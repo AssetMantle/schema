@@ -26,7 +26,7 @@ func (transactionKeeper transactionKeeper) Transact(context context.Context, mes
 	return transactionKeeper.Handle(context, message.(*Message))
 }
 func (transactionKeeper transactionKeeper) Handle(context context.Context, message *Message) (*TransactionResponse, error) {
-	if !transactionKeeper.parameterManager.GetParameter(constantProperties.RevealEnabledProperty.GetID()).GetMetaProperty().GetData().Get().(data.BooleanData).Get() {
+	if !transactionKeeper.parameterManager.Fetch(context).GetParameter(constantProperties.RevealEnabledProperty.GetID()).GetMetaProperty().GetData().Get().(data.BooleanData).Get() {
 		return nil, errorConstants.NotAuthorized.Wrapf("revealing is not enabled")
 	}
 
@@ -45,8 +45,8 @@ func (transactionKeeper transactionKeeper) Handle(context context.Context, messa
 	return newTransactionResponse(), nil
 }
 
-func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameters helpers.ParameterManager, _ []interface{}) helpers.Keeper {
-	transactionKeeper.mapper, transactionKeeper.parameterManager = mapper, parameters
+func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameterManager helpers.ParameterManager, _ []interface{}) helpers.Keeper {
+	transactionKeeper.mapper, transactionKeeper.parameterManager = mapper, parameterManager
 	return transactionKeeper
 }
 func keeperPrototype() helpers.TransactionKeeper {

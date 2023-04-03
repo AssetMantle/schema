@@ -8,6 +8,7 @@ import (
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
+	"github.com/AssetMantle/modules/modules/classifications/auxiliaries/burn"
 	"github.com/AssetMantle/modules/modules/identities/auxiliaries/authenticate"
 	"github.com/AssetMantle/modules/modules/metas/auxiliaries/supplement"
 	"github.com/AssetMantle/modules/modules/orders/internal/key"
@@ -27,10 +28,11 @@ import (
 
 type transactionKeeper struct {
 	mapper                helpers.Mapper
-	parameters            helpers.ParameterManager
+	parameterManager      helpers.ParameterManager
+	authenticateAuxiliary helpers.Auxiliary
+	burnAuxiliary         helpers.Auxiliary
 	supplementAuxiliary   helpers.Auxiliary
 	transferAuxiliary     helpers.Auxiliary
-	authenticateAuxiliary helpers.Auxiliary
 }
 
 var _ helpers.TransactionKeeper = (*transactionKeeper)(nil)
@@ -95,11 +97,15 @@ func (transactionKeeper transactionKeeper) Handle(context context.Context, messa
 		return nil, err
 	}
 
+	if _, err := transactionKeeper.burnAuxiliary.GetKeeper().Help(context, burn.NewAuxiliaryRequest(order.GetClassificationID())); err != nil {
+		return nil, err
+	}
+
 	return newTransactionResponse(), nil
 }
 
-func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameters helpers.ParameterManager, auxiliaries []interface{}) helpers.Keeper {
-	transactionKeeper.mapper, transactionKeeper.parameters = mapper, parameters
+func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, parameterManager helpers.ParameterManager, auxiliaries []interface{}) helpers.Keeper {
+	transactionKeeper.mapper, transactionKeeper.parameterManager = mapper, parameterManager
 
 	for _, auxiliary := range auxiliaries {
 		switch value := auxiliary.(type) {
@@ -111,6 +117,9 @@ func (transactionKeeper transactionKeeper) Initialize(mapper helpers.Mapper, par
 				transactionKeeper.transferAuxiliary = value
 			case authenticate.Auxiliary.GetName():
 				transactionKeeper.authenticateAuxiliary = value
+				transactionKeeper.authenticateAuxiliary = value
+			case burn.Auxiliary.GetName():
+				transactionKeeper.burnAuxiliary = value
 			}
 		}
 	}
