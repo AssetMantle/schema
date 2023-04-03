@@ -1,4 +1,4 @@
-module github.com/AssetMantle/modules
+module github.com/AssetMantle/schema
 
 go 1.18
 
