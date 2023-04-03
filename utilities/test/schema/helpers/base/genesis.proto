@@ -3,7 +3,7 @@ package test;
 
 import "gogoproto/gogo.proto";
 import "utilities/test/schema/helpers/base/mappable.proto";
-import "schema/parameters/base/parameter.proto";
+import "x/parameters/base/parameter.proto";
 
 message Genesis {
   option (gogoproto.goproto_getters) = false;

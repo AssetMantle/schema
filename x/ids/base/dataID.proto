@@ -1,8 +1,8 @@
 syntax = "proto3";
 package ids;
 
-import "schema/ids/base/hashID.proto";
-import "schema/ids/base/stringID.proto";
+import "x/ids/base/hashID.proto";
+import "x/ids/base/stringID.proto";
 import "gogoproto/gogo.proto";
 
 message DataID {

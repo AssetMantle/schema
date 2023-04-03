@@ -2,8 +2,8 @@ syntax = "proto3";
 package ids;
 
 import "gogoproto/gogo.proto";
-import "schema/ids/base/assetID.proto";
-import "schema/ids/base/coinID.proto";
+import "x/ids/base/assetID.proto";
+import "x/ids/base/coinID.proto";
 
 message AnyOwnableID {
   option (gogoproto.goproto_getters) = false;

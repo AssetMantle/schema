@@ -1,8 +1,8 @@
 syntax = "proto3";
 package properties;
 
-import "schema/properties/base/mesaProperty.proto";
-import "schema/properties/base/metaProperty.proto";
+import "x/properties/base/mesaProperty.proto";
+import "x/properties/base/metaProperty.proto";
 import "gogoproto/gogo.proto";
 
 message AnyProperty {

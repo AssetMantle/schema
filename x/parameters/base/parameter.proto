@@ -2,7 +2,7 @@ syntax = "proto3";
 package parameters;
 
 import "gogoproto/gogo.proto";
-import "schema/properties/base/metaProperty.proto";
+import "x/properties/base/metaProperty.proto";
 
 message Parameter {
   option (gogoproto.goproto_getters) = false;

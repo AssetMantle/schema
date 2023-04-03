@@ -1,8 +1,8 @@
 syntax = "proto3";
 package properties;
 
-import "schema/ids/base/propertyID.proto";
-import "schema/ids/base/dataID.proto";
+import "x/ids/base/propertyID.proto";
+import "x/ids/base/dataID.proto";
 import "gogoproto/gogo.proto";
 
 message MesaProperty {

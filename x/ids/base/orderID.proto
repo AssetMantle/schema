@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ids;
 
-import "schema/ids/base/hashID.proto";
+import "x/ids/base/hashID.proto";
 import "gogoproto/gogo.proto";
 
 message OrderID {

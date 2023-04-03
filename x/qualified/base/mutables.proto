@@ -1,7 +1,7 @@
 syntax = "proto3";
 package qualified;
 
-import "schema/lists/base/propertyList.proto";
+import "x/lists/base/propertyList.proto";
 import "gogoproto/gogo.proto";
 
 message Mutables {
