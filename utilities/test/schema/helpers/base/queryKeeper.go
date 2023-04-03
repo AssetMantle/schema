@@ -10,7 +10,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type TestQueryKeeper struct {

@@ -1,9 +1,9 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/traits"
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 type ownableIDGetter interface {

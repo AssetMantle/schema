@@ -3,7 +3,7 @@
 
 package base
 
-import "github.com/AssetMantle/modules/schema/helpers"
+import "github.com/AssetMantle/schema/schema/helpers"
 
 type queries struct {
 	queriesList []helpers.Query

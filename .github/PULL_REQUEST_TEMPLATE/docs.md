@@ -16,7 +16,7 @@ I have...
 
 - [ ] included the correct `docs:` prefix in the PR title
 - [ ] targeted the correct branch (
-  see [PR Targeting](https://github.com/AssetMantle/modules/blob/master/CONTRIBUTING.md#pr-targeting))
+  see [PR Targeting](https://github.com/AssetMantle/schema/blob/master/CONTRIBUTING.md#pr-targeting))
 - [ ] provided a link to the relevant issue or specification
 - [ ] followed the [documentation writing guidelines](../../docs/DOC_WRITING_GUIDELINES.md)
 - [ ] reviewed "Files changed" and left comments if necessary

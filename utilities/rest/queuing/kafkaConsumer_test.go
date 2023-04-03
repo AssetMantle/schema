@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/modules/schema"
+	"github.com/AssetMantle/schema/schema"
 )
 
 func TestKafkaTopicConsumer(t *testing.T) {

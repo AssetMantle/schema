@@ -4,7 +4,7 @@
 package documents
 
 import (
-	"github.com/AssetMantle/modules/schema/capabilities"
+	"github.com/AssetMantle/schema/schema/capabilities"
 )
 
 type Asset interface {

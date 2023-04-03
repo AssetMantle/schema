@@ -1,12 +1,12 @@
 <div align="center">
   <h1>Schema</h1>
 
-![GitHub Workflow Status](https://github.com/assetmantle/modules/actions/workflows/test.yml/badge.svg)
+![GitHub Workflow Status](https://github.com/AssetMantle/schema/actions/workflows/test.yml/badge.svg)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AssetMantle_modules&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AssetMantle_modules)
-[![Go Report Card](https://goreportcard.com/badge/github.com/assetmantle/modules)](https://goreportcard.com/report/github.com/assetmantle/modules)
-[![License: Apache-2.0](https://img.shields.io/github/license/assetmantle/modules.svg)](https://github.com/assetmantle/modules/blob/main/LICENSE)
-[![Lines Of Code](https://img.shields.io/tokei/lines/github/assetmantle/modules)](https://github.com/assetmantle/modules)
-[![Version](https://img.shields.io/github/tag/assetmantle/modules.svg?cacheSeconds=3600)](https://github.com/assetmantle/modules/latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/AssetMantle/schema)](https://goreportcard.com/report/github.com/AssetMantle/schema)
+[![License: Apache-2.0](https://img.shields.io/github/license/assetmantle/modules.svg)](https://github.com/AssetMantle/schema/blob/main/LICENSE)
+[![Lines Of Code](https://img.shields.io/tokei/lines/github/assetmantle/modules)](https://github.com/AssetMantle/schema)
+[![Version](https://img.shields.io/github/tag/assetmantle/modules.svg?cacheSeconds=3600)](https://github.com/AssetMantle/schema/latest)
 
 </div>
 

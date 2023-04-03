@@ -5,12 +5,12 @@ import (
 
 	sdkCodec "github.com/cosmos/cosmos-sdk/codec"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	"github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/helpers"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	baseParameters "github.com/AssetMantle/modules/schema/parameters/base"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	"github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/helpers"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	baseParameters "github.com/AssetMantle/schema/schema/parameters/base"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
 )
 
 var _ helpers.Genesis = (*Genesis)(nil)

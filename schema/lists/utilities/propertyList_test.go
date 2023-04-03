@@ -6,12 +6,12 @@ package utilities
 import (
 	"testing"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/lists"
-	"github.com/AssetMantle/modules/schema/lists/base"
-	propertiesSchema "github.com/AssetMantle/modules/schema/properties"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/lists"
+	"github.com/AssetMantle/schema/schema/lists/base"
+	propertiesSchema "github.com/AssetMantle/schema/schema/properties"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
 )
 
 func TestReadMetaProperties(t *testing.T) {

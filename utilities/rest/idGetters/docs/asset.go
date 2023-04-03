@@ -6,10 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/AssetMantle/modules/schema/data"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	"github.com/AssetMantle/modules/schema/properties/constants"
+	"github.com/AssetMantle/schema/schema/data"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	"github.com/AssetMantle/schema/schema/properties/constants"
 )
 
 func assetClassificationHandler(context client.Context) http.HandlerFunc {

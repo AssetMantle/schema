@@ -4,7 +4,7 @@
 package capabilities
 
 import (
-	"github.com/AssetMantle/modules/schema/properties"
+	"github.com/AssetMantle/schema/schema/properties"
 )
 
 type Lockable interface {

@@ -12,9 +12,9 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/traits"
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/traits"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 type testableStringID struct {

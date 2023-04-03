@@ -11,7 +11,7 @@ import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/kv"
 
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type mapper struct {

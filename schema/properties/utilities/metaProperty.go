@@ -3,12 +3,12 @@ package utilities
 import (
 	"strings"
 
-	"github.com/AssetMantle/modules/schema/data/base"
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/schema/properties/constants"
+	"github.com/AssetMantle/schema/schema/data/base"
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/properties/constants"
 )
 
 func ReadMetaProperty(metaPropertyString string) (properties.MetaProperty, error) {

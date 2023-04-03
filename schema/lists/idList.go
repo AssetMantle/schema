@@ -4,7 +4,7 @@
 package lists
 
 import (
-	"github.com/AssetMantle/modules/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids"
 )
 
 type IDList interface {

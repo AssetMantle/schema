@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 func createTestInputForPropertyID() (ids.StringID, ids.StringID, ids.PropertyID) {

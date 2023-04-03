@@ -4,7 +4,7 @@
 package constants
 
 import (
-	baseHelpers "github.com/AssetMantle/modules/schema/helpers/base"
+	baseHelpers "github.com/AssetMantle/schema/schema/helpers/base"
 )
 
 // Note: Arranged alphabetically

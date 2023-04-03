@@ -6,7 +6,7 @@ package add
 import (
 	"github.com/asaskevich/govalidator"
 
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type request struct {

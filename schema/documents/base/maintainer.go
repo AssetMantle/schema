@@ -1,17 +1,17 @@
 package base
 
 import (
-	"github.com/AssetMantle/modules/schema/data"
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	"github.com/AssetMantle/modules/schema/documents"
-	"github.com/AssetMantle/modules/schema/documents/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/lists"
-	baseLists "github.com/AssetMantle/modules/schema/lists/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	constantProperties "github.com/AssetMantle/modules/schema/properties/constants"
-	baseQualified "github.com/AssetMantle/modules/schema/qualified/base"
+	"github.com/AssetMantle/schema/schema/data"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	"github.com/AssetMantle/schema/schema/documents"
+	"github.com/AssetMantle/schema/schema/documents/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/lists"
+	baseLists "github.com/AssetMantle/schema/schema/lists/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
+	constantProperties "github.com/AssetMantle/schema/schema/properties/constants"
+	baseQualified "github.com/AssetMantle/schema/schema/qualified/base"
 )
 
 type maintainer struct {

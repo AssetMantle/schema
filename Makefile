@@ -181,4 +181,4 @@ lintci-update: lintci-remove lintci-install
 .PHONY: lintci-update
 
 goimports:
-	goimports -local="github.com/AssetMantle/modules" -w .
+	goimports -local="github.com/AssetMantle/schema" -w .

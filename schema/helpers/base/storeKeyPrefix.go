@@ -3,7 +3,7 @@ package base
 import (
 	"encoding/binary"
 
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type storeKeyPrefix int8

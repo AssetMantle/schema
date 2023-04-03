@@ -3,13 +3,13 @@ package base
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/modules/schema/data"
-	"github.com/AssetMantle/modules/schema/documents"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/properties"
-	"github.com/AssetMantle/modules/schema/properties/constants"
-	"github.com/AssetMantle/modules/schema/qualified"
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/data"
+	"github.com/AssetMantle/schema/schema/documents"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/properties"
+	"github.com/AssetMantle/schema/schema/properties/constants"
+	"github.com/AssetMantle/schema/schema/qualified"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 type order struct {

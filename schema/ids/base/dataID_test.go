@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	stringUtilities "github.com/AssetMantle/modules/schema/ids/utilities"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/ids"
+	stringUtilities "github.com/AssetMantle/schema/schema/ids/utilities"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 // TODO: Test GetID for all Data types; If every data tests GetID() then GenerateID() is automatically tested

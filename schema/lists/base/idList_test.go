@@ -7,9 +7,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/lists"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/lists"
 )
 
 func Test_idList_Add(t *testing.T) {

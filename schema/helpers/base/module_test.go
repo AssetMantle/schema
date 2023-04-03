@@ -15,13 +15,13 @@ import (
 	"github.com/stretchr/testify/require"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	"github.com/AssetMantle/modules/schema/helpers"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	baseParameters "github.com/AssetMantle/modules/schema/parameters/base"
-	"github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/utilities/test"
-	baseTestUtilities "github.com/AssetMantle/modules/utilities/test/schema/helpers/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	"github.com/AssetMantle/schema/schema/helpers"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	baseParameters "github.com/AssetMantle/schema/schema/parameters/base"
+	"github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/utilities/test"
+	baseTestUtilities "github.com/AssetMantle/schema/utilities/test/schema/helpers/base"
 )
 
 // TODO: Add grpc gateway handling for tests

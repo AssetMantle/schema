@@ -3,9 +3,9 @@ package base
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 // type split struct {

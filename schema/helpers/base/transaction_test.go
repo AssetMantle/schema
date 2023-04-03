@@ -18,10 +18,10 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/modules/schema"
-	"github.com/AssetMantle/modules/schema/helpers"
-	"github.com/AssetMantle/modules/utilities/test"
-	"github.com/AssetMantle/modules/utilities/test/schema/helpers/base"
+	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/utilities/test"
+	"github.com/AssetMantle/schema/utilities/test/schema/helpers/base"
 )
 
 func TestTransaction(t *testing.T) {

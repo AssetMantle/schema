@@ -8,9 +8,8 @@ import (
 	sdkModuleTypes "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	"github.com/AssetMantle/modules/schema"
-	"github.com/AssetMantle/modules/schema/helpers"
-	documentIDGetters "github.com/AssetMantle/modules/utilities/rest/idGetters/docs"
+	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type codec struct {
@@ -35,7 +34,6 @@ func (codec codec) Initialize(moduleBasicManager sdkModuleTypes.BasicManager) he
 	std.RegisterLegacyAminoCodec(codec.legacyAmino)
 	std.RegisterInterfaces(codec.interfaceRegistry)
 	schema.RegisterLegacyAminoCodec(codec.legacyAmino)
-	documentIDGetters.RegisterLegacyAminoCodec(codec.legacyAmino)
 	moduleBasicManager.RegisterLegacyAminoCodec(codec.legacyAmino)
 	moduleBasicManager.RegisterInterfaces(codec.interfaceRegistry)
 	return codec

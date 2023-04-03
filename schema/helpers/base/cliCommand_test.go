@@ -15,8 +15,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/modules/schema"
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 func initialize() (helpers.CLICommand, []helpers.CLIFlag) {

@@ -7,9 +7,9 @@ import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
 )
 
 func splitIDHandler(context client.Context) http.HandlerFunc {

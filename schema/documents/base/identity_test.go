@@ -8,13 +8,13 @@ import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/modules/schema/data"
-	"github.com/AssetMantle/modules/schema/documents"
-	"github.com/AssetMantle/modules/schema/ids"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/schema/properties/constants"
-	"github.com/AssetMantle/modules/schema/qualified"
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/data"
+	"github.com/AssetMantle/schema/schema/documents"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/properties/constants"
+	"github.com/AssetMantle/schema/schema/qualified"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 func TestNewIdentity(t *testing.T) {
@@ -204,7 +204,7 @@ func Test_identity_UnprovisionAddress(t *testing.T) {
 		want   documents.Identity
 	}{
 		// TODO: panic: MetaDataError fix it after
-		// https://github.com/AssetMantle/modules/issues/59
+		// https://github.com/AssetMantle/schema/issues/59
 		{"+ve", fields{identity{NewDocument(classificationID, immutables, mutables)}}, args{[]sdkTypes.AccAddress{fromAccAddress}}, testIdentity},
 	}
 	for _, tt := range tests {

@@ -6,7 +6,7 @@ package types
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/modules/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids"
 )
 
 type Split interface {

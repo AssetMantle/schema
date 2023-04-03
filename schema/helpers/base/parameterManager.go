@@ -13,10 +13,10 @@ import (
 	paramsTypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"golang.org/x/net/context"
 
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/helpers"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/parameters/base"
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/parameters/base"
 )
 
 type parameterManager struct {

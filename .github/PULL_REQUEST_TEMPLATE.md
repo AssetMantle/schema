@@ -25,10 +25,10 @@ I have...
   in the PR title
 - [ ] added `!` to the type prefix if API or client breaking change
 - [ ] targeted the correct branch (
-  see [PR Targeting](https://github.com/AssetMantle/modules/blob/master/CONTRIBUTING.md#pr-targeting))
+  see [PR Targeting](https://github.com/AssetMantle/schema/blob/master/CONTRIBUTING.md#pr-targeting))
 - [ ] provided a link to the relevant issue or specification
 - [ ] followed the guidelines
-  for [building modules](https://github.com/AssetMantle/modules/blob/master/docs/building-modules)
+  for [building modules](https://github.com/AssetMantle/schema/blob/master/docs/building-modules)
 - [ ] included the necessary unit and
   integration [tests](https://github.com/cosmos/cosmos-sdk/blob/master/CONTRIBUTING.md#testing)
 - [ ] added a changelog entry to `CHANGELOG.md`

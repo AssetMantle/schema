@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/modules/schema"
+	"github.com/AssetMantle/schema/schema"
 )
 
 func Test_Rest_Utils(t *testing.T) {

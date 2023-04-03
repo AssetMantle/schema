@@ -8,11 +8,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AssetMantle/modules/schema/data"
-	dataConstants "github.com/AssetMantle/modules/schema/data/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/data"
+	dataConstants "github.com/AssetMantle/schema/schema/data/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 func TestNewIDData(t *testing.T) {

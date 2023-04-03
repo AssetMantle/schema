@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	paramsTypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/AssetMantle/modules/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids"
 )
 
 type ParameterManager interface {
