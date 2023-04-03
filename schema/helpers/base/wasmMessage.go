@@ -6,7 +6,7 @@ package base
 import (
 	"encoding/json"
 
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 type wasmMessage struct {

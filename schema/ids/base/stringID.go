@@ -4,13 +4,14 @@
 package base
 
 import (
-	"github.com/AssetMantle/modules/schema/ids/constants"
 	"strings"
 
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/ids/utilities"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/ids/constants"
+
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids/utilities"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 var _ ids.StringID = (*StringID)(nil)

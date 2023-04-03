@@ -4,7 +4,7 @@
 package constants
 
 import (
-	"github.com/AssetMantle/modules/schema/helpers/base"
+	"github.com/AssetMantle/schema/schema/helpers/base"
 )
 
 const (

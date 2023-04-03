@@ -2,10 +2,11 @@ package base
 
 import (
 	"bytes"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/ids/constants"
-	"github.com/AssetMantle/modules/schema/traits"
 	"strings"
+
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids/constants"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 var _ ids.CoinID = (*CoinID)(nil)

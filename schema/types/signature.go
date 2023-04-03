@@ -6,7 +6,7 @@ package types
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/AssetMantle/modules/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids"
 )
 
 type Signature interface {

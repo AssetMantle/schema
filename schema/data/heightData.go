@@ -4,7 +4,7 @@
 package data
 
 import (
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 type HeightData interface {

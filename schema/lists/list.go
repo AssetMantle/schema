@@ -4,7 +4,7 @@
 package lists
 
 import (
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 // List

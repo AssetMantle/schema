@@ -8,9 +8,9 @@ import (
 	sdkModuleTypes "github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
-	"github.com/AssetMantle/modules/schema"
-	"github.com/AssetMantle/modules/schema/helpers"
-	documentIDGetters "github.com/AssetMantle/modules/utilities/rest/idGetters/docs"
+	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/schema/helpers"
+	documentIDGetters "github.com/AssetMantle/schema/utilities/rest/idGetters/docs"
 )
 
 type codec struct {

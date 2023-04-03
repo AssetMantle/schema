@@ -3,7 +3,7 @@ package base
 import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/AssetMantle/modules/schema/errors"
+	"github.com/AssetMantle/schema/schema/errors"
 )
 
 var _ errors.Error = (*sdkErrors.Error)(nil)

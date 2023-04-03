@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/modules/schema/types"
+	"github.com/AssetMantle/schema/schema/types"
 )
 
 func TestNewHeight(t *testing.T) {

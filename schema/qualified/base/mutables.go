@@ -4,11 +4,11 @@
 package base
 
 import (
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/lists"
-	baseLists "github.com/AssetMantle/modules/schema/lists/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	"github.com/AssetMantle/modules/schema/qualified"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/lists"
+	baseLists "github.com/AssetMantle/schema/schema/lists/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	"github.com/AssetMantle/schema/schema/qualified"
 )
 
 var _ qualified.Mutables = (*Mutables)(nil)

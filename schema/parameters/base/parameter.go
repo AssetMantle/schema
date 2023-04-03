@@ -1,10 +1,10 @@
 package base
 
 import (
-	"github.com/AssetMantle/modules/schema/data"
-	"github.com/AssetMantle/modules/schema/helpers"
-	"github.com/AssetMantle/modules/schema/properties"
-	"github.com/AssetMantle/modules/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/data"
+	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/schema/properties"
+	"github.com/AssetMantle/schema/schema/properties/base"
 )
 
 var _ helpers.Parameter = (*Parameter)(nil)

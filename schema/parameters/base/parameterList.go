@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/AssetMantle/modules/schema/helpers"
+	"github.com/AssetMantle/schema/schema/helpers"
 )
 
 var _ helpers.ParameterList = (*ParameterList)(nil)

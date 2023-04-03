@@ -25,10 +25,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/helpers"
-	"github.com/AssetMantle/modules/utilities/random"
-	"github.com/AssetMantle/modules/utilities/rest/queuing"
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/utilities/random"
+	"github.com/AssetMantle/schema/utilities/rest/queuing"
 )
 
 type transaction struct {

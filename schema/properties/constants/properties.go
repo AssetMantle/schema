@@ -6,10 +6,10 @@ package constants
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/properties/base"
-	baseTypes "github.com/AssetMantle/modules/schema/types/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/properties/base"
+	baseTypes "github.com/AssetMantle/schema/schema/types/base"
 )
 
 var (

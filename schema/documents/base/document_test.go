@@ -9,22 +9,22 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	"github.com/AssetMantle/modules/schema/documents"
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	baseLists "github.com/AssetMantle/modules/schema/lists/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/schema/qualified"
-	baseQualified "github.com/AssetMantle/modules/schema/qualified/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	"github.com/AssetMantle/schema/schema/documents"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	baseLists "github.com/AssetMantle/schema/schema/lists/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/qualified"
+	baseQualified "github.com/AssetMantle/schema/schema/qualified/base"
 )
 
 func ValidatedParameter[V *baseIDs.ClassificationID | *baseQualified.Immutables | *baseQualified.Mutables](value any) V {
-if value == nil {
-return nil
-}
-return value.(V)
+	if value == nil {
+		return nil
+	}
+	return value.(V)
 }
 
 func createTestInput() (ids.ClassificationID, qualified.Immutables, qualified.Mutables, documents.Document) {
@@ -247,7 +247,7 @@ func Test_document_Mutate(t *testing.T) {
 		want      documents.Document
 		wantPanic bool
 	}{
-		// TODO: Update after #59 fix https://github.com/AssetMantle/modules/issues/59
+		// TODO: Update after #59 fix https://github.com/AssetMantle/schema/issues/59
 		{"+ve with no mutation", fields{ClassificationID: classificationID.(*baseIDs.ClassificationID), Immutables: testImmutables.(*baseQualified.Immutables), Mutables: testMutables.(*baseQualified.Mutables)}, args{}, &Document{ClassificationID: classificationID.(*baseIDs.ClassificationID), Immutables: testImmutables.(*baseQualified.Immutables), Mutables: testMutables.(*baseQualified.Mutables)}, false},
 		{"+ve with nil classificationID", fields{ClassificationID: nil, Immutables: testImmutables.(*baseQualified.Immutables), Mutables: testMutables.(*baseQualified.Mutables)}, args{[]properties.Property{testMutateProperty}}, (&Document{ClassificationID: nil, Immutables: testImmutables.(*baseQualified.Immutables), Mutables: testMutables.(*baseQualified.Mutables)}).Mutate(testMutateProperty), false},
 		{"+ve with nil immutables", fields{ClassificationID: classificationID.(*baseIDs.ClassificationID), Immutables: nil, Mutables: testMutables.(*baseQualified.Mutables)}, args{[]properties.Property{testMutateProperty}}, (&Document{ClassificationID: classificationID.(*baseIDs.ClassificationID), Immutables: nil, Mutables: testMutables.(*baseQualified.Mutables)}).Mutate(testMutateProperty), false},

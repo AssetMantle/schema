@@ -6,8 +6,8 @@ package helpers
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/AssetMantle/modules/schema/data"
-	"github.com/AssetMantle/modules/schema/properties"
+	"github.com/AssetMantle/schema/schema/data"
+	"github.com/AssetMantle/schema/schema/properties"
 )
 
 type Parameter interface {

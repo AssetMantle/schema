@@ -1,12 +1,13 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/modules/schema/errors/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/ids/constants"
-	"github.com/AssetMantle/modules/schema/qualified"
-	"github.com/AssetMantle/modules/schema/traits"
 	"strings"
+
+	errorConstants "github.com/AssetMantle/schema/schema/errors/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/ids/constants"
+	"github.com/AssetMantle/schema/schema/qualified"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 var _ ids.OrderID = (*OrderID)(nil)

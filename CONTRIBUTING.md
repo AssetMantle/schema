@@ -20,20 +20,20 @@ Thank you for considering making contributions to the AssetMantle modules and re
 Contributing to this repo can mean many things such as participating in discussion or proposing code changes. To ensure
 a smooth workflow for all contributors, the general procedure for contributing has been established:
 
-1. Start by browsing [new issues](https://github.com/AssetMantle/modules/issues). If you are looking for something
+1. Start by browsing [new issues](https://github.com/AssetMantle/schema/issues). If you are looking for something
    interesting or if you have something in your mind, there is a chance it was has been discussed.
 
 - Looking for a good place to start contributing? How about checking out
-  some [good first issues](https://github.com/AssetMantle/modules/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+  some [good first issues](https://github.com/AssetMantle/schema/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
   ?
 
 1. Determine whether a GitHub issue or discussion is more appropriate for your needs:
 2. If you want to propose something new that requires specification or an additional design, or you would like to change
-   a process, start with a [new discussion](https://github.com/AssetMantle/modules/discussions/new). With discussions,
+   a process, start with a [new discussion](https://github.com/AssetMantle/schema/discussions/new). With discussions,
    we can better handle the design process using discussion threads. A discussion usually leads to one or more issues.
 3. If the issue you want addressed is a specific proposal or a bug, then open
-   a [new issue](https://github.com/AssetMantle/modules/issues/new/choose).
-4. Review existing [issues](https://github.com/AssetMantle/modules/issues) to find an issue you'd like to help with.
+   a [new issue](https://github.com/AssetMantle/schema/issues/new/choose).
+4. Review existing [issues](https://github.com/AssetMantle/schema/issues) to find an issue you'd like to help with.
 5. Participate in thoughtful discussion on that issue.
 6. If you would like to contribute:
     1. Ensure that the proposal has been accepted.
@@ -51,8 +51,8 @@ taken place in a GitHub issue, that PR runs a high likelihood of being rejected.
 ## Architecture Decision Records (ADR)
 
 When proposing an architecture decision for the AssetMantle modules, please start by opening
-an [issue](https://github.com/AssetMantle/modules/issues/new/choose) or
-a [discussion](https://github.com/AssetMantle/modules/discussions/new) with a summary of the proposal. Once the proposal
+an [issue](https://github.com/AssetMantle/schema/issues/new/choose) or
+a [discussion](https://github.com/AssetMantle/schema/discussions/new) with a summary of the proposal. Once the proposal
 has been discussed and there is rough alignment on a high-level approach to the design, are following this process to
 ensure all involved parties are in agreement before any party begins coding the proposed
 the [ADR creation process](./docs/architecture/PROCESS.md) can begin the implementation. If you would like to see
@@ -273,7 +273,7 @@ three distinct stages: **Strategy Discovery**, **Concept Approval**, and
 
 * Architecture Decision Records (ADRs) may be proposed by any contributors or maintainers of the AssetMantle modules,
   and should follow the guidelines outlined in the
-  [ADR Creation Process](https://github.com/AssetMantle/modules/blob/master/docs/architecture/PROCESS.md)
+  [ADR Creation Process](https://github.com/AssetMantle/schema/blob/master/docs/architecture/PROCESS.md)
 * After proposal, a time bound period for Request for Comment (RFC) on ADRs commences
 * ADRs are intended to be iterative, and may be merged into `master` while still in a `Proposed` status
 

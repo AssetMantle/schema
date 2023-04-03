@@ -83,8 +83,8 @@ import (
 	tmProto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/AssetMantle/modules/schema/applications"
-	simulationMake "github.com/AssetMantle/modules/simulation/make"
+	"github.com/AssetMantle/schema/schema/applications"
+	simulationMake "github.com/AssetMantle/schema/simulation/make"
 )
 
 type GenesisState map[string]json.RawMessage

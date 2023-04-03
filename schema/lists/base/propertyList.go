@@ -3,11 +3,11 @@ package base
 import (
 	"sort"
 
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/lists"
-	"github.com/AssetMantle/modules/schema/properties"
-	"github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/lists"
+	"github.com/AssetMantle/schema/schema/properties"
+	"github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 var _ lists.PropertyList = (*PropertyList)(nil)

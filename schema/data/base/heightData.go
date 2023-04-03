@@ -9,13 +9,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/AssetMantle/modules/schema/data"
-	dataConstants "github.com/AssetMantle/modules/schema/data/constants"
-	"github.com/AssetMantle/modules/schema/ids"
-	baseIDs "github.com/AssetMantle/modules/schema/ids/base"
-	"github.com/AssetMantle/modules/schema/traits"
-	"github.com/AssetMantle/modules/schema/types"
-	baseTypes "github.com/AssetMantle/modules/schema/types/base"
+	"github.com/AssetMantle/schema/schema/data"
+	dataConstants "github.com/AssetMantle/schema/schema/data/constants"
+	"github.com/AssetMantle/schema/schema/ids"
+	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
+	"github.com/AssetMantle/schema/schema/traits"
+	"github.com/AssetMantle/schema/schema/types"
+	baseTypes "github.com/AssetMantle/schema/schema/types/base"
 )
 
 var _ data.HeightData = (*HeightData)(nil)

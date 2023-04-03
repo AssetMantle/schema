@@ -1,8 +1,8 @@
 package lists
 
 import (
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/properties"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/properties"
 )
 
 type PropertyList interface {

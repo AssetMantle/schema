@@ -5,13 +5,14 @@ package base
 
 import (
 	fmt "fmt"
-	base1 "github.com/AssetMantle/modules/schema/data/base"
-	base "github.com/AssetMantle/modules/schema/ids/base"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+
+	base1 "github.com/AssetMantle/schema/schema/data/base"
+	base "github.com/AssetMantle/schema/schema/ids/base"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.

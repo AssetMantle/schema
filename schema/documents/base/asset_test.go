@@ -6,16 +6,16 @@ import (
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	baseData "github.com/AssetMantle/modules/schema/data/base"
-	documentsSchema "github.com/AssetMantle/modules/schema/documents"
-	"github.com/AssetMantle/modules/schema/ids"
-	"github.com/AssetMantle/modules/schema/lists/base"
-	"github.com/AssetMantle/modules/schema/properties"
-	baseProperties "github.com/AssetMantle/modules/schema/properties/base"
-	"github.com/AssetMantle/modules/schema/properties/constants"
-	"github.com/AssetMantle/modules/schema/qualified"
-	baseQualified "github.com/AssetMantle/modules/schema/qualified/base"
-	baseTypes "github.com/AssetMantle/modules/schema/types/base"
+	baseData "github.com/AssetMantle/schema/schema/data/base"
+	documentsSchema "github.com/AssetMantle/schema/schema/documents"
+	"github.com/AssetMantle/schema/schema/ids"
+	"github.com/AssetMantle/schema/schema/lists/base"
+	"github.com/AssetMantle/schema/schema/properties"
+	baseProperties "github.com/AssetMantle/schema/schema/properties/base"
+	"github.com/AssetMantle/schema/schema/properties/constants"
+	"github.com/AssetMantle/schema/schema/qualified"
+	baseQualified "github.com/AssetMantle/schema/schema/qualified/base"
+	baseTypes "github.com/AssetMantle/schema/schema/types/base"
 )
 
 func TestNewAsset(t *testing.T) {

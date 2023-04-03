@@ -6,8 +6,8 @@ package base
 import (
 	"sort"
 
-	"github.com/AssetMantle/modules/schema/lists"
-	"github.com/AssetMantle/modules/schema/traits"
+	"github.com/AssetMantle/schema/schema/lists"
+	"github.com/AssetMantle/schema/schema/traits"
 )
 
 // TODO type check that list is same type and test cases

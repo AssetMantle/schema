@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/AssetMantle/modules/schema/data"
+	"github.com/AssetMantle/schema/schema/data"
 )
 
 type ValidatableParameter interface {
