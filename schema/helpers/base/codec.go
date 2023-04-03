@@ -10,7 +10,6 @@ import (
 
 	"github.com/AssetMantle/schema/schema"
 	"github.com/AssetMantle/schema/schema/helpers"
-	documentIDGetters "github.com/AssetMantle/schema/utilities/rest/idGetters/docs"
 )
 
 type codec struct {
@@ -35,7 +34,6 @@ func (codec codec) Initialize(moduleBasicManager sdkModuleTypes.BasicManager) he
 	std.RegisterLegacyAminoCodec(codec.legacyAmino)
 	std.RegisterInterfaces(codec.interfaceRegistry)
 	schema.RegisterLegacyAminoCodec(codec.legacyAmino)
-	documentIDGetters.RegisterLegacyAminoCodec(codec.legacyAmino)
 	moduleBasicManager.RegisterLegacyAminoCodec(codec.legacyAmino)
 	moduleBasicManager.RegisterInterfaces(codec.interfaceRegistry)
 	return codec
