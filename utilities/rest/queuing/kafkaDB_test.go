@@ -12,15 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/AssetMantle/schema/schema"
-	baseIDs "github.com/AssetMantle/schema/schema/ids/base"
 	"github.com/AssetMantle/schema/utilities/random"
+	"github.com/AssetMantle/schema/x"
+	baseIDs "github.com/AssetMantle/schema/x/ids/base"
 )
 
 func Test_Kafka_DB(t *testing.T) {
 	require.Panics(t, func() {
 		var legacyAmino = codec.NewLegacyAmino()
-		schema.RegisterLegacyAminoCodec(legacyAmino)
+		x.RegisterLegacyAminoCodec(legacyAmino)
 		sdkTypes.RegisterCodec(legacyAmino)
 		codec.RegisterCrypto(legacyAmino)
 		codec.RegisterEvidences(legacyAmino)

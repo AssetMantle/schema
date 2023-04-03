@@ -20,12 +20,12 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/x"
 )
 
 func TestHandler(t *testing.T) {
 	Codec := codec.NewLegacyAmino()
-	schema.RegisterLegacyAminoCodec(Codec)
+	x.RegisterLegacyAminoCodec(Codec)
 	Codec.RegisterConcrete(request{}, "request", nil)
 	Codec.RegisterConcrete(response{}, "response", nil)
 

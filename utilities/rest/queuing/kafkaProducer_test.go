@@ -11,14 +11,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/x"
 )
 
 func TestKafkaProducerDeliverMessage(t *testing.T) {
 	testProducer := []string{"testProducer"}
 	var legacyAmino = codec.NewLegacyAmino()
 	require.Panics(t, func() {
-		schema.RegisterLegacyAminoCodec(legacyAmino)
+		x.RegisterLegacyAminoCodec(legacyAmino)
 		std.RegisterLegacyAminoCodec(legacyAmino)
 
 		testKafkaMessage := kafkaMsg{Msg: nil}
