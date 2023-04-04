@@ -13,9 +13,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/schema"
 	codecUtilities "github.com/AssetMantle/schema/utilities/codec"
 	"github.com/AssetMantle/schema/utilities/random"
+	"github.com/AssetMantle/schema/x"
 )
 
 type testMessage struct {
@@ -43,7 +43,7 @@ func (testMessage) RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 func Test_Kafka(t *testing.T) {
 	var legacyAmino = codec.NewLegacyAmino()
-	schema.RegisterLegacyAminoCodec(legacyAmino)
+	x.RegisterLegacyAminoCodec(legacyAmino)
 	std.RegisterLegacyAminoCodec(legacyAmino)
 
 	fromAddress := "cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"

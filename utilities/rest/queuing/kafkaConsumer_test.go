@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/schema"
+	"github.com/AssetMantle/schema/x"
 )
 
 func TestKafkaTopicConsumer(t *testing.T) {
@@ -19,7 +19,7 @@ func TestKafkaTopicConsumer(t *testing.T) {
 
 	var legacyAmino = codec.NewLegacyAmino()
 
-	schema.RegisterLegacyAminoCodec(legacyAmino)
+	x.RegisterLegacyAminoCodec(legacyAmino)
 	std.RegisterLegacyAminoCodec(legacyAmino)
 
 	require.Panics(t, func() {

@@ -6,7 +6,7 @@ package base
 import (
 	"context"
 
-	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/x/helpers"
 )
 
 type testAuxiliaryKeeper struct {

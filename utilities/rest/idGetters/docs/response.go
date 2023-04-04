@@ -4,7 +4,7 @@
 package docs
 
 import (
-	"github.com/AssetMantle/schema/schema/helpers"
+	"github.com/AssetMantle/schema/x/helpers"
 )
 
 type response struct {
