@@ -1,7 +1,7 @@
 package base
 
 import (
-	parameters "github.com/AssetMantle/schema/x/parameters"
+	"github.com/AssetMantle/schema/x/parameters"
 )
 
 var _ parameters.ParameterList = (*ParameterList)(nil)
