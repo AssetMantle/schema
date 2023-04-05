@@ -11,16 +11,17 @@ import (
 	paramsTypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
 	"github.com/AssetMantle/schema/x/ids"
+	"github.com/AssetMantle/schema/x/parameters"
 )
 
 type ParameterManager interface {
-	Get() ParameterList
+	Get() parameters.ParameterList
 	GetValidatableParameter(ids.PropertyID) ValidatableParameter
-	GetParameter(ids.PropertyID) Parameter
-	ValidateParameter(Parameter) error
+	GetParameter(ids.PropertyID) parameters.Parameter
+	ValidateParameter(parameters.Parameter) error
 
 	Fetch(context.Context) ParameterManager
-	Set(context.Context, ParameterList)
+	Set(context.Context, parameters.ParameterList)
 
 	GetKeyTable() paramsTypes.KeyTable
 	RESTQueryHandler(client.Context) http.HandlerFunc

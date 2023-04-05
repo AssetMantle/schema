@@ -2,12 +2,12 @@ package base
 
 import (
 	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/helpers"
+	"github.com/AssetMantle/schema/x/parameters"
 	"github.com/AssetMantle/schema/x/properties"
 	"github.com/AssetMantle/schema/x/properties/base"
 )
 
-var _ helpers.Parameter = (*Parameter)(nil)
+var _ parameters.Parameter = (*Parameter)(nil)
 
 func (m *Parameter) ValidateBasic() error {
 	return m.MetaProperty.ValidateBasic()
@@ -15,24 +15,24 @@ func (m *Parameter) ValidateBasic() error {
 func (m *Parameter) GetMetaProperty() properties.MetaProperty {
 	return m.MetaProperty
 }
-func (m *Parameter) Mutate(data data.Data) helpers.Parameter {
+func (m *Parameter) Mutate(data data.Data) parameters.Parameter {
 	if m.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
 		m.MetaProperty = base.NewMetaProperty(m.MetaProperty.GetKey(), data).(*base.MetaProperty)
 	}
 	return m
 }
 
-func ParametersToInterface(parameters []*Parameter) []helpers.Parameter {
-	returnParameters := make([]helpers.Parameter, len(parameters))
+func ParametersToInterface(inParameters []*Parameter) []parameters.Parameter {
+	returnParameters := make([]parameters.Parameter, len(inParameters))
 
-	for i, parameter := range parameters {
+	for i, parameter := range inParameters {
 		returnParameters[i] = parameter
 	}
 
 	return returnParameters
 }
 
-func ParametersFromInterface(parameters []helpers.Parameter) []*Parameter {
+func ParametersFromInterface(parameters []parameters.Parameter) []*Parameter {
 	returnParameters := make([]*Parameter, len(parameters))
 
 	for i, parameter := range parameters {

@@ -5,6 +5,8 @@ import (
 
 	sdkCodec "github.com/cosmos/cosmos-sdk/codec"
 	"github.com/gogo/protobuf/proto"
+
+	"github.com/AssetMantle/schema/x/parameters"
 )
 
 type Genesis interface {
@@ -20,5 +22,5 @@ type Genesis interface {
 	Encode(sdkCodec.JSONCodec) []byte
 	Decode(sdkCodec.JSONCodec, []byte) Genesis
 
-	Initialize([]Mappable, ParameterList) Genesis
+	Initialize([]Mappable, parameters.ParameterList) Genesis
 }

@@ -1,4 +1,4 @@
-package helpers
+package parameters
 
 import (
 	"github.com/gogo/protobuf/proto"

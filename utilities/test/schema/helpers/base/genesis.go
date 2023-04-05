@@ -9,6 +9,7 @@ import (
 	"github.com/AssetMantle/schema/x/errors/constants"
 	"github.com/AssetMantle/schema/x/helpers"
 	baseIDs "github.com/AssetMantle/schema/x/ids/base"
+	"github.com/AssetMantle/schema/x/parameters"
 	baseParameters "github.com/AssetMantle/schema/x/parameters/base"
 	baseProperties "github.com/AssetMantle/schema/x/properties/base"
 )
@@ -77,7 +78,7 @@ func (genesis *Genesis) Decode(jsonCodec sdkCodec.JSONCodec, byte []byte) helper
 
 	return genesis
 }
-func (genesis *Genesis) Initialize(mappables []helpers.Mappable, parameters []helpers.Parameter) helpers.Genesis {
+func (genesis *Genesis) Initialize(mappables []helpers.Mappable, parameters []parameters.Parameter) helpers.Genesis {
 	if len(mappables) == 0 {
 		genesis.Mappables = genesis.Default().(*Genesis).Mappables
 	} else {

@@ -3,16 +3,17 @@ package base
 import (
 	"github.com/AssetMantle/schema/x/data"
 	"github.com/AssetMantle/schema/x/helpers"
+	"github.com/AssetMantle/schema/x/parameters"
 )
 
 type validatableParameter struct {
-	parameter helpers.Parameter
+	parameter parameters.Parameter
 	validator func(i interface{}) error
 }
 
 var _ helpers.ValidatableParameter = (*validatableParameter)(nil)
 
-func (validatableParameter validatableParameter) GetParameter() helpers.Parameter {
+func (validatableParameter validatableParameter) GetParameter() parameters.Parameter {
 	return validatableParameter.parameter
 }
 func (validatableParameter validatableParameter) Mutate(data data.Data) helpers.ValidatableParameter {
@@ -26,7 +27,7 @@ func (validatableParameter validatableParameter) Validate() error {
 	return validatableParameter.validator(validatableParameter.parameter)
 }
 
-func NewValidatableParameter(parameter helpers.Parameter, validator func(i interface{}) error) helpers.ValidatableParameter {
+func NewValidatableParameter(parameter parameters.Parameter, validator func(i interface{}) error) helpers.ValidatableParameter {
 	return &validatableParameter{
 		parameter: parameter,
 		validator: validator,
