@@ -11,16 +11,16 @@ import (
 
 	"github.com/AssetMantle/schema/x/data"
 	baseData "github.com/AssetMantle/schema/x/data/base"
-	"github.com/AssetMantle/schema/x/helpers"
 	"github.com/AssetMantle/schema/x/ids"
 	baseIDs "github.com/AssetMantle/schema/x/ids/base"
+	"github.com/AssetMantle/schema/x/parameters"
 )
 
 func dummyValidator(interface{}) error {
 	return nil
 }
 
-func createTestInput() (*baseIDs.StringID, data.Data, helpers.Parameter) {
+func createTestInput() (*baseIDs.StringID, data.Data, parameters.Parameter) {
 	id := baseIDs.NewStringID("ID")
 	stringData := baseData.NewStringData("Data")
 
@@ -38,7 +38,7 @@ func TestNewParameter(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    helpers.Parameter
+		want    parameters.Parameter
 		wantErr bool
 	}{
 
@@ -70,7 +70,7 @@ func Test_parameter_Equal(t *testing.T) {
 		validator func(interface{}) error
 	}
 	type args struct {
-		compareParameter helpers.Parameter
+		compareParameter parameters.Parameter
 	}
 	tests := []struct {
 		name   string
@@ -197,7 +197,7 @@ func Test_parameter_Mutate(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		want   helpers.Parameter
+		want   parameters.Parameter
 	}{
 
 		{"+ve", fields{id, testData, dummyValidator}, args{newData}, &Parameter{id, newData.ToAnyData().(*baseData.AnyData)}},
