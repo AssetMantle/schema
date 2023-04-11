@@ -6,10 +6,9 @@ package base
 import (
 	"strings"
 
-	"github.com/AssetMantle/schema/x/ids/constants"
-
 	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
 	"github.com/AssetMantle/schema/x/ids"
+	"github.com/AssetMantle/schema/x/ids/constants"
 	"github.com/AssetMantle/schema/x/ids/utilities"
 	"github.com/AssetMantle/schema/x/traits"
 )
