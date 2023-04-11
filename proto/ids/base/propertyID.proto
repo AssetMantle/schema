@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ids;
 
-import "x/ids/base/stringID.proto";
+import "proto/ids/base/stringID.proto";
 import "gogoproto/gogo.proto";
 
 message PropertyID{
