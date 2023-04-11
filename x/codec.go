@@ -12,6 +12,7 @@ import (
 	baseDocuments "github.com/AssetMantle/schema/x/documents/base"
 	"github.com/AssetMantle/schema/x/errors"
 	baseErrors "github.com/AssetMantle/schema/x/errors/base"
+	"github.com/AssetMantle/schema/x/helpers"
 	"github.com/AssetMantle/schema/x/ids"
 	baseIDs "github.com/AssetMantle/schema/x/ids/base"
 	"github.com/AssetMantle/schema/x/lists"
@@ -35,6 +36,8 @@ func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 	errors.RegisterLegacyAminoCodec(legacyAmino)
 	baseErrors.RegisterLegacyAminoCodec(legacyAmino)
+
+	helpers.RegisterLegacyAminoCodec(legacyAmino)
 
 	ids.RegisterLegacyAminoCodec(legacyAmino)
 	baseIDs.RegisterLegacyAminoCodec(legacyAmino)
