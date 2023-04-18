@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lists;
 
-import "proto/ids/base/anyID.proto";
+import "ids/base/anyID.proto";
 import "gogoproto/gogo.proto";
 
 message IDList {

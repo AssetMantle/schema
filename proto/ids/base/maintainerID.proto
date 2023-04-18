@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ids;
 
-import "proto/ids/base/hashID.proto";
+import "ids/base/hashID.proto";
 import "gogoproto/gogo.proto";
 
 message MaintainerID {

@@ -2,7 +2,7 @@ syntax = "proto3";
 package ids;
 
 import "gogoproto/gogo.proto";
-import "proto/ids/base/hashID.proto";
+import "ids/base/hashID.proto";
 
 message IdentityID {
   option (gogoproto.goproto_getters) = false;

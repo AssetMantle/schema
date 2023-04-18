@@ -2,18 +2,18 @@ syntax = "proto3";
 package ids;
 
 import "gogoproto/gogo.proto";
-import "proto/ids/base/anyOwnableID.proto";
-import "proto/ids/base/assetID.proto";
-import "proto/ids/base/classificationID.proto";
-import "proto/ids/base/coinID.proto";
-import "proto/ids/base/dataID.proto";
-import "proto/ids/base/hashID.proto";
-import "proto/ids/base/identityID.proto";
-import "proto/ids/base/maintainerID.proto";
-import "proto/ids/base/orderID.proto";
-import "proto/ids/base/propertyID.proto";
-import "proto/ids/base/splitID.proto";
-import "proto/ids/base/stringID.proto";
+import "ids/base/anyOwnableID.proto";
+import "ids/base/assetID.proto";
+import "ids/base/classificationID.proto";
+import "ids/base/coinID.proto";
+import "ids/base/dataID.proto";
+import "ids/base/hashID.proto";
+import "ids/base/identityID.proto";
+import "ids/base/maintainerID.proto";
+import "ids/base/orderID.proto";
+import "ids/base/propertyID.proto";
+import "ids/base/splitID.proto";
+import "ids/base/stringID.proto";
 
 message AnyID {
   option (gogoproto.goproto_getters) = false;

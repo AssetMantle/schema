@@ -1,8 +1,8 @@
 syntax = "proto3";
 package types;
 
-import "proto/ids/base/identityID.proto";
-import "proto/ids/base/anyOwnableID.proto";
+import "ids/base/identityID.proto";
+import "ids/base/anyOwnableID.proto";
 import "gogoproto/gogo.proto";
 
 message Split {
