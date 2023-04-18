@@ -1,9 +1,9 @@
 syntax = "proto3";
 package ids;
 
-import "ids/base/hashID.proto";
-import "ids/base/stringID.proto";
 import "gogoproto/gogo.proto";
+import "ids/base/hash_id.proto";
+import "ids/base/string_id.proto";
 
 message DataID {
   option (gogoproto.goproto_getters) = false;

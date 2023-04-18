@@ -1,11 +1,11 @@
 syntax = "proto3";
 package ids;
 
-import "ids/base/hashID.proto";
 import "gogoproto/gogo.proto";
+import "ids/base/hash_id.proto";
 
-message AssetID{
+message IdentityID {
   option (gogoproto.goproto_getters) = false;
 
-  HashID hash_i_d = 1;
+  ids.HashID hash_i_d = 1;
 }

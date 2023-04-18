@@ -2,13 +2,13 @@ syntax = "proto3";
 package data;
 
 import "gogoproto/gogo.proto";
-import "data/base/accAddressData.proto";
-import "data/base/booleanData.proto";
-import "data/base/decData.proto";
-import "data/base/heightData.proto";
-import "data/base/idData.proto";
-import "data/base/numberData.proto";
-import "data/base/stringData.proto";
+import "data/base/acc_address_data.proto";
+import "data/base/boolean_data.proto";
+import "data/base/dec_data.proto";
+import "data/base/height_data.proto";
+import "data/base/id_data.proto";
+import "data/base/number_data.proto";
+import "data/base/string_data.proto";
 
 message AnyData {
   option (gogoproto.goproto_getters) = false;

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package documents;
 
-import "ids/base/classificationID.proto";
+import "ids/base/classification_id.proto";
 import "qualified/base/immutables.proto";
 import "qualified/base/mutables.proto";
 import "gogoproto/gogo.proto";

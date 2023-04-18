@@ -1,11 +1,11 @@
 syntax = "proto3";
-package data;
+package ids;
 
-import "ids/base/anyID.proto";
+import "ids/base/hash_id.proto";
 import "gogoproto/gogo.proto";
 
-message IDData {
+message ClassificationID {
   option (gogoproto.goproto_getters) = false;
 
-  ids.AnyID value = 1;
+  HashID hash_i_d = 1;
 }

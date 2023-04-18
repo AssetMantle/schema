@@ -1,10 +1,10 @@
 syntax = "proto3";
 package ids;
 
-import "ids/base/stringID.proto";
 import "gogoproto/gogo.proto";
+import "ids/base/string_id.proto";
 
-message CoinID{
+message CoinID {
   option (gogoproto.goproto_getters) = false;
 
   StringID string_i_d = 1;
