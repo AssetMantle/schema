@@ -4,7 +4,7 @@
 package properties
 
 import (
-	"github.com/AssetMantle/schema/x/data"
+	"github.com/AssetMantle/schema/go/data"
 )
 
 type MetaProperty interface {

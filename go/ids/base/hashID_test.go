@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/schema/x/ids"
+	"github.com/AssetMantle/schema/go/ids"
 )
 
 func TestReadHashID(t *testing.T) {

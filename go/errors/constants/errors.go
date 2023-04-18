@@ -4,7 +4,7 @@
 package constants
 
 import (
-	"github.com/AssetMantle/schema/x/errors/base"
+	"github.com/AssetMantle/schema/go/errors/base"
 )
 
 const projectRoute = "/AssetMantle"

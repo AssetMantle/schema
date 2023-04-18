@@ -8,13 +8,13 @@ import (
 	"sort"
 	"strings"
 
+	Data "github.com/AssetMantle/schema/go/data"
+	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/traits"
 	stringUtilities "github.com/AssetMantle/schema/utilities/string"
-	Data "github.com/AssetMantle/schema/x/data"
-	dataConstants "github.com/AssetMantle/schema/x/data/constants"
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/traits"
 )
 
 var _ Data.ListData = (*ListData)(nil)

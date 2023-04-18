@@ -13,12 +13,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/x/data"
-	dataConstants "github.com/AssetMantle/schema/x/data/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/traits"
-	baseTypes "github.com/AssetMantle/schema/x/types/base"
+	"github.com/AssetMantle/schema/go/data"
+	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/traits"
+	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
 
 var fromAddress = "cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"

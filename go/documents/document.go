@@ -4,9 +4,9 @@
 package documents
 
 import (
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/qualified"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/qualified"
 )
 
 type Document interface {

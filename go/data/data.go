@@ -4,8 +4,8 @@
 package data
 
 import (
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 // TODO URI and PropertyID Data type

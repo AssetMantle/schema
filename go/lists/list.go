@@ -4,7 +4,7 @@
 package lists
 
 import (
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 // List

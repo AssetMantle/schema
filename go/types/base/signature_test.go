@@ -12,13 +12,28 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/traits"
-	"github.com/AssetMantle/schema/x/types"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type testableStringID struct {
 	IDString string
+}
+
+func (t testableStringID) GetTypeID() ids.StringID {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t testableStringID) ValidateBasic() error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t testableStringID) FromString(s string) (ids.ID, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (t testableStringID) AsString() string {

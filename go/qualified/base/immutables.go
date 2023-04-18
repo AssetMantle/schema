@@ -4,12 +4,12 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/lists"
-	baseLists "github.com/AssetMantle/schema/x/lists/base"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/qualified"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/lists"
+	baseLists "github.com/AssetMantle/schema/go/lists/base"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/qualified"
 )
 
 var _ qualified.Immutables = (*Immutables)(nil)

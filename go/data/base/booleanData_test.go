@@ -8,11 +8,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AssetMantle/schema/x/data"
-	idsConstants "github.com/AssetMantle/schema/x/data/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data"
+	idsConstants "github.com/AssetMantle/schema/go/data/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 func TestNewBooleanData(t *testing.T) {

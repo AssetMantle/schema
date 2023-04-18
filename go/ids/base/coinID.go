@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/ids/constants"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.CoinID = (*CoinID)(nil)

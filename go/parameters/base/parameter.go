@@ -1,10 +1,10 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/parameters"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/properties/base"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/parameters"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/properties/base"
 )
 
 var _ parameters.Parameter = (*Parameter)(nil)

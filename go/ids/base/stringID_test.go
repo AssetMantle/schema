@@ -7,8 +7,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 func TestNewStringID(t *testing.T) {

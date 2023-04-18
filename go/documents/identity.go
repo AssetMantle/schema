@@ -6,8 +6,8 @@ package documents
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/types"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type Identity interface {

@@ -6,9 +6,9 @@ import (
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/schema/x/data"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	baseTypes "github.com/AssetMantle/schema/x/types/base"
+	"github.com/AssetMantle/schema/go/data"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
 
 var (

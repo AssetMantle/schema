@@ -4,7 +4,7 @@
 package constants
 
 import (
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
 // TODO use enum

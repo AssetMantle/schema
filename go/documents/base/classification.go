@@ -1,12 +1,12 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/documents"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/properties/constants"
-	"github.com/AssetMantle/schema/x/qualified"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/documents"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/properties/constants"
+	"github.com/AssetMantle/schema/go/qualified"
 )
 
 type classification struct {

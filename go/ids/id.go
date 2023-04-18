@@ -4,7 +4,7 @@
 package ids
 
 import (
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 type ID interface {

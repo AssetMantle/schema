@@ -7,13 +7,13 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/AssetMantle/schema/x/data"
-	dataConstants "github.com/AssetMantle/schema/x/data/constants"
-	"github.com/AssetMantle/schema/x/data/utilities"
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data"
+	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	"github.com/AssetMantle/schema/go/data/utilities"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ data.StringData = (*StringData)(nil)

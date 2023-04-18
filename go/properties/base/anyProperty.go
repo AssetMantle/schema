@@ -1,10 +1,10 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 type getter interface {

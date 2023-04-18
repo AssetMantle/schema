@@ -3,9 +3,9 @@ package base
 import (
 	"strings"
 
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/traits"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 type idGetter interface {

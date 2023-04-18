@@ -7,11 +7,11 @@ import (
 	"bytes"
 	"strings"
 
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/ids/constants"
-	stringUtilities "github.com/AssetMantle/schema/x/ids/utilities"
-	"github.com/AssetMantle/schema/x/traits"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
+	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.PropertyID = (*PropertyID)(nil)

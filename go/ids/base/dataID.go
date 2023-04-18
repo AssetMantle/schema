@@ -7,12 +7,12 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/AssetMantle/schema/x/data"
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/ids/constants"
-	stringUtilities "github.com/AssetMantle/schema/x/ids/utilities"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
+	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.DataID = (*DataID)(nil)

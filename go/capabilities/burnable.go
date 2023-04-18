@@ -4,7 +4,7 @@
 package capabilities
 
 import (
-	"github.com/AssetMantle/schema/x/properties"
+	"github.com/AssetMantle/schema/go/properties"
 )
 
 type Burnable interface {

@@ -7,9 +7,10 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/schema/x/ids"
-	stringUtilities "github.com/AssetMantle/schema/x/ids/utilities"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data/base"
+	"github.com/AssetMantle/schema/go/ids"
+	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 // TODO: Test GetID for all Data types; If every data tests GetID() then GenerateID() is automatically tested
@@ -53,7 +54,7 @@ func Test_dataIDFromInterface(t *testing.T) {
 		want      *DataID
 		wantError bool
 	}{
-		{"+ve", args{&DataID{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}}, &DataID{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}, false},
+		{"+ve", args{&DataID{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}}, &DataID{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}, false},
 		{"-ve", args{&DataID{}}, &DataID{}, false},
 		{"-ve", args{nil}, &DataID{}, true},
 	}
@@ -83,8 +84,8 @@ func Test_dataID_Bytes(t *testing.T) {
 		fields fields
 		want   []byte
 	}{
-		{"+ve", fields{NewStringID("B"), NewBooleanData(true).GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), NewBooleanData(true).GenerateHashID().Bytes()...)},
-		{"+ve", fields{NewStringID("B"), NewBooleanData(false).GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), NewBooleanData(false).GenerateHashID().Bytes()...)},
+		{"+ve", fields{NewStringID("B"), base.NewBooleanData(true).GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), base.NewBooleanData(true).GenerateHashID().Bytes()...)},
+		{"+ve", fields{NewStringID("B"), base.NewBooleanData(false).GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), base.NewBooleanData(false).GenerateHashID().Bytes()...)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -113,8 +114,8 @@ func Test_dataID_Compare(t *testing.T) {
 		args   args
 		want   int
 	}{
-		{"+ve", fields{NewStringID("B"), NewBooleanData(true).GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}}, 0},
-		{"+ve", fields{NewStringID("B"), NewBooleanData(false).GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}}, -1},
+		{"+ve", fields{NewStringID("B"), base.NewBooleanData(true).GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}}, 0},
+		{"+ve", fields{NewStringID("B"), base.NewBooleanData(false).GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}}, -1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -140,8 +141,8 @@ func Test_dataID_GetHashID(t *testing.T) {
 		want   ids.HashID
 	}{
 		{"+ve", fields{}, (&DataID{}).HashID},
-		{"+ve", fields{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}, NewBooleanData(true).GenerateHashID()},
-		{"+ve", fields{NewStringID("B").(*StringID), NewBooleanData(false).GenerateHashID().(*HashID)}, NewBooleanData(false).GenerateHashID()},
+		{"+ve", fields{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}, base.NewBooleanData(true).GenerateHashID()},
+		{"+ve", fields{NewStringID("B").(*StringID), base.NewBooleanData(false).GenerateHashID().(*HashID)}, base.NewBooleanData(false).GenerateHashID()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -166,8 +167,8 @@ func Test_dataID_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		{"+ve", fields{NewStringID("B").(*StringID), NewBooleanData(true).GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), NewBooleanData(true).GenerateHashID().AsString())},
-		{"+ve", fields{NewStringID("B").(*StringID), NewBooleanData(false).GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), NewBooleanData(false).GenerateHashID().AsString())},
+		{"+ve", fields{NewStringID("B").(*StringID), base.NewBooleanData(true).GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), base.NewBooleanData(true).GenerateHashID().AsString())},
+		{"+ve", fields{NewStringID("B").(*StringID), base.NewBooleanData(false).GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), base.NewBooleanData(false).GenerateHashID().AsString())},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -193,7 +194,7 @@ func TestReadDataID(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{"+ve", args{stringUtilities.JoinIDStrings(NewStringID("B").AsString(), NewBooleanData(true).GenerateHashID().AsString())}, GenerateDataID(NewBooleanData(true)), false},
+		{"+ve", args{stringUtilities.JoinIDStrings(NewStringID("B").AsString(), base.NewBooleanData(true).GenerateHashID().AsString())}, GenerateDataID(base.NewBooleanData(true)), false},
 		{"+ve with empty string", args{""}, PrototypeDataID(), false},
 		{"+ve with nil", args{}, PrototypeDataID(), false},
 		{"-ve", args{stringUtilities.JoinIDStrings(NewStringID("j").AsString(), "0")}, &DataID{}, true},

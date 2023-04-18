@@ -4,7 +4,7 @@
 package data
 
 import (
-	"github.com/AssetMantle/schema/x/ids"
+	"github.com/AssetMantle/schema/go/ids"
 )
 
 type IDData interface {

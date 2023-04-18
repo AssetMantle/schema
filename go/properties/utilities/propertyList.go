@@ -4,7 +4,7 @@
 package utilities
 
 import (
-	"github.com/AssetMantle/schema/x/properties"
+	"github.com/AssetMantle/schema/go/properties"
 )
 
 func IsDuplicate(propertyList []properties.AnyProperty) bool {

@@ -4,9 +4,9 @@
 package qualified
 
 import (
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/lists"
-	"github.com/AssetMantle/schema/x/properties"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/lists"
+	"github.com/AssetMantle/schema/go/properties"
 )
 
 type Immutables interface {

@@ -1,11 +1,11 @@
 package utilities
 
 import (
+	"github.com/AssetMantle/schema/go/lists"
+	"github.com/AssetMantle/schema/go/lists/base"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/properties/utilities"
 	stringUtilities "github.com/AssetMantle/schema/utilities/string"
-	"github.com/AssetMantle/schema/x/lists"
-	"github.com/AssetMantle/schema/x/lists/base"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/properties/utilities"
 )
 
 func ReadMetaPropertyList(metaPropertiesString string) (lists.PropertyList, error) {

@@ -9,11 +9,12 @@ import (
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/schema/x/data"
-	baseData "github.com/AssetMantle/schema/x/data/base"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/parameters"
+	"github.com/AssetMantle/schema/go/data"
+	baseData "github.com/AssetMantle/schema/go/data/base"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/parameters"
+	"github.com/AssetMantle/schema/go/properties/base"
 )
 
 func dummyValidator(interface{}) error {
@@ -24,7 +25,7 @@ func createTestInput() (*baseIDs.StringID, data.Data, parameters.Parameter) {
 	id := baseIDs.NewStringID("ID")
 	stringData := baseData.NewStringData("Data")
 
-	testParameter := NewParameter(id, stringData, dummyValidator)
+	testParameter := NewParameter(base.NewMetaProperty(id, stringData))
 	return id.(*baseIDs.StringID), stringData, testParameter
 }
 
@@ -42,9 +43,9 @@ func TestNewParameter(t *testing.T) {
 		wantErr bool
 	}{
 
-		{"+ve", args{id, testData, dummyValidator}, &Parameter{id, testData.ToAnyData().(*baseData.AnyData)}, false},
+		{"+ve", args{id, testData, dummyValidator}, &Parameter{MetaProperty: base.NewMetaProperty(id, testData).(*base.MetaProperty)}, false},
 		{"panic empty", args{}, &Parameter{}, true},
-		{"nil", args{nil, nil, nil}, &Parameter{nil, nil}, true},
+		{"nil", args{nil, nil, nil}, &Parameter{nil}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -55,128 +56,8 @@ func TestNewParameter(t *testing.T) {
 					t.Errorf("Error %v", r)
 				}
 			}()
-			if got := NewParameter(tt.args.id, tt.args.data, tt.args.validator); !reflect.DeepEqual(got.AsString(), tt.want.AsString()) {
+			if got := NewParameter(base.NewMetaProperty(tt.args.id, tt.args.data)); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewParameter() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parameter_Equal(t *testing.T) {
-	id, testData, testParameter := createTestInput()
-	type fields struct {
-		ID        ids.StringID
-		Data      data.Data
-		validator func(interface{}) error
-	}
-	type args struct {
-		compareParameter parameters.Parameter
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   bool
-	}{
-
-		{"+ve", fields{id, testData, dummyValidator}, args{testParameter}, true},
-		{"+ve different validator", fields{id, testData, func(interface{}) error { return nil }}, args{testParameter}, true},
-		{"-ve different id", fields{baseIDs.NewStringID("different"), testData, dummyValidator}, args{testParameter}, false},
-		{"-ve different data", fields{id, baseData.NewStringData("different"), dummyValidator}, args{testParameter}, false},
-		{"-ve different data type", fields{id, baseData.NewBooleanData(false), dummyValidator}, args{testParameter}, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.Equal(tt.args.compareParameter); got != tt.want {
-				t.Errorf("Equal() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parameter_GetData(t *testing.T) {
-	id, testData, _ := createTestInput()
-	type fields struct {
-		ID        ids.StringID
-		Data      data.Data
-		validator func(interface{}) error
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   data.AnyData
-	}{
-
-		{"+ve", fields{id, testData, dummyValidator}, testData.ToAnyData()},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.GetData(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetData() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parameter_GetID(t *testing.T) {
-	id, testData, _ := createTestInput()
-	type fields struct {
-		ID        ids.StringID
-		Data      data.Data
-		validator func(interface{}) error
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
-	}{
-
-		{"+ve", fields{id, testData, dummyValidator}, id},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.GetID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parameter_GetValidator(t *testing.T) {
-	id, testData, _ := createTestInput()
-	type fields struct {
-		ID        ids.StringID
-		Data      data.Data
-		validator func(interface{}) error
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   func(interface{}) error
-	}{
-
-		{"+ve", fields{id, testData, dummyValidator}, dummyValidator},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.GetValidator(); !reflect.DeepEqual(got, tt.want) {
-				// t.Errorf("GetValidator() = %p, want %p", got, tt.want)
 			}
 		})
 	}
@@ -200,44 +81,13 @@ func Test_parameter_Mutate(t *testing.T) {
 		want   parameters.Parameter
 	}{
 
-		{"+ve", fields{id, testData, dummyValidator}, args{newData}, &Parameter{id, newData.ToAnyData().(*baseData.AnyData)}},
+		{name: "+ve", fields: fields{id, testData, dummyValidator}, args: args{newData}, want: &Parameter{MetaProperty: base.NewMetaProperty(id, testData).(*base.MetaProperty)}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.Mutate(tt.args.data); !reflect.DeepEqual(got.AsString(), tt.want.AsString()) {
+			parameter := &Parameter{base.NewMetaProperty(tt.fields.ID, tt.fields.Data).(*base.MetaProperty)}
+			if got := parameter.Mutate(tt.args.data); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mutate() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_parameter_AsString(t *testing.T) {
-	id, testData, testParameter := createTestInput()
-	type fields struct {
-		ID        ids.StringID
-		Data      data.Data
-		validator func(interface{}) error
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-
-		{"+ve", fields{id, testData, dummyValidator}, testParameter.AsString()},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
-			if got := parameter.AsString(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -260,10 +110,7 @@ func Test_parameter_Validate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parameter := &Parameter{
-				ID:   tt.fields.ID.(*baseIDs.StringID),
-				Data: tt.fields.Data.ToAnyData().(*baseData.AnyData),
-			}
+			parameter := &Parameter{base.NewMetaProperty(tt.fields.ID, tt.fields.Data).(*base.MetaProperty)}
 			if err := parameter.ValidateBasic(); (err != nil) != tt.wantErr {
 				t.Errorf("ValidateBasic() error = %v, wantErr %v", err, tt.wantErr)
 			}

@@ -4,12 +4,12 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/x/documents"
-	"github.com/AssetMantle/schema/x/ids"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/qualified"
-	"github.com/AssetMantle/schema/x/qualified/base"
+	"github.com/AssetMantle/schema/go/documents"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/qualified"
+	"github.com/AssetMantle/schema/go/qualified/base"
 )
 
 var _ documents.Document = (*Document)(nil)

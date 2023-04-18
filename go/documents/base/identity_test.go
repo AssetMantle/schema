@@ -8,13 +8,13 @@ import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/documents"
-	"github.com/AssetMantle/schema/x/ids"
-	baseProperties "github.com/AssetMantle/schema/x/properties/base"
-	"github.com/AssetMantle/schema/x/properties/constants"
-	"github.com/AssetMantle/schema/x/qualified"
-	"github.com/AssetMantle/schema/x/types"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/documents"
+	"github.com/AssetMantle/schema/go/ids"
+	baseProperties "github.com/AssetMantle/schema/go/properties/base"
+	"github.com/AssetMantle/schema/go/properties/constants"
+	"github.com/AssetMantle/schema/go/qualified"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 func TestNewIdentity(t *testing.T) {

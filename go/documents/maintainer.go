@@ -4,8 +4,8 @@
 package documents
 
 import (
-	"github.com/AssetMantle/schema/x/data"
-	"github.com/AssetMantle/schema/x/ids"
+	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/ids"
 )
 
 type Maintainer interface {

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
 func createTestInputForPropertyID() (ids.StringID, ids.StringID, ids.PropertyID) {
@@ -171,7 +171,7 @@ func Test_propertyID_GetType(t *testing.T) {
 				KeyID:  tt.fields.Key.(*StringID),
 				TypeID: tt.fields.Type.(*StringID),
 			}
-			if got := propertyID.GetType(); !reflect.DeepEqual(got, tt.want) {
+			if got := propertyID; !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetTypeID() = %v, want %v", got, tt.want)
 			}
 		})

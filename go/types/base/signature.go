@@ -8,8 +8,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/AssetMantle/schema/x/ids"
-	"github.com/AssetMantle/schema/x/types"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type signature struct {

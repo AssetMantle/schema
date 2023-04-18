@@ -9,17 +9,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AssetMantle/schema/x/data"
-	baseData "github.com/AssetMantle/schema/x/data/base"
-	errorConstants "github.com/AssetMantle/schema/x/errors/constants"
-	"github.com/AssetMantle/schema/x/ids"
-	base "github.com/AssetMantle/schema/x/ids/base"
-	baseIDs "github.com/AssetMantle/schema/x/ids/base"
-	"github.com/AssetMantle/schema/x/properties"
-	"github.com/AssetMantle/schema/x/traits"
+	"github.com/AssetMantle/schema/go/data"
+	baseData "github.com/AssetMantle/schema/go/data/base"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/properties"
+	"github.com/AssetMantle/schema/go/traits"
 )
 
-func ValidatedID[V *base.PropertyID | *base.DataID](value any) V {
+func ValidatedID[V *baseIDs.PropertyID | *baseIDs.DataID](value any) V {
 	if value == nil {
 		return nil
 	}
