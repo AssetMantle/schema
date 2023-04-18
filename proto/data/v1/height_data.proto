@@ -1,0 +1,11 @@
+syntax = "proto3";
+package data.v1;
+
+import "types/v1/height.proto";
+import "gogoproto/gogo.proto";
+
+message HeightData{
+  option (gogoproto.goproto_getters) = false;
+
+  types.v1.Height value = 1;
+}

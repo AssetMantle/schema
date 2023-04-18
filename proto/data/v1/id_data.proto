@@ -1,0 +1,11 @@
+syntax = "proto3";
+package data.v1;
+
+import "ids/v1/any_id.proto";
+import "gogoproto/gogo.proto";
+
+message IDData {
+  option (gogoproto.goproto_getters) = false;
+
+  ids.v1.AnyID value = 1;
+}

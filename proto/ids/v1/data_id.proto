@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ids.v1;
+
+import "gogoproto/gogo.proto";
+import "ids/v1/hash_id.proto";
+import "ids/v1/string_id.proto";
+
+message DataID {
+  option (gogoproto.goproto_getters) = false;
+
+  StringID type_i_d = 1;
+  HashID hash_i_d = 2;
+}

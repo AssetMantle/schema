@@ -1,0 +1,11 @@
+syntax = "proto3";
+package lists.v1;
+
+import "properties/v1/any_property.proto";
+import "gogoproto/gogo.proto";
+
+message PropertyList {
+  option (gogoproto.goproto_getters) = false;
+
+  repeated properties.v1.AnyProperty properties = 1;
+}

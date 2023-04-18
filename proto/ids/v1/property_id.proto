@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ids.v1;
+
+import "ids/v1/string_id.proto";
+import "gogoproto/gogo.proto";
+
+message PropertyID{
+  option (gogoproto.goproto_getters) = false;
+
+  StringID key_i_d = 1;
+  StringID type_i_d = 2;
+}

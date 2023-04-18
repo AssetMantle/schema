@@ -1,0 +1,10 @@
+syntax = "proto3";
+package parameters.v1;
+
+import "gogoproto/gogo.proto";
+import "properties/v1/meta_property.proto";
+
+message Parameter {
+  option (gogoproto.goproto_getters) = false;
+  properties.v1.MetaProperty meta_property = 1;
+}

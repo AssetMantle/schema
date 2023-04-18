@@ -1,0 +1,13 @@
+syntax = "proto3";
+package properties.v1;
+
+import "ids/v1/property_id.proto";
+import "ids/v1/data_id.proto";
+import "gogoproto/gogo.proto";
+
+message MesaProperty {
+  option (gogoproto.goproto_getters) = false;
+
+  ids.v1.PropertyID i_d = 1;
+  ids.v1.DataID data_i_d = 2;
+}

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package documents.v1;
+
+import "ids/v1/classification_id.proto";
+import "qualified/v1/immutables.proto";
+import "qualified/v1/mutables.proto";
+import "gogoproto/gogo.proto";
+
+message Document {
+  option (gogoproto.goproto_getters) = false;
+
+  ids.v1.ClassificationID classification_i_d = 1;
+  qualified.v1.Immutables immutables = 2;
+  qualified.v1.Mutables mutables = 3;
+}
