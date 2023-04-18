@@ -1,0 +1,35 @@
+syntax = "proto3";
+package ids;
+
+import "gogoproto/gogo.proto";
+import "ids/base/anyOwnableID.proto";
+import "ids/base/assetID.proto";
+import "ids/base/classificationID.proto";
+import "ids/base/coinID.proto";
+import "ids/base/dataID.proto";
+import "ids/base/hashID.proto";
+import "ids/base/identityID.proto";
+import "ids/base/maintainerID.proto";
+import "ids/base/orderID.proto";
+import "ids/base/propertyID.proto";
+import "ids/base/splitID.proto";
+import "ids/base/stringID.proto";
+
+message AnyID {
+  option (gogoproto.goproto_getters) = false;
+
+  oneof impl {
+    AssetID asset_i_d = 1;
+    ClassificationID classification_i_d = 2;
+    CoinID coin_i_d = 3;
+    DataID data_i_d = 4;
+    HashID hash_i_d = 5;
+    IdentityID identity_i_d = 6;
+    MaintainerID maintainer_i_d = 7;
+    OrderID order_i_d = 8;
+    AnyOwnableID ownable_i_d = 9;
+    PropertyID property_i_d = 10;
+    SplitID split_i_d = 11;
+    StringID string_i_d = 12;
+  }
+}
