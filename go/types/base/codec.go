@@ -6,7 +6,7 @@ package base
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	codecUtilities "github.com/AssetMantle/schema/utilities/codec"
+	codecUtilities "github.com/AssetMantle/schema/go/utilities"
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {

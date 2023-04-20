@@ -1,10 +1,10 @@
 syntax = "proto3";
-package qualified;
+package qualified.base;
 
-import "lists/base/propertyList.proto";
+import "lists/base/property_list.proto";
 import "gogoproto/gogo.proto";
 
 message Immutables {
   option (gogoproto.goproto_getters) = false;
-  lists.PropertyList property_list = 1;
+  lists.base.PropertyList property_list = 1;
 }
