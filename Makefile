@@ -38,19 +38,19 @@ include simulation/make/Makefile
 ########################################
 ### Build
 
-build: go.sum
+build: go/go.sum
 	@go build -mod=readonly ./...
 .PHONY: build
 
 ########################################
 ### Tools & dependencies
 
-go-mod-cache: go.sum
+go-mod-cache: go/go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
 .PHONY: go-mod-cache
 
-go.sum: go.mod
+go.sum: go/go.mod
 	@echo "--> Ensure dependencies have not been modified"
 	@go mod verify
 	@go mod tidy

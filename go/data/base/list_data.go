@@ -8,13 +8,14 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/AssetMantle/schema/go/data/utilities"
+
 	Data "github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
-	stringUtilities "github.com/AssetMantle/schema/utilities/string"
 )
 
 var _ Data.ListData = (*ListData)(nil)
@@ -52,7 +53,7 @@ func (listData *ListData) AsString() string {
 		dataStrings[i] = datum.AsString()
 	}
 
-	return stringUtilities.JoinListStrings(dataStrings...)
+	return utilities.JoinListStrings(dataStrings...)
 }
 func (listData *ListData) FromString(dataString string) (Data.Data, error) {
 	dataString = strings.TrimSpace(dataString)
@@ -60,7 +61,7 @@ func (listData *ListData) FromString(dataString string) (Data.Data, error) {
 		return PrototypeListData(), nil
 	}
 
-	dataStringList := stringUtilities.SplitListString(dataString)
+	dataStringList := utilities.SplitListString(dataString)
 	dataList := make([]Data.Data, len(dataStringList))
 
 	for i, datumString := range dataStringList {
