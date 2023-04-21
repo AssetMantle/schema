@@ -1,5 +1,5 @@
 syntax = "proto3";
-package parameters.base;
+package assetmantle.schema.parameters.base;
 
 import "gogoproto/gogo.proto";
 import "parameters/base/parameter.proto";

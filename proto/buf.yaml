@@ -13,4 +13,5 @@ lint:
     - DEFAULT
   except:
     - PACKAGE_VERSION_SUFFIX
+    - PACKAGE_DIRECTORY_MATCH
 

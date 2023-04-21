@@ -1,5 +1,5 @@
 syntax = "proto3";
-package properties.base;
+package assetmantle.schema.properties.base;
 
 import "properties/base/mesa_property.proto";
 import "properties/base/meta_property.proto";
