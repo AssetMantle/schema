@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lists.base;
+package assetmantle.schema.lists.base;
 
 import "ids/base/any_id.proto";
 import "gogoproto/gogo.proto";
