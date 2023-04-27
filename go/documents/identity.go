@@ -4,10 +4,9 @@
 package documents
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Identity interface {
@@ -22,7 +21,7 @@ type Identity interface {
 	GetAuthentication() data.ListData
 
 	IsProvisioned(sdkTypes.AccAddress) bool
-	GetProvisionedAddressCount() int64
+	GetProvisionedAddressCount() sdkTypes.Int
 	ProvisionAddress(...sdkTypes.AccAddress) Identity
 	UnprovisionAddress(...sdkTypes.AccAddress) Identity
 

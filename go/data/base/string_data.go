@@ -14,6 +14,7 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.StringData = (*StringData)(nil)
@@ -29,7 +30,7 @@ func (stringData *StringData) ValidateBasic() error {
 func (stringData *StringData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(stringData)
 }
-func (stringData *StringData) GetBondWeight() int64 {
+func (stringData *StringData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.StringDataWeight
 }
 func (stringData *StringData) Compare(listable traits.Listable) int {

@@ -4,18 +4,17 @@
 package constants
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties/base"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (
 	AuthenticationProperty  = base.NewMetaProperty(baseIDs.NewStringID("authentication"), baseData.NewListData())
-	BondAmountProperty      = base.NewMetaProperty(baseIDs.NewStringID("bondAmount"), baseData.NewNumberData(0))
-	BondRateProperty        = base.NewMetaProperty(baseIDs.NewStringID("bondRate"), baseData.NewNumberData(0))
+	BondAmountProperty      = base.NewMetaProperty(baseIDs.NewStringID("bondAmount"), baseData.NewNumberData(sdkTypes.ZeroInt()))
+	BondRateProperty        = base.NewMetaProperty(baseIDs.NewStringID("bondRate"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	BurnEnabledProperty     = base.NewMetaProperty(baseIDs.NewStringID("burnEnabled"), baseData.NewBooleanData(false))
 	BurnHeightProperty      = base.NewMetaProperty(baseIDs.NewStringID("burnHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
 	DeputizeAllowedProperty = base.NewMetaProperty(baseIDs.NewStringID("deputizeAllowed"), baseData.NewBooleanData(false))
@@ -32,9 +31,9 @@ var (
 	MakerIDProperty = base.NewMetaProperty(baseIDs.NewStringID("makerID"), baseData.NewIDData(baseIDs.PrototypeIdentityID()))
 	// TODO check default value
 	MakerOwnableIDProperty           = base.NewMetaProperty(baseIDs.NewStringID("makerOwnableID"), baseData.NewIDData(baseIDs.PrototypeOwnableID()))
-	MakerOwnableSplitProperty        = base.NewMetaProperty(baseIDs.NewStringID("makerOwnableSplit"), baseData.NewDecData(sdkTypes.SmallestDec()))
-	MaxPropertyCountProperty         = base.NewMetaProperty(baseIDs.NewStringID("maxPropertyCount"), baseData.NewNumberData(0))
-	MaxProvisionAddressCountProperty = base.NewMetaProperty(baseIDs.NewStringID("maxProvisionAddressCount"), baseData.NewNumberData(0))
+	MakerOwnableSplitProperty        = base.NewMetaProperty(baseIDs.NewStringID("makerOwnableSplit"), baseData.NewNumberData(sdkTypes.OneInt()))
+	MaxPropertyCountProperty         = base.NewMetaProperty(baseIDs.NewStringID("maxPropertyCount"), baseData.NewNumberData(sdkTypes.ZeroInt()))
+	MaxProvisionAddressCountProperty = base.NewMetaProperty(baseIDs.NewStringID("maxProvisionAddressCount"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	MaxOrderLifeProperty             = base.NewMetaProperty(baseIDs.NewStringID("maxOrderLife"), baseData.NewHeightData(baseTypes.NewHeight(-1)))
 	MintEnabledProperty              = base.NewMetaProperty(baseIDs.NewStringID("mintEnabled"), baseData.NewBooleanData(false))
 
@@ -46,6 +45,6 @@ var (
 	TakerIDProperty           = base.NewMetaProperty(baseIDs.NewStringID("takerID"), baseData.NewIDData(baseIDs.PrototypeStringID()))
 	// TODO check default value
 	TakerOwnableIDProperty   = base.NewMetaProperty(baseIDs.NewStringID("takerOwnableID"), baseData.NewIDData(baseIDs.PrototypeOwnableID()))
-	SupplyProperty           = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.SmallestDec()))
+	SupplyProperty           = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.OneInt()))
 	WrapAllowedCoinsProperty = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
 )

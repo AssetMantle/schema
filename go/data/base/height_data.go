@@ -16,6 +16,7 @@ import (
 	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.HeightData = (*HeightData)(nil)
@@ -26,7 +27,7 @@ func (heightData *HeightData) ValidateBasic() error {
 func (heightData *HeightData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(heightData)
 }
-func (heightData *HeightData) GetBondWeight() int64 {
+func (heightData *HeightData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.HeightDataWeight
 }
 func (heightData *HeightData) AsString() string {

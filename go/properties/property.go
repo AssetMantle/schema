@@ -7,6 +7,7 @@ import (
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Property interface {
@@ -14,7 +15,7 @@ type Property interface {
 	GetDataID() ids.DataID
 	GetKey() ids.StringID
 	GetDataTypeID() ids.StringID
-	GetBondWeight() int64
+	GetBondWeight() sdkTypes.Int
 
 	IsMeta() bool
 	ValidateBasic() error

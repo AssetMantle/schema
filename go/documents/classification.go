@@ -3,7 +3,9 @@
 
 package documents
 
+import sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 type Classification interface {
-	GetBondAmount() int64
+	GetBondAmount() sdkTypes.Int
 	Document
 }

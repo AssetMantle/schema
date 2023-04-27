@@ -4,8 +4,6 @@ import (
 	"reflect"
 	"testing"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	documentsSchema "github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
@@ -16,6 +14,7 @@ import (
 	"github.com/AssetMantle/schema/go/qualified"
 	baseQualified "github.com/AssetMantle/schema/go/qualified/base"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestNewAsset(t *testing.T) {

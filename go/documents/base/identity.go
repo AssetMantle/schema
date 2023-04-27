@@ -1,8 +1,6 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
@@ -12,6 +10,7 @@ import (
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type identity struct {
@@ -45,8 +44,8 @@ func (identity identity) IsProvisioned(accAddress sdkTypes.AccAddress) bool {
 	_, isProvisioned := identity.GetAuthentication().Search(baseData.NewAccAddressData(accAddress))
 	return isProvisioned
 }
-func (identity identity) GetProvisionedAddressCount() int64 {
-	return int64(len(identity.GetAuthentication().Get()))
+func (identity identity) GetProvisionedAddressCount() sdkTypes.Int {
+	return sdkTypes.NewInt(int64(len(identity.GetAuthentication().Get())))
 }
 func (identity identity) ProvisionAddress(accAddresses ...sdkTypes.AccAddress) documents.Identity {
 	var accAddressList []data.Data

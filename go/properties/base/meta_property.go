@@ -11,6 +11,7 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ properties.MetaProperty = (*MetaProperty)(nil)
@@ -47,7 +48,7 @@ func (metaProperty *MetaProperty) GetKey() ids.StringID {
 func (metaProperty *MetaProperty) GetDataTypeID() ids.StringID {
 	return metaProperty.ID.GetDataTypeID()
 }
-func (metaProperty *MetaProperty) GetBondWeight() int64 {
+func (metaProperty *MetaProperty) GetBondWeight() sdkTypes.Int {
 	return metaProperty.Data.GetBondWeight()
 }
 func (metaProperty *MetaProperty) IsMeta() bool {

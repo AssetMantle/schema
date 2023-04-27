@@ -4,14 +4,11 @@
 package x
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
 	baseDocuments "github.com/AssetMantle/schema/go/documents/base"
 	"github.com/AssetMantle/schema/go/errors"
-	baseErrors "github.com/AssetMantle/schema/go/errors/base"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
@@ -23,6 +20,7 @@ import (
 	"github.com/AssetMantle/schema/go/traits"
 	typesSchema "github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
@@ -34,7 +32,6 @@ func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 	baseDocuments.RegisterLegacyAminoCodec(legacyAmino)
 
 	errors.RegisterLegacyAminoCodec(legacyAmino)
-	baseErrors.RegisterLegacyAminoCodec(legacyAmino)
 
 	ids.RegisterLegacyAminoCodec(legacyAmino)
 	baseIDs.RegisterLegacyAminoCodec(legacyAmino)

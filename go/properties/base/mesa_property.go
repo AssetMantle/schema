@@ -11,6 +11,7 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ properties.MesaProperty = (*MesaProperty)(nil)
@@ -39,7 +40,7 @@ func (mesaProperty *MesaProperty) GetKey() ids.StringID {
 func (mesaProperty *MesaProperty) GetDataTypeID() ids.StringID {
 	return mesaProperty.ID.GetDataTypeID()
 }
-func (mesaProperty *MesaProperty) GetBondWeight() int64 {
+func (mesaProperty *MesaProperty) GetBondWeight() sdkTypes.Int {
 	if zeroData, err := base.PrototypeAnyData().FromString(mesaProperty.GetDataTypeID().AsString()); err != nil {
 		panic(err)
 	} else {

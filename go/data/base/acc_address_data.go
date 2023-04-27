@@ -7,13 +7,12 @@ import (
 	"bytes"
 	"strings"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.AccAddressData = (*AccAddressData)(nil)
@@ -24,7 +23,7 @@ func (accAddressData *AccAddressData) ValidateBasic() error {
 func (accAddressData *AccAddressData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(accAddressData)
 }
-func (accAddressData *AccAddressData) GetBondWeight() int64 {
+func (accAddressData *AccAddressData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.AccAddressDataWeight
 }
 func (accAddressData *AccAddressData) Compare(listable traits.Listable) int {

@@ -8,6 +8,7 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type getter interface {
@@ -109,7 +110,7 @@ func (x *AnyData) ToAnyData() data.AnyData {
 func (x *AnyData) Compare(listable traits.Listable) int {
 	return x.Impl.(getter).get().Compare(listable)
 }
-func (x *AnyData) GetBondWeight() int64 {
+func (x *AnyData) GetBondWeight() sdkTypes.Int {
 	return x.Impl.(getter).get().GetBondWeight()
 }
 

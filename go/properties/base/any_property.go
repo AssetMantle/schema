@@ -5,6 +5,7 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type getter interface {
@@ -38,7 +39,7 @@ func (m *AnyProperty) GetKey() ids.StringID {
 func (m *AnyProperty) GetDataTypeID() ids.StringID {
 	return m.Impl.(getter).get().GetDataTypeID()
 }
-func (m *AnyProperty) GetBondWeight() int64 {
+func (m *AnyProperty) GetBondWeight() sdkTypes.Int {
 	return m.Impl.(getter).get().GetBondWeight()
 }
 func (m *AnyProperty) IsMeta() bool {

@@ -13,6 +13,7 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.BooleanData = (*BooleanData)(nil)
@@ -23,7 +24,7 @@ func (booleanData *BooleanData) ValidateBasic() error {
 func (booleanData *BooleanData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(booleanData)
 }
-func (booleanData *BooleanData) GetBondWeight() int64 {
+func (booleanData *BooleanData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.BooleanDataWeight
 }
 func (booleanData *BooleanData) Compare(listable traits.Listable) int {

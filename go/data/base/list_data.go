@@ -8,14 +8,14 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/AssetMantle/schema/go/data/utilities"
-
 	Data "github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	"github.com/AssetMantle/schema/go/data/utilities"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ Data.ListData = (*ListData)(nil)
@@ -42,7 +42,7 @@ func (listData *ListData) Get() []Data.AnyData {
 
 	return anyDataList
 }
-func (listData *ListData) GetBondWeight() int64 {
+func (listData *ListData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.ListDataWeight
 }
 func (listData *ListData) AsString() string {

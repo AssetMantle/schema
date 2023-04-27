@@ -8,13 +8,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
-
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
+	"github.com/stretchr/testify/require"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 type testableStringID struct {

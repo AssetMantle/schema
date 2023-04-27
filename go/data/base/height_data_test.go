@@ -4,12 +4,6 @@
 package base
 
 import (
-	"reflect"
-	"strconv"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
@@ -17,6 +11,10 @@ import (
 	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	"github.com/stretchr/testify/assert"
+	"reflect"
+	"strconv"
+	"testing"
 )
 
 type fields struct {

@@ -4,10 +4,9 @@
 package parameters
 
 import (
-	"github.com/gogo/protobuf/proto"
-
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/properties"
+	"github.com/gogo/protobuf/proto"
 )
 
 type Parameter interface {
