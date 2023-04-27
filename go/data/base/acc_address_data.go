@@ -24,7 +24,7 @@ func (accAddressData *AccAddressData) ValidateBasic() error {
 func (accAddressData *AccAddressData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(accAddressData)
 }
-func (accAddressData *AccAddressData) GetBondWeight() int64 {
+func (accAddressData *AccAddressData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.AccAddressDataWeight
 }
 func (accAddressData *AccAddressData) Compare(listable traits.Listable) int {

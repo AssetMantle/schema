@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
@@ -26,7 +28,7 @@ func (heightData *HeightData) ValidateBasic() error {
 func (heightData *HeightData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(heightData)
 }
-func (heightData *HeightData) GetBondWeight() int64 {
+func (heightData *HeightData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.HeightDataWeight
 }
 func (heightData *HeightData) AsString() string {

@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"strings"
 
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/go/data"
@@ -20,7 +22,7 @@ var _ data.DecData = (*DecData)(nil)
 
 func (decData *DecData) ValidateBasic() error {
 	if _, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
-		return err
+		return errorConstants.IncorrectFormat.Wrapf("dec data value %s is not a valid decimal", decData.Value)
 	}
 
 	return nil
@@ -28,7 +30,7 @@ func (decData *DecData) ValidateBasic() error {
 func (decData *DecData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(decData)
 }
-func (decData *DecData) GetBondWeight() int64 {
+func (decData *DecData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.DecDataWeight
 }
 func (decData *DecData) Compare(listable traits.Listable) int {
@@ -72,8 +74,11 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 	return NewDecData(dec), nil
 }
 func (decData *DecData) Get() sdkTypes.Dec {
-	value, _ := sdkTypes.NewDecFromStr(decData.Value)
-	return value
+	if value, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
+		panic(err)
+	} else {
+		return value
+	}
 }
 func (decData *DecData) ToAnyData() data.AnyData {
 	return &AnyData{

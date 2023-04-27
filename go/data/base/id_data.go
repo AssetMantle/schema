@@ -7,6 +7,8 @@ import (
 	"bytes"
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
@@ -22,7 +24,7 @@ func (idData *IDData) ValidateBasic() error {
 func (idData *IDData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(idData)
 }
-func (idData *IDData) GetBondWeight() int64 {
+func (idData *IDData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.IDDataWeight
 }
 func (idData *IDData) AsString() string {

@@ -6,12 +6,13 @@ package data
 import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 // TODO URI and PropertyID Data type
 type Data interface {
 	GetID() ids.DataID
-	GetBondWeight() int64
+	GetBondWeight() sdkTypes.Int
 
 	ValidateBasic() error
 	Unmarshal([]byte) error

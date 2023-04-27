@@ -3,6 +3,8 @@ package base
 import (
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
@@ -109,7 +111,7 @@ func (x *AnyData) ToAnyData() data.AnyData {
 func (x *AnyData) Compare(listable traits.Listable) int {
 	return x.Impl.(getter).get().Compare(listable)
 }
-func (x *AnyData) GetBondWeight() int64 {
+func (x *AnyData) GetBondWeight() sdkTypes.Int {
 	return x.Impl.(getter).get().GetBondWeight()
 }
 
