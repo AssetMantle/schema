@@ -18,7 +18,7 @@ type Order interface {
 	GetMakerID() ids.IdentityID
 	GetTakerID() ids.IdentityID
 	GetExpiryHeight() types.Height
-	GetMakerOwnableSplit() sdkTypes.Dec
+	GetMakerOwnableSplit() sdkTypes.Int
 
 	Document
 }

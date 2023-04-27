@@ -22,7 +22,7 @@ type Identity interface {
 	GetAuthentication() data.ListData
 
 	IsProvisioned(sdkTypes.AccAddress) bool
-	GetProvisionedAddressCount() int64
+	GetProvisionedAddressCount() sdkTypes.Int
 	ProvisionAddress(...sdkTypes.AccAddress) Identity
 	UnprovisionAddress(...sdkTypes.AccAddress) Identity
 

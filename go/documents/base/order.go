@@ -60,11 +60,11 @@ func (order order) GetExpiryHeight() types.Height {
 	}
 	return constants.ExpiryHeightProperty.GetData().Get().(data.HeightData).Get()
 }
-func (order order) GetMakerOwnableSplit() sdkTypes.Dec {
+func (order order) GetMakerOwnableSplit() sdkTypes.Int {
 	if property := order.GetProperty(constants.MakerOwnableSplitProperty.GetID()); property != nil && property.IsMeta() {
-		return property.Get().(properties.MetaProperty).GetData().Get().(data.DecData).Get()
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
-	return constants.MakerOwnableSplitProperty.GetData().Get().(data.DecData).Get()
+	return constants.MakerOwnableSplitProperty.GetData().Get().(data.NumberData).Get()
 }
 
 func NewOrder(classificationID ids.ClassificationID, immutables qualified.Immutables, mutables qualified.Mutables) documents.Order {

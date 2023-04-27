@@ -7,6 +7,7 @@ import (
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type classification struct {
@@ -15,7 +16,7 @@ type classification struct {
 
 var _ documents.Classification = (*classification)(nil)
 
-func (classification classification) GetBondAmount() int64 {
+func (classification classification) GetBondAmount() sdkTypes.Int {
 	if property := classification.Document.GetProperty(constants.BondAmountProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
