@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"strings"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/traits"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.NumberData = (*NumberData)(nil)

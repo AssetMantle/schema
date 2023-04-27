@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
@@ -18,6 +16,7 @@ import (
 	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.HeightData = (*HeightData)(nil)

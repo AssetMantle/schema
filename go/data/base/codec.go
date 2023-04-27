@@ -4,9 +4,8 @@
 package base
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	codecUtilities "github.com/AssetMantle/schema/go/utilities"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {

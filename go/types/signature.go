@@ -4,9 +4,8 @@
 package types
 
 import (
-	"github.com/tendermint/tendermint/crypto"
-
 	"github.com/AssetMantle/schema/go/ids"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 type Signature interface {

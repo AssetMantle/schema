@@ -1,11 +1,10 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.Split = (*Split)(nil)

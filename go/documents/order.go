@@ -4,10 +4,9 @@
 package documents
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Order interface {

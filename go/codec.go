@@ -4,8 +4,6 @@
 package x
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
@@ -23,6 +21,7 @@ import (
 	"github.com/AssetMantle/schema/go/traits"
 	typesSchema "github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
