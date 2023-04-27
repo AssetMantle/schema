@@ -2,9 +2,9 @@ package base
 
 import (
 	"bytes"
-	"encoding/binary"
-	"strconv"
 	"strings"
+
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
@@ -17,16 +17,20 @@ import (
 var _ data.NumberData = (*NumberData)(nil)
 
 func (numberData *NumberData) ValidateBasic() error {
+	if _, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
+		return errorConstants.IncorrectFormat.Wrapf("number data value %s is not a valid integer", numberData.Value)
+	}
+
 	return nil
 }
 func (numberData *NumberData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(numberData)
 }
-func (numberData *NumberData) GetBondWeight() int64 {
+func (numberData *NumberData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.NumberDataWeight
 }
 func (numberData *NumberData) AsString() string {
-	return strconv.FormatInt(numberData.Value, 10)
+	return numberData.Value
 }
 func (numberData *NumberData) FromString(dataString string) (data.Data, error) {
 	dataString = strings.TrimSpace(dataString)
@@ -34,24 +38,21 @@ func (numberData *NumberData) FromString(dataString string) (data.Data, error) {
 		return PrototypeNumberData(), nil
 	}
 
-	value, err := strconv.ParseInt(dataString, 10, 64)
-	if err != nil {
-		return PrototypeNumberData(), errorConstants.IncorrectFormat.Wrapf(err.Error())
+	value, ok := sdkTypes.NewIntFromString(dataString)
+	if !ok {
+		return PrototypeNumberData(), errorConstants.IncorrectFormat.Wrapf("number data value %s is not a valid integer", dataString)
 	}
 
 	return NewNumberData(value), nil
 }
 func (numberData *NumberData) Bytes() []byte {
-	Bytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(Bytes, uint64(numberData.Get()))
-
-	return Bytes
+	return []byte(numberData.Value)
 }
 func (numberData *NumberData) GetTypeID() ids.StringID {
 	return dataConstants.NumberDataTypeID
 }
 func (numberData *NumberData) ZeroValue() data.Data {
-	return NewNumberData(0)
+	return NewNumberData(sdkTypes.ZeroInt())
 }
 func (numberData *NumberData) GenerateHashID() ids.HashID {
 	if numberData.Compare(numberData.ZeroValue()) == 0 {
@@ -75,16 +76,20 @@ func (numberData *NumberData) Compare(listable traits.Listable) int {
 
 	return bytes.Compare(numberData.Bytes(), compareNumberData.Bytes())
 }
-func (numberData *NumberData) Get() int64 {
-	return numberData.Value
+func (numberData *NumberData) Get() sdkTypes.Int {
+	if value, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
+		panic("invalid number data")
+	} else {
+		return value
+	}
 }
 
 func PrototypeNumberData() data.NumberData {
-	return NewNumberData(0).ZeroValue().(*NumberData)
+	return NewNumberData(sdkTypes.ZeroInt()).ZeroValue().(*NumberData)
 }
 
-func NewNumberData(value int64) data.NumberData {
+func NewNumberData(value sdkTypes.Int) data.NumberData {
 	return &NumberData{
-		Value: value,
+		Value: value.String(),
 	}
 }
