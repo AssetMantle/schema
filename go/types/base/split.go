@@ -8,12 +8,6 @@ import (
 	"github.com/AssetMantle/schema/go/types"
 )
 
-// type split struct {
-//	OwnerID   ids.IdentityID
-//	OwnableID ids.OwnableID
-//	Value     sdkTypes.Dec
-// }
-
 var _ types.Split = (*Split)(nil)
 
 func (split *Split) ValidateBasic() error {
@@ -34,26 +28,26 @@ func (split *Split) GetOwnerID() ids.IdentityID {
 func (split *Split) GetOwnableID() ids.OwnableID {
 	return split.OwnableID
 }
-func (split *Split) GetValue() sdkTypes.Dec {
-	value, _ := sdkTypes.NewDecFromStr(split.Value)
-	return value
+func (split *Split) GetValue() sdkTypes.Int {
+	if value, ok := sdkTypes.NewIntFromString(split.Value); !ok {
+		panic("invalid split value")
+	} else {
+		return value
+	}
 }
-func (split *Split) Send(outValue sdkTypes.Dec) types.Split {
-	value, _ := sdkTypes.NewDecFromStr(split.Value)
-	split.Value = value.Sub(outValue).String()
+func (split *Split) Send(outValue sdkTypes.Int) types.Split {
+	split.Value = split.GetValue().Sub(outValue).String()
 	return split
 }
-func (split *Split) Receive(inValue sdkTypes.Dec) types.Split {
-	value, _ := sdkTypes.NewDecFromStr(split.Value)
-	split.Value = value.Add(inValue).String()
+func (split *Split) Receive(inValue sdkTypes.Int) types.Split {
+	split.Value = split.GetValue().Add(inValue).String()
 	return split
 }
-func (split *Split) CanSend(outValue sdkTypes.Dec) bool {
-	value, _ := sdkTypes.NewDecFromStr(split.Value)
-	return value.GTE(outValue)
+func (split *Split) CanSend(outValue sdkTypes.Int) bool {
+	return split.GetValue().GTE(outValue)
 }
 
-func NewSplit(ownerID ids.IdentityID, ownableID ids.OwnableID, value sdkTypes.Dec) types.Split {
+func NewSplit(ownerID ids.IdentityID, ownableID ids.OwnableID, value sdkTypes.Int) types.Split {
 	return &Split{
 		OwnerID:   ownerID.(*baseIDs.IdentityID),
 		OwnableID: ownableID.ToAnyOwnableID().(*baseIDs.AnyOwnableID),
