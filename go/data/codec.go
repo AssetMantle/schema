@@ -16,5 +16,7 @@ func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 	legacyAmino.RegisterInterface((*HeightData)(nil), nil)
 	legacyAmino.RegisterInterface((*IDData)(nil), nil)
 	legacyAmino.RegisterInterface((*ListData)(nil), nil)
+	legacyAmino.RegisterInterface((*ListData)(nil), nil)
+	legacyAmino.RegisterInterface((*ListableData)(nil), nil)
 	legacyAmino.RegisterInterface((*StringData)(nil), nil)
 }

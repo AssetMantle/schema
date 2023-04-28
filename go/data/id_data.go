@@ -8,6 +8,6 @@ import (
 )
 
 type IDData interface {
-	Data
+	ListableData
 	Get() ids.AnyID
 }
