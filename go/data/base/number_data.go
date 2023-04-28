@@ -67,6 +67,13 @@ func (numberData *NumberData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (numberData *NumberData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_NumberData{
+			NumberData: numberData,
+		},
+	}
+}
 func (numberData *NumberData) Compare(listable traits.Listable) int {
 	compareNumberData, err := dataFromListable(listable)
 	if err != nil {

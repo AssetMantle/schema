@@ -84,6 +84,12 @@ func (decData *DecData) ToAnyData() data.AnyData {
 			DecData: decData,
 		}}
 }
+func (decData *DecData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_DecData{
+			DecData: decData,
+		}}
+}
 
 func PrototypeDecData() data.DecData {
 	return NewDecData(sdkTypes.ZeroDec()).ZeroValue().(data.DecData)

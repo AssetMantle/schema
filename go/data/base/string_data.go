@@ -71,6 +71,13 @@ func (stringData *StringData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (stringData *StringData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_StringData{
+			StringData: stringData,
+		},
+	}
+}
 
 func PrototypeStringData() data.StringData {
 	return NewStringData("")

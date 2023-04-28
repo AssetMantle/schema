@@ -27,7 +27,7 @@ func (identity identity) GetExpiry() types.Height {
 	return constants.ExpiryHeightProperty.GetData().Get().(data.HeightData).Get()
 }
 func (identity identity) GetAuthentication() data.ListData {
-	var dataList []data.Data
+	var dataList []data.ListableData
 
 	if property := identity.Document.GetProperty(constants.AuthenticationProperty.GetID()); property != nil && property.IsMeta() {
 		for _, anyData := range property.Get().(properties.MetaProperty).GetData().Get().(data.ListData).Get() {
@@ -48,23 +48,23 @@ func (identity identity) GetProvisionedAddressCount() sdkTypes.Int {
 	return sdkTypes.NewInt(int64(len(identity.GetAuthentication().Get())))
 }
 func (identity identity) ProvisionAddress(accAddresses ...sdkTypes.AccAddress) documents.Identity {
-	var accAddressList []data.Data
-	for _, address := range accAddressesToData(accAddresses...) {
+	var accAddressList []data.ListableData
+	for _, address := range accAddressesToListableData(accAddresses...) {
 		accAddressList = append(accAddressList, address)
 	}
 	identity.Document = identity.Document.Mutate(baseProperties.NewMetaProperty(constants.AuthenticationProperty.GetKey(), identity.GetAuthentication().Add(accAddressList...)))
 	return identity
 }
 func (identity identity) UnprovisionAddress(accAddresses ...sdkTypes.AccAddress) documents.Identity {
-	var accAddressList []data.Data
-	for _, address := range accAddressesToData(accAddresses...) {
+	var accAddressList []data.ListableData
+	for _, address := range accAddressesToListableData(accAddresses...) {
 		accAddressList = append(accAddressList, address)
 	}
 	identity.Document = identity.Document.Mutate(baseProperties.NewMetaProperty(constants.AuthenticationProperty.GetKey(), identity.GetAuthentication().Remove(accAddressList...)))
 	return identity
 }
-func accAddressesToData(accAddresses ...sdkTypes.AccAddress) []data.Data {
-	accAddressData := make([]data.Data, len(accAddresses))
+func accAddressesToListableData(accAddresses ...sdkTypes.AccAddress) []data.ListableData {
+	accAddressData := make([]data.ListableData, len(accAddresses))
 	for i, accAddress := range accAddresses {
 		accAddressData[i] = baseData.NewAccAddressData(accAddress)
 	}

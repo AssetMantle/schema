@@ -76,6 +76,12 @@ func (accAddressData *AccAddressData) ToAnyData() data.AnyData {
 			AccAddressData: accAddressData,
 		}}
 }
+func (accAddressData *AccAddressData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_AccAddressData{
+			AccAddressData: accAddressData,
+		}}
+}
 
 func PrototypeAccAddressData() data.Data {
 	return NewAccAddressData(sdkTypes.AccAddress{})

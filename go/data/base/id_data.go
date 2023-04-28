@@ -72,6 +72,14 @@ func (idData *IDData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (idData *IDData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_IDData{
+			IDData: idData,
+		},
+	}
+}
+
 func PrototypeIDData() data.IDData {
 	return NewIDData(baseIDs.NewStringID(""))
 }

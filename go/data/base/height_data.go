@@ -82,6 +82,13 @@ func (heightData *HeightData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (heightData *HeightData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_HeightData{
+			HeightData: heightData,
+		},
+	}
+}
 
 func PrototypeHeightData() data.HeightData {
 	return NewHeightData(baseTypes.NewHeight(0)).ZeroValue().(data.HeightData)

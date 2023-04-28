@@ -86,6 +86,13 @@ func (booleanData *BooleanData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (booleanData *BooleanData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_BooleanData{
+			BooleanData: booleanData,
+		},
+	}
+}
 
 func PrototypeBooleanData() data.BooleanData {
 	return &BooleanData{}
