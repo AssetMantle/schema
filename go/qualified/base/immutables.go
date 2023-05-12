@@ -20,7 +20,7 @@ func (immutables *Immutables) ValidateBasic() error {
 
 // TODO write test case
 func (immutables *Immutables) GetImmutablePropertyList() lists.PropertyList {
-	if immutables.PropertyList.GetList() == nil {
+	if immutables.PropertyList.Get() == nil {
 		return baseLists.NewPropertyList()
 	}
 
@@ -30,9 +30,9 @@ func (immutables *Immutables) GetProperty(id ids.PropertyID) properties.AnyPrope
 	return immutables.GetImmutablePropertyList().GetProperty(id)
 }
 func (immutables *Immutables) GenerateHashID() ids.ID {
-	metaList := make([][]byte, len(immutables.PropertyList.GetList()))
+	metaList := make([][]byte, len(immutables.PropertyList.Get()))
 
-	for i, immutableProperty := range immutables.PropertyList.GetList() {
+	for i, immutableProperty := range immutables.PropertyList.Get() {
 		metaList[i] = immutableProperty.GetDataID().(ids.DataID).GetHashID().Bytes()
 	}
 
