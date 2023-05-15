@@ -10,7 +10,6 @@ import (
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -59,7 +58,7 @@ func Test_stringData_Compare(t *testing.T) {
 		Value string
 	}
 	type args struct {
-		listable traits.Listable
+		data.ListableData
 	}
 	tests := []struct {
 		name   string
@@ -76,7 +75,7 @@ func Test_stringData_Compare(t *testing.T) {
 			stringData := &StringData{
 				Value: tt.fields.Value,
 			}
-			assert.Equalf(t, tt.want, stringData.Compare(tt.args.listable), "Compare(%v)", tt.args.listable)
+			assert.Equalf(t, tt.want, stringData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }

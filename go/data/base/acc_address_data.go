@@ -11,7 +11,6 @@ import (
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -26,13 +25,8 @@ func (accAddressData *AccAddressData) GetID() ids.DataID {
 func (accAddressData *AccAddressData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.AccAddressDataWeight
 }
-func (accAddressData *AccAddressData) Compare(listable traits.Listable) int {
-	compareAccAddressData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes.Compare(accAddressData.Bytes(), compareAccAddressData.Bytes())
+func (accAddressData *AccAddressData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(accAddressData.Bytes(), listableData.Bytes())
 }
 func (accAddressData *AccAddressData) AsString() string {
 	return sdkTypes.AccAddress(accAddressData.Value).String()
@@ -60,7 +54,7 @@ func (accAddressData *AccAddressData) ZeroValue() data.Data {
 	return PrototypeAccAddressData()
 }
 func (accAddressData *AccAddressData) GenerateHashID() ids.HashID {
-	if accAddressData.Compare(accAddressData.ZeroValue()) == 0 {
+	if accAddressData.Compare(accAddressData.ZeroValue().(data.ListableData)) == 0 {
 		// TODO test
 		return baseIDs.GenerateHashID()
 	}

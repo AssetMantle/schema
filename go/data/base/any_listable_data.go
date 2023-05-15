@@ -3,7 +3,6 @@ package base
 import (
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -73,6 +72,6 @@ func (anyListableData *AnyListableData) ToAnyData() data.AnyData {
 func (anyListableData *AnyListableData) ToAnyListableData() data.AnyListableData {
 	return anyListableData.Impl.(listableDataGetter).get().ToAnyListableData()
 }
-func (anyListableData *AnyListableData) Compare(listable traits.Listable) int {
-	return anyListableData.Impl.(listableDataGetter).get().Compare(listable)
+func (anyListableData *AnyListableData) Compare(listableData data.ListableData) int {
+	return anyListableData.Impl.(listableDataGetter).get().Compare(listableData)
 }

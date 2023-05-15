@@ -14,14 +14,22 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.ListData = (*ListData)(nil)
 
+func (listData *ListData) ValidateWithType(expectedTypeID ids.StringID) error {
+	for _, anyListableDatum := range listData.AnyListableData {
+		if anyListableDatum.GetTypeID().Compare(expectedTypeID) == 0 {
+			return errorConstants.IncorrectFormat.Wrapf("data type doesnt conform to expected type for list")
+		}
+	}
+
+	return listData.ValidateBasic()
+}
 func (listData *ListData) ValidateBasic() error {
-	for _, anyListableData := range listData.AnyListableDataList {
+	for _, anyListableData := range listData.AnyListableData {
 		if err := anyListableData.ValidateBasic(); err != nil {
 			return err
 		}
@@ -30,22 +38,22 @@ func (listData *ListData) ValidateBasic() error {
 	return nil
 }
 func (listData *ListData) Get() []data.ListableData {
-	listData.sort()
-	anyDataList := make([]data.ListableData, len(listData.AnyListableDataList))
-	for i, anyListableDataList := range listData.AnyListableDataList {
-		anyDataList[i] = anyListableDataList
+	listableData := make([]data.ListableData, len(listData.AnyListableData))
+
+	for i, anyListableDataList := range listData.AnyListableData {
+		listableData[i] = anyListableDataList
 	}
 
-	return anyDataList
+	return listableData
 }
 func (listData *ListData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.ListDataWeight
 }
 func (listData *ListData) AsString() string {
-	listData.sort()
-	dataStrings := make([]string, len(listData.AnyListableDataList))
+	sortedListData := NewListData(listData.Get()...).(*ListData)
+	dataStrings := make([]string, len(sortedListData.AnyListableData))
 
-	for i, anyListableData := range listData.AnyListableDataList {
+	for i, anyListableData := range sortedListData.AnyListableData {
 		dataStrings[i] = anyListableData.AsString()
 	}
 
@@ -73,64 +81,56 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 	return NewListData(dataList...), nil
 }
 func (listData *ListData) Search(data data.ListableData) (int, bool) {
-	listData.sort()
+	sortedListData := NewListData(listData.Get()...).(*ListData)
+
 	index := sort.Search(
-		len(listData.AnyListableDataList),
+		len(sortedListData.AnyListableData),
 		func(i int) bool {
-			return listData.AnyListableDataList[i].Compare(data) >= 0
+			return sortedListData.AnyListableData[i].Compare(data) >= 0
 		},
 	)
 
-	if index < len(listData.AnyListableDataList) && listData.AnyListableDataList[index].Compare(data) == 0 {
+	if index < len(sortedListData.AnyListableData) && sortedListData.AnyListableData[index].Compare(data) == 0 {
 		return index, true
 	}
 
 	return index, false
 }
 func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
-	updatedListData := listData.sort()
+	updatedListData := NewListData(listData.Get()...).(*ListData)
+
 	for _, datum := range listableData {
 		if index, found := updatedListData.Search(datum); !found {
-			updatedListData.AnyListableDataList = append(updatedListData.AnyListableDataList, datum.ToAnyListableData().(*AnyListableData))
-			copy(updatedListData.AnyListableDataList[index+1:], updatedListData.AnyListableDataList[index:])
-			updatedListData.AnyListableDataList[index] = datum.ToAnyListableData().(*AnyListableData)
+			updatedListData.AnyListableData = append(updatedListData.AnyListableData, datum.ToAnyListableData().(*AnyListableData))
+			copy(updatedListData.AnyListableData[index+1:], updatedListData.AnyListableData[index:])
+			updatedListData.AnyListableData[index] = datum.ToAnyListableData().(*AnyListableData)
 		}
 	}
 
 	return updatedListData
 }
 func (listData *ListData) Remove(data ...data.ListableData) data.ListData {
-	updatedListData := listData.sort()
+	updatedListData := NewListData(listData.Get()...).(*ListData)
 
 	for _, listable := range data {
 		if index, found := updatedListData.Search(listable); found {
-			updatedListData.AnyListableDataList = append(updatedListData.AnyListableDataList[:index], updatedListData.AnyListableDataList[index+1:]...)
+			updatedListData.AnyListableData = append(updatedListData.AnyListableData[:index], updatedListData.AnyListableData[index+1:]...)
 		}
 	}
 
 	return updatedListData
 }
 func (listData *ListData) GetID() ids.DataID {
-	return baseIDs.GenerateDataID(listData.sort())
-}
-func (listData *ListData) Compare(listable traits.Listable) int {
-	compareListData, err := listDataFromInterface(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO check for optimization
-	return bytes.Compare(listData.Bytes(), compareListData.Bytes())
+	return baseIDs.GenerateDataID(listData)
 }
 func (listData *ListData) Bytes() []byte {
-	bytesList := make([][]byte, len(listData.sort().AnyListableDataList))
+	bytesList := make([][]byte, len(listData.AnyListableData))
 
-	for i, anyListableData := range listData.AnyListableDataList {
+	for i, anyListableData := range listData.AnyListableData {
 		if anyListableData != nil {
 			bytesList[i] = anyListableData.Bytes()
 		}
 	}
-	// TODO see if separator required
 	return bytes.Join(bytesList, nil)
 }
 func (listData *ListData) GetTypeID() ids.StringID {
@@ -140,18 +140,11 @@ func (listData *ListData) ZeroValue() data.Data {
 	return NewListData([]data.ListableData{}...)
 }
 func (listData *ListData) GenerateHashID() ids.HashID {
-	if listData.Compare(listData.ZeroValue()) == 0 {
+	if len(listData.AnyListableData) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 
-	return baseIDs.GenerateHashID(listData.sort().Bytes())
-}
-func (listData *ListData) sort() *ListData {
-	sort.Slice(listData.AnyListableDataList, func(i, j int) bool {
-		return listData.AnyListableDataList[i].Compare(listData.AnyListableDataList[j]) < 0
-	})
-
-	return listData
+	return baseIDs.GenerateHashID(listData.Bytes())
 }
 func (listData *ListData) ToAnyData() data.AnyData {
 	return &AnyData{
@@ -160,21 +153,25 @@ func (listData *ListData) ToAnyData() data.AnyData {
 		},
 	}
 }
-func listDataFromInterface(listable traits.Listable) (*ListData, error) {
-	switch value := listable.(type) {
-	case *ListData:
-		return value.sort(), nil
-	default:
-		return &ListData{}, errorConstants.IncorrectFormat.Wrapf("unsupported type")
-	}
-}
+func anyListableDataFromListableData(listableData ...data.ListableData) []*AnyListableData {
+	anyListableData := make([]*AnyListableData, len(listableData))
 
+	for i, listableDatum := range listableData {
+		anyListableData[i] = listableDatum.ToAnyListableData().(*AnyListableData)
+	}
+
+	return anyListableData
+}
 func PrototypeListData() data.ListData {
 	return (&ListData{}).ZeroValue().(data.ListData)
 }
 
 // NewListData
 // * onus of ensuring all data are of the same type is on DataList
-func NewListData(data ...data.ListableData) data.ListData {
-	return (&ListData{}).Add(data...)
+func NewListData(listableData ...data.ListableData) data.ListData {
+	sort.Slice(listableData, func(i, j int) bool {
+		return listableData[i].Compare(listableData[j]) < 0
+	})
+
+	return &ListData{anyListableDataFromListableData(listableData...)}
 }

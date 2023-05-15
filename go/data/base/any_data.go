@@ -7,7 +7,6 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -107,20 +106,8 @@ func (x *AnyData) GenerateHashID() ids.HashID {
 func (x *AnyData) ToAnyData() data.AnyData {
 	return x.Impl.(dataGetter).get().ToAnyData()
 }
-func (x *AnyData) Compare(listable traits.Listable) int {
-	return x.Impl.(dataGetter).get().Compare(listable)
-}
 func (x *AnyData) GetBondWeight() sdkTypes.Int {
 	return x.Impl.(dataGetter).get().GetBondWeight()
-}
-
-func dataFromListable(listable traits.Listable) (data.Data, error) {
-	switch value := listable.(type) {
-	case data.Data:
-		return value, nil
-	default:
-		return nil, errorConstants.MetaDataError.Wrapf("unsupported type")
-	}
 }
 
 func PrototypeAnyData() data.AnyData {

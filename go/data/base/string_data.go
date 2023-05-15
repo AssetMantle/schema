@@ -13,7 +13,6 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -33,13 +32,8 @@ func (stringData *StringData) GetID() ids.DataID {
 func (stringData *StringData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.StringDataWeight
 }
-func (stringData *StringData) Compare(listable traits.Listable) int {
-	compareStringData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes.Compare(stringData.Bytes(), compareStringData.Bytes())
+func (stringData *StringData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(stringData.Bytes(), listableData.Bytes())
 }
 func (stringData *StringData) Bytes() []byte {
 	return []byte(stringData.Value)

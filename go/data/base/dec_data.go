@@ -12,7 +12,6 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -31,13 +30,8 @@ func (decData *DecData) GetID() ids.DataID {
 func (decData *DecData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.DecDataWeight
 }
-func (decData *DecData) Compare(listable traits.Listable) int {
-	compareDecData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes.Compare(decData.Bytes(), compareDecData.Bytes())
+func (decData *DecData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(decData.Bytes(), listableData.Bytes())
 }
 func (decData *DecData) Bytes() []byte {
 	return []byte(decData.Value)
@@ -49,7 +43,7 @@ func (decData *DecData) ZeroValue() data.Data {
 	return NewDecData(sdkTypes.ZeroDec())
 }
 func (decData *DecData) GenerateHashID() ids.HashID {
-	if decData.Compare(decData.ZeroValue()) == 0 {
+	if decData.Compare(decData.ZeroValue().(data.ListableData)) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 
@@ -72,6 +66,10 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 	return NewDecData(dec), nil
 }
 func (decData *DecData) Get() sdkTypes.Dec {
+	if decData.Value == "<nil>" {
+		return sdkTypes.Dec{}
+	}
+
 	if value, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
 		panic(err)
 	} else {
