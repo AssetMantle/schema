@@ -3,123 +3,149 @@ package base
 import (
 	"sort"
 
+	"github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/lists"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/base"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ lists.PropertyList = (*PropertyList)(nil)
 
 func (propertyList *PropertyList) ValidateBasic() error {
-	for _, property := range propertyList.Properties {
+	for _, property := range propertyList.AnyProperties {
 		if err := property.ValidateBasic(); err != nil {
 			return err
 		}
 	}
+
+	if propertyList.areDuplicates() {
+		return constants.IncorrectFormat.Wrapf("duplicate properties found in list")
+	}
+
 	return nil
 }
 func (propertyList *PropertyList) GetProperty(propertyID ids.PropertyID) properties.AnyProperty {
-	if i, found := propertyList.Search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
-		return propertyList.GetList()[i]
+	if i, found := propertyList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
+		return propertyList.Get()[i]
 	}
 
 	return nil
 }
-func (propertyList *PropertyList) GetList() []properties.AnyProperty {
-	Properties := make([]properties.AnyProperty, len(propertyList.Properties))
-	for i, listable := range propertyList.Properties {
-		Properties[i] = listable
+func (propertyList *PropertyList) Get() []properties.AnyProperty {
+	anyProperties := make([]properties.AnyProperty, len(propertyList.AnyProperties))
+
+	for i, property := range propertyList.AnyProperties {
+		anyProperties[i] = property
 	}
-	return Properties
+
+	return anyProperties
 }
-func (propertyList *PropertyList) Search(property properties.Property) (index int, found bool) {
+func (propertyList *PropertyList) search(property properties.Property) (index int, found bool) {
 	index = sort.Search(
-		len(propertyList.Properties),
+		len(propertyList.AnyProperties),
 		func(i int) bool {
-			return propertyList.Properties[i].Compare(property) >= 0
+			return propertyList.AnyProperties[i].Compare(property) >= 0
 		},
 	)
 
-	if index < len(propertyList.Properties) && propertyList.Properties[index].Compare(property) == 0 {
+	if index < len(propertyList.AnyProperties) && propertyList.AnyProperties[index].Compare(property) == 0 {
 		return index, true
 	}
 
 	return index, false
 }
+func (propertyList *PropertyList) areDuplicates() bool {
+	propertyIDMap := map[string]bool{}
+
+	for _, property := range propertyList.AnyProperties {
+		if _, ok := propertyIDMap[property.GetID().AsString()]; ok {
+			return true
+		}
+
+		propertyIDMap[property.GetID().AsString()] = true
+	}
+
+	return false
+}
 func (propertyList *PropertyList) GetPropertyIDList() lists.IDList {
 	propertyIDList := NewIDList()
-	for _, property := range propertyList.GetList() {
+
+	for _, property := range propertyList.Get() {
 		propertyIDList = propertyIDList.Add(property.GetID())
 	}
+
 	return propertyIDList
 }
-func (propertyList PropertyList) Add(properties ...properties.Property) lists.PropertyList {
-	updatedList := propertyList
-	for _, listable := range properties {
-		if index, found := updatedList.Search(listable); !found {
-			updatedList.Properties = append(updatedList.Properties, listable.ToAnyProperty().(*base.AnyProperty))
-			copy(updatedList.Properties[index+1:], updatedList.Properties[index:])
-			updatedList.Properties[index] = listable.ToAnyProperty().(*base.AnyProperty)
+func (propertyList *PropertyList) Add(properties ...properties.Property) lists.PropertyList {
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+
+	for _, property := range properties {
+		if index, found := updatedList.search(property); !found {
+			updatedList.AnyProperties = append(updatedList.AnyProperties, property.ToAnyProperty().(*base.AnyProperty))
+			copy(updatedList.AnyProperties[index+1:], updatedList.AnyProperties[index:])
+			updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
 		} else {
-			updatedList.Properties[index] = listable.ToAnyProperty().(*base.AnyProperty)
+			updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
 		}
 	}
-	return &updatedList
+
+	return updatedList
 }
-func (propertyList PropertyList) Remove(properties ...properties.Property) lists.PropertyList {
-	updatedList := propertyList
+func (propertyList *PropertyList) Remove(properties ...properties.Property) lists.PropertyList {
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for _, listable := range properties {
-		if index, found := updatedList.Search(listable); found {
-			updatedList.Properties = append(updatedList.Properties[:index], updatedList.Properties[index+1:]...)
+		if index, found := updatedList.search(listable); found {
+			updatedList.AnyProperties = append(updatedList.AnyProperties[:index], updatedList.AnyProperties[index+1:]...)
 		}
 	}
 
-	return &updatedList
+	return updatedList
 }
-
-// TODO: Check if this is required
-func (propertyList PropertyList) Mutate(properties ...properties.Property) lists.PropertyList {
-	updatedList := propertyList
+func (propertyList *PropertyList) Mutate(properties ...properties.Property) lists.PropertyList {
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for _, listable := range properties {
-		if index, found := updatedList.Search(listable); found {
-			updatedList.Properties[index] = listable.ToAnyProperty().(*base.AnyProperty)
+		if index, found := updatedList.search(listable); found {
+			updatedList.AnyProperties[index] = listable.ToAnyProperty().(*base.AnyProperty)
 		}
 	}
 
-	return &updatedList
+	return updatedList
 }
 func (propertyList *PropertyList) ScrubData() lists.PropertyList {
-	newPropertyList := NewPropertyList()
-	for _, listable := range propertyList.Properties {
-		if property := listable; property.IsMeta() {
-			newPropertyList = newPropertyList.Add(property.Get().(properties.MetaProperty).ScrubData())
-		} else {
-			newPropertyList = newPropertyList.Add(property)
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+
+	for index, property := range updatedList.AnyProperties {
+		if property.IsMeta() {
+			updatedList.AnyProperties[index] = property.Get().(properties.MetaProperty).ScrubData().ToAnyProperty().(*base.AnyProperty)
 		}
 	}
-	return newPropertyList
-}
-func (propertyList *PropertyList) sort() lists.PropertyList {
-	sort.Slice(propertyList.Properties, func(i, j int) bool {
-		return propertyList.Properties[i].Compare(propertyList.Properties[j]) <= 0
-	})
 
-	return propertyList
+	return updatedList
 }
+func anyPropertiesToProperties(anyProperties ...properties.AnyProperty) []properties.Property {
+	returnProperties := make([]properties.Property, len(anyProperties))
 
-// TODO: Evaluate need
-func propertiesToListables(properties ...properties.Property) []traits.Listable {
-	listables := make([]traits.Listable, len(properties))
-	for i, property := range properties {
-		listables[i] = property
+	for i, anyProperty := range anyProperties {
+		returnProperties[i] = anyProperty
 	}
-	return listables
+
+	return returnProperties
+}
+func propertiesToAnyProperties(properties ...properties.Property) []*base.AnyProperty {
+	anyProperties := make([]*base.AnyProperty, len(properties))
+	for i, property := range properties {
+		anyProperties[i] = property.ToAnyProperty().(*base.AnyProperty)
+	}
+	return anyProperties
 }
 
 func NewPropertyList(properties ...properties.Property) lists.PropertyList {
-	return (&PropertyList{}).Add(properties...)
+	sort.Slice(properties, func(i, j int) bool {
+		return properties[i].Compare(properties[j]) <= 0
+	})
+
+	return &PropertyList{propertiesToAnyProperties(properties...)}
 }
