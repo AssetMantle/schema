@@ -60,13 +60,13 @@ func classificationIDFromInterface(i interface{}) *ClassificationID {
 }
 
 func NewClassificationID(immutables qualified.Immutables, mutables qualified.Mutables) ids.ClassificationID {
-	immutableIDByteList := make([][]byte, len(immutables.GetImmutablePropertyList().GetList()))
-	for i, property := range immutables.GetImmutablePropertyList().GetList() {
+	immutableIDByteList := make([][]byte, len(immutables.GetImmutablePropertyList().Get()))
+	for i, property := range immutables.GetImmutablePropertyList().Get() {
 		immutableIDByteList[i] = property.GetID().Bytes()
 	}
 
-	mutableIDByteList := make([][]byte, len(mutables.GetMutablePropertyList().GetList()))
-	for i, property := range mutables.GetMutablePropertyList().GetList() {
+	mutableIDByteList := make([][]byte, len(mutables.GetMutablePropertyList().Get()))
+	for i, property := range mutables.GetMutablePropertyList().Get() {
 		mutableIDByteList[i] = property.GetID().Bytes()
 	}
 
