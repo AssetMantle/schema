@@ -21,7 +21,7 @@ var _ documents.Identity = (*identity)(nil)
 
 func (identity identity) GetExpiry() types.Height {
 	if property := identity.Document.GetProperty(constants.ExpiryHeightProperty.GetID()); property != nil && property.IsMeta() {
-		return property.Get().(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
+		return property.(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
 	}
 
 	return constants.ExpiryHeightProperty.GetData().Get().(data.HeightData).Get()
