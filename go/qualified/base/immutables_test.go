@@ -42,7 +42,7 @@ func TestNewImmutables(t *testing.T) {
 func Test_immutables_GenerateHashID(t *testing.T) {
 	testMesaProperty := baseProperties.NewMesaProperty(baseIDs.NewStringID("ID3"), baseData.NewStringData("ImmutableData"))
 	testImmutablePropertyList := base.NewPropertyList(testMesaProperty)
-	metaList2 := make([][]byte, len(testImmutablePropertyList.GetList()))
+	metaList2 := make([][]byte, len(testImmutablePropertyList.Get()))
 	metaList2[0] = testMesaProperty.GetDataID().GetHashID().Bytes()
 	type fields struct {
 		PropertyList lists.PropertyList

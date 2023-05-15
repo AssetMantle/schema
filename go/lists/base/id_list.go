@@ -14,7 +14,7 @@ import (
 var _ lists.IDList = (*IDList)(nil)
 
 func (idList *IDList) ValidateBasic() error {
-	for _, id := range idList.IDList {
+	for _, id := range idList.AnyIDs {
 		if err := id.ValidateBasic(); err != nil {
 			return err
 		}
@@ -22,9 +22,9 @@ func (idList *IDList) ValidateBasic() error {
 	return nil
 }
 func (idList *IDList) GetList() []ids.AnyID {
-	returnIDList := make([]ids.AnyID, len(idList.IDList))
+	returnIDList := make([]ids.AnyID, len(idList.AnyIDs))
 
-	for i, listable := range idList.IDList {
+	for i, listable := range idList.AnyIDs {
 		returnIDList[i] = listable
 	}
 
@@ -32,13 +32,13 @@ func (idList *IDList) GetList() []ids.AnyID {
 }
 func (idList *IDList) Search(id ids.ID) (index int, found bool) {
 	index = sort.Search(
-		len(idList.IDList),
+		len(idList.AnyIDs),
 		func(i int) bool {
-			return idList.IDList[i].Compare(id) >= 0
+			return idList.AnyIDs[i].Compare(id) >= 0
 		},
 	)
 
-	if index < len(idList.IDList) && idList.IDList[index].Compare(id) == 0 {
+	if index < len(idList.AnyIDs) && idList.AnyIDs[index].Compare(id) == 0 {
 		return index, true
 	}
 
@@ -48,9 +48,9 @@ func (idList *IDList) Add(ids ...ids.ID) lists.IDList {
 	updatedList := idList
 	for _, listable := range ids {
 		if index, found := updatedList.Search(listable); !found {
-			updatedList.IDList = append(updatedList.IDList, listable.ToAnyID().(*baseIDs.AnyID))
-			copy(updatedList.IDList[index+1:], updatedList.IDList[index:])
-			updatedList.IDList[index] = listable.ToAnyID().(*baseIDs.AnyID)
+			updatedList.AnyIDs = append(updatedList.AnyIDs, listable.ToAnyID().(*baseIDs.AnyID))
+			copy(updatedList.AnyIDs[index+1:], updatedList.AnyIDs[index:])
+			updatedList.AnyIDs[index] = listable.ToAnyID().(*baseIDs.AnyID)
 		}
 	}
 	return updatedList
@@ -60,15 +60,15 @@ func (idList *IDList) Remove(ids ...ids.ID) lists.IDList {
 
 	for _, listable := range ids {
 		if index, found := updatedList.Search(listable); found {
-			updatedList.IDList = append(updatedList.IDList[:index], updatedList.IDList[index+1:]...)
+			updatedList.AnyIDs = append(updatedList.AnyIDs[:index], updatedList.AnyIDs[index+1:]...)
 		}
 	}
 
 	return updatedList
 }
 func (idList *IDList) sort() lists.IDList {
-	sort.Slice(idList.IDList, func(i, j int) bool {
-		return idList.IDList[i].Compare(idList.IDList[j]) < 0
+	sort.Slice(idList.AnyIDs, func(i, j int) bool {
+		return idList.AnyIDs[i].Compare(idList.AnyIDs[j]) < 0
 	})
 	return idList
 }

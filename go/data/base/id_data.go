@@ -11,7 +11,6 @@ import (
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -42,13 +41,8 @@ func (idData *IDData) FromString(dataString string) (data.Data, error) {
 
 	return NewIDData(id), nil
 }
-func (idData *IDData) Compare(listable traits.Listable) int {
-	compareIDData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes.Compare(idData.Bytes(), compareIDData.Bytes())
+func (idData *IDData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(idData.Bytes(), listableData.Bytes())
 }
 func (idData *IDData) Bytes() []byte {
 	return idData.Value.Bytes()
@@ -72,6 +66,14 @@ func (idData *IDData) ToAnyData() data.AnyData {
 		},
 	}
 }
+func (idData *IDData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_IDData{
+			IDData: idData,
+		},
+	}
+}
+
 func PrototypeIDData() data.IDData {
 	return NewIDData(baseIDs.NewStringID(""))
 }

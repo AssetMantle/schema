@@ -10,7 +10,6 @@ import (
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -75,7 +74,7 @@ func Test_accAddressData_Compare(t *testing.T) {
 		Value sdkTypes.AccAddress
 	}
 	type args struct {
-		listable traits.Listable
+		data.ListableData
 	}
 	tests := []struct {
 		name   string
@@ -91,7 +90,7 @@ func Test_accAddressData_Compare(t *testing.T) {
 			accAddressData := &AccAddressData{
 				Value: tt.fields.Value,
 			}
-			assert.Equalf(t, tt.want, accAddressData.Compare(tt.args.listable), "Compare(%v)", tt.args.listable)
+			assert.Equalf(t, tt.want, accAddressData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }

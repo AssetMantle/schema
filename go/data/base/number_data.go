@@ -9,7 +9,6 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -54,7 +53,7 @@ func (numberData *NumberData) ZeroValue() data.Data {
 	return NewNumberData(sdkTypes.ZeroInt())
 }
 func (numberData *NumberData) GenerateHashID() ids.HashID {
-	if numberData.Compare(numberData.ZeroValue()) == 0 {
+	if numberData.Compare(numberData.ZeroValue().(data.ListableData)) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 
@@ -67,13 +66,15 @@ func (numberData *NumberData) ToAnyData() data.AnyData {
 		},
 	}
 }
-func (numberData *NumberData) Compare(listable traits.Listable) int {
-	compareNumberData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
+func (numberData *NumberData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_NumberData{
+			NumberData: numberData,
+		},
 	}
-
-	return bytes.Compare(numberData.Bytes(), compareNumberData.Bytes())
+}
+func (numberData *NumberData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(numberData.Bytes(), listableData.Bytes())
 }
 func (numberData *NumberData) Get() sdkTypes.Int {
 	if value, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {

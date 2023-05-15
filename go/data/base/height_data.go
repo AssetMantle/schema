@@ -13,7 +13,6 @@ import (
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -46,13 +45,8 @@ func (heightData *HeightData) FromString(dataString string) (data.Data, error) {
 
 	return NewHeightData(baseTypes.NewHeight(Height)), nil
 }
-func (heightData *HeightData) Compare(listable traits.Listable) int {
-	compareHeightData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	return bytes.Compare(heightData.Bytes(), compareHeightData.Bytes())
+func (heightData *HeightData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(heightData.Bytes(), listableData.Bytes())
 }
 func (heightData *HeightData) Bytes() []byte {
 	Bytes := make([]byte, 8)
@@ -67,7 +61,7 @@ func (heightData *HeightData) ZeroValue() data.Data {
 	return NewHeightData(baseTypes.NewHeight(-1))
 }
 func (heightData *HeightData) GenerateHashID() ids.HashID {
-	if heightData.Compare(heightData.ZeroValue()) == 0 {
+	if heightData.Compare(heightData.ZeroValue().(data.ListableData)) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 	return baseIDs.GenerateHashID(heightData.Bytes())
@@ -78,6 +72,13 @@ func (heightData *HeightData) Get() types.Height {
 func (heightData *HeightData) ToAnyData() data.AnyData {
 	return &AnyData{
 		Impl: &AnyData_HeightData{
+			HeightData: heightData,
+		},
+	}
+}
+func (heightData *HeightData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_HeightData{
 			HeightData: heightData,
 		},
 	}

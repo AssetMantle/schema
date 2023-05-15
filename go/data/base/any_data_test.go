@@ -14,7 +14,7 @@ var (
 	fromAddress1       = "cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"
 	fromAccAddress, _  = sdkTypes.AccAddressFromBech32(fromAddress)
 	fromAccAddress1, _ = sdkTypes.AccAddressFromBech32(fromAddress1)
-	dataList           = []data.Data{NewAccAddressData(fromAccAddress), NewAccAddressData(fromAccAddress1)}
+	dataList           = []data.ListableData{NewAccAddressData(fromAccAddress), NewAccAddressData(fromAccAddress1)}
 )
 
 func TestReadData(t *testing.T) {
@@ -29,15 +29,15 @@ func TestReadData(t *testing.T) {
 	}{
 		{"String Data", args{"S|newFact"}, NewStringData("newFact"), false},
 		{"-ve Unknown Data", args{"SomeRandomData"}, nil, true},
-		{"List Data", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewListData(NewListData(dataList...)), false},
-		{"List Data empty list", args{"L|"}, NewListData(NewListData()), false},
+		{"List Data", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewListData(dataList...), false},
+		{"List Data empty list", args{"L|"}, NewListData(), false},
 		{"Id Data", args{"I|data"}, NewIDData(baseIDs.NewStringID("data")), false},
 		{"Height Data", args{"H|100"}, NewHeightData(baseTypes.NewHeight(100)), false},
 		{"Dec Data", args{"D|100"}, NewDecData(sdkTypes.NewDec(100)), false},
 		{"Bool Data", args{"B|true"}, NewBooleanData(true), false},
 		{"AccAddress data", args{"A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"}, NewAccAddressData(fromAccAddress), false},
 		{"-ve String Data", args{"S|S,|newFact"}, NewStringData("S,|newFact"), true},
-		{"-ve List Data String", args{"L|S|,TestData,S|,Test"}, NewListData(NewListData([]data.Data{NewStringData("S|,TestData"), NewStringData("S|,Test")}...)), true},
+		{"-ve List Data String", args{"L|S|,TestData,S|,Test"}, NewListData([]data.ListableData{NewStringData("S|,TestData"), NewStringData("S|,Test")}...), true},
 	}
 
 	for _, tt := range tests {
@@ -232,7 +232,7 @@ func Test_readListData(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve nil", args{}, PrototypeListData(), false},
-		{"+ve string", args{"S|1,S|2,S|3"}, NewListData(NewListData([]data.Data{NewStringData("1"), NewStringData("2"), NewStringData("3")}...)), false},
+		{"+ve string", args{"S|1,S|2,S|3"}, NewListData([]data.ListableData{NewStringData("1"), NewStringData("2"), NewStringData("3")}...), false},
 		{"-ve", args{"testData"}, PrototypeListData(), true},
 	}
 	for _, tt := range tests {

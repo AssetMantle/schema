@@ -12,7 +12,6 @@ import (
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,13 +26,8 @@ func (booleanData *BooleanData) GetID() ids.DataID {
 func (booleanData *BooleanData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.BooleanDataWeight
 }
-func (booleanData *BooleanData) Compare(listable traits.Listable) int {
-	compareBooleanData, err := dataFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-
-	if value := bytes.Compare(booleanData.Bytes(), compareBooleanData.Bytes()); value == 0 {
+func (booleanData *BooleanData) Compare(listableData data.ListableData) int {
+	if value := bytes.Compare(booleanData.Bytes(), listableData.Bytes()); value == 0 {
 		return 0
 	} else if value > 0 {
 		return 1
@@ -70,7 +64,7 @@ func (booleanData *BooleanData) ZeroValue() data.Data {
 	return NewBooleanData(false)
 }
 func (booleanData *BooleanData) GenerateHashID() ids.HashID {
-	if booleanData.Compare(booleanData.ZeroValue()) == 0 {
+	if booleanData.Compare(booleanData.ZeroValue().(data.ListableData)) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 
@@ -82,6 +76,13 @@ func (booleanData *BooleanData) Get() bool {
 func (booleanData *BooleanData) ToAnyData() data.AnyData {
 	return &AnyData{
 		Impl: &AnyData_BooleanData{
+			BooleanData: booleanData,
+		},
+	}
+}
+func (booleanData *BooleanData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_BooleanData{
 			BooleanData: booleanData,
 		},
 	}

@@ -4,17 +4,17 @@
 package base
 
 import (
+	"reflect"
+	"strconv"
+	"testing"
+
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
 	"github.com/stretchr/testify/assert"
-	"reflect"
-	"strconv"
-	"testing"
 )
 
 type fields struct {
@@ -54,7 +54,7 @@ func TestNewHeightData(t *testing.T) {
 func Test_heightData_Compare(t *testing.T) {
 
 	type args struct {
-		listable traits.Listable
+		data.ListableData
 	}
 	tests := []struct {
 		name   string
@@ -72,7 +72,7 @@ func Test_heightData_Compare(t *testing.T) {
 			heightData := &HeightData{
 				Value: tt.fields.Value,
 			}
-			if got := heightData.Compare(tt.args.listable); got != tt.want {
+			if got := heightData.Compare(tt.args.ListableData); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

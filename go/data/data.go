@@ -5,7 +5,6 @@ package data
 
 import (
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,5 +26,4 @@ type Data interface {
 	// * Returns PropertyID of empty bytes when the value of Data is that Data type's zero value
 	GenerateHashID() ids.HashID
 	ToAnyData() AnyData
-	traits.Listable
 }

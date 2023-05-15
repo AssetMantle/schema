@@ -31,7 +31,7 @@ func Test_idList_Add(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			idList := &IDList{
-				IDList: tt.fields.List,
+				tt.fields.List,
 			}
 			if got := idList.Add(tt.args.ids...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Add() = %v, want %v", got, tt.want)
@@ -55,10 +55,10 @@ func Test_idList_GetList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			idList := IDList{
-				IDList: tt.fields.List,
+				tt.fields.List,
 			}
 			if got := idList.GetList(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetList() = %v, want %v", got, tt.want)
+				t.Errorf("Get() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -83,7 +83,7 @@ func Test_idList_Remove(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			idList := IDList{
-				IDList: tt.fields.List,
+				tt.fields.List,
 			}
 			if got := idList.Remove(tt.args.ids...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Remove() = %v, want %v", got, tt.want)
@@ -113,14 +113,14 @@ func Test_idList_Search(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			idList := IDList{
-				IDList: tt.fields.List,
+				tt.fields.List,
 			}
 			gotIndex, gotFound := idList.Search(tt.args.id)
 			if gotIndex != tt.wantIndex {
-				t.Errorf("Search() gotIndex = %v, want %v", gotIndex, tt.wantIndex)
+				t.Errorf("search() gotIndex = %v, want %v", gotIndex, tt.wantIndex)
 			}
 			if gotFound != tt.wantFound {
-				t.Errorf("Search() gotFound = %v, want %v", gotFound, tt.wantFound)
+				t.Errorf("search() gotFound = %v, want %v", gotFound, tt.wantFound)
 			}
 		})
 	}

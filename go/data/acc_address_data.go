@@ -8,6 +8,6 @@ import (
 )
 
 type AccAddressData interface {
-	Data
+	ListableData
 	Get() sdkTypes.AccAddress
 }

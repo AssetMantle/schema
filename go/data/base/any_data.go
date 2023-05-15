@@ -7,11 +7,10 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
-type getter interface {
+type dataGetter interface {
 	get() data.Data
 }
 
@@ -43,11 +42,11 @@ func (x *AnyData_ListData) get() data.Data {
 var _ data.AnyData = (*AnyData)(nil)
 
 func (x *AnyData) ValidateBasic() error {
-	return x.Impl.(getter).get().ValidateBasic()
+	return x.Impl.(dataGetter).get().ValidateBasic()
 }
 func (x *AnyData) IsAnyData() {}
 func (x *AnyData) AsString() string {
-	return joinDataTypeAndValueStrings(x.Impl.(getter).get().GetTypeID().AsString(), x.Impl.(getter).get().AsString())
+	return joinDataTypeAndValueStrings(x.Impl.(dataGetter).get().GetTypeID().AsString(), x.Impl.(dataGetter).get().AsString())
 }
 func (x *AnyData) FromString(dataString string) (data.Data, error) {
 	dataTypeString, dataValueString := splitDataTypeAndValueStrings(dataString)
@@ -87,40 +86,28 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
 }
 func (x *AnyData) Get() data.Data {
-	return x.Impl.(getter).get()
+	return x.Impl.(dataGetter).get()
 }
 func (x *AnyData) GetID() ids.DataID {
-	return x.Impl.(getter).get().GetID()
+	return x.Impl.(dataGetter).get().GetID()
 }
 func (x *AnyData) Bytes() []byte {
-	return x.Impl.(getter).get().Bytes()
+	return x.Impl.(dataGetter).get().Bytes()
 }
 func (x *AnyData) GetTypeID() ids.StringID {
-	return x.Impl.(getter).get().GetTypeID()
+	return x.Impl.(dataGetter).get().GetTypeID()
 }
 func (x *AnyData) ZeroValue() data.Data {
-	return x.Impl.(getter).get().ZeroValue()
+	return x.Impl.(dataGetter).get().ZeroValue()
 }
 func (x *AnyData) GenerateHashID() ids.HashID {
-	return x.Impl.(getter).get().GenerateHashID()
+	return x.Impl.(dataGetter).get().GenerateHashID()
 }
 func (x *AnyData) ToAnyData() data.AnyData {
-	return x.Impl.(getter).get().ToAnyData()
-}
-func (x *AnyData) Compare(listable traits.Listable) int {
-	return x.Impl.(getter).get().Compare(listable)
+	return x.Impl.(dataGetter).get().ToAnyData()
 }
 func (x *AnyData) GetBondWeight() sdkTypes.Int {
-	return x.Impl.(getter).get().GetBondWeight()
-}
-
-func dataFromListable(listable traits.Listable) (data.Data, error) {
-	switch value := listable.(type) {
-	case data.Data:
-		return value, nil
-	default:
-		return nil, errorConstants.MetaDataError.Wrapf("unsupported type")
-	}
+	return x.Impl.(dataGetter).get().GetBondWeight()
 }
 
 func PrototypeAnyData() data.AnyData {

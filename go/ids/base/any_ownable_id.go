@@ -58,7 +58,7 @@ func (m *AnyOwnableID) FromString(idString string) (ids.ID, error) {
 	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
 }
 func (m *AnyOwnableID) AsString() string {
-	return joinIDTypeAndValueStrings(m.Impl.(ownableIDGetter).get().GetTypeID().AsString(), m.Impl.(ownableIDGetter).get().AsString())
+	return m.Impl.(ownableIDGetter).get().AsString()
 }
 func (m *AnyOwnableID) Bytes() []byte {
 	return m.Impl.(ownableIDGetter).get().Bytes()

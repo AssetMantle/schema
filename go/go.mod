@@ -14,7 +14,6 @@ require (
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/btcsuite/btcd v0.22.3 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -83,7 +82,6 @@ require (
 replace (
 	github.com/confio/ics23/go => github.com/confio/ics23/go v0.9.0
 	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.45.14
-	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.7
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/tendermint/tendermint => github.com/informalsystems/tendermint v0.34.26
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2

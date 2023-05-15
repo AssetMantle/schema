@@ -34,9 +34,9 @@ func TestReadMetaProperties(t *testing.T) {
 				t.Errorf("ReadMetaProperties() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			for i := range got.GetList() {
-				if got.GetList()[i].Compare(tt.want.GetList()[i]) != 0 {
-					t.Errorf("ReadMetaProperties() got = %v, want %v", got.GetList()[i], tt.want.GetList()[i])
+			for i := range got.Get() {
+				if got.Get()[i].Compare(tt.want.Get()[i]) != 0 {
+					t.Errorf("ReadMetaProperties() got = %v, want %v", got.Get()[i], tt.want.Get()[i])
 				}
 			}
 		})

@@ -13,7 +13,6 @@ import (
 	"github.com/AssetMantle/schema/go/lists"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
-	"github.com/AssetMantle/schema/go/traits"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -30,10 +29,7 @@ func TestNewPropertyList(t *testing.T) {
 		args args
 		want lists.PropertyList
 	}{
-		{"+ve", args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, &PropertyList{[]*baseProperties.AnyProperty{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")).ToAnyProperty().(*baseProperties.AnyProperty), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty().(*baseProperties.AnyProperty)}}},
-		// Duplicate property must not be added
-		{"-ve duplicate supplied", args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, &PropertyList{[]*baseProperties.AnyProperty{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")).ToAnyProperty().(*baseProperties.AnyProperty)}}}, // TODO: Should fail for duplicate Property
-	}
+		{"+ve", args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, &PropertyList{[]*baseProperties.AnyProperty{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")).ToAnyProperty().(*baseProperties.AnyProperty), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty().(*baseProperties.AnyProperty)}}}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewPropertyList(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
@@ -43,28 +39,7 @@ func TestNewPropertyList(t *testing.T) {
 	}
 }
 
-func Test_propertiesToListables(t *testing.T) {
-	type args struct {
-		properties []properties.Property
-	}
-	tests := []struct {
-		name string
-		args args
-		want []traits.Listable
-	}{
-		{"+ve", args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, []traits.Listable{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := propertiesToListables(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("propertiesToListables() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_propertyList_Add(t *testing.T) {
-
 	type args struct {
 		properties []properties.Property
 	}
@@ -74,15 +49,41 @@ func Test_propertyList_Add(t *testing.T) {
 		args   args
 		want   lists.PropertyList
 	}{
-		{"+ve", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)},
-		{"-ve", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)}, // TODO: Should fail as add method should not be able to mutate/add property with existing key
-		{"+ve with nil", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{nil}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}...)},                                                                                                                                                                                                                    // TODO: Should fail as add method should not be able to mutate/add property with existing key
+		{"+ve", fields{
+			[]properties.Property{
+				baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{[]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, NewPropertyList([]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")),
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)},
+		{"+ve", fields{[]properties.Property{
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("1"))}}, args{[]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("2"))}}, NewPropertyList([]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("2"))}...)},
+		{"-ve", fields{[]properties.Property{
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{[]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, NewPropertyList([]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")),
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)},
+		{"+ve with nil", fields{[]properties.Property{
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}}, args{
+
+			nil}, NewPropertyList([]properties.Property{
+
+			baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))}...)}, // TODO: Should fail as add method should not be able to mutate/add property with existing key
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.Add(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Add() = %v, want %v", got, tt.want)
+			} else if !reflect.DeepEqual(propertyList, PropertyList{propertiesToAnyProperties(tt.fields.List...)}) { // check if the original list is mutated
+				t.Errorf("Receiver = %v, Receiver after calling method %v", propertyList, PropertyList{propertiesToAnyProperties(tt.fields.List...)})
 			}
 		})
 	}
@@ -93,15 +94,17 @@ func Test_propertyList_GetList(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   []properties.AnyProperty
+		want   []properties.Property
 	}{
-		{"+ve", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, []properties.AnyProperty{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty()}},
+		{"+ve", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
-			if got := propertyList.GetList(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetList() = %v, want %v", got, tt.want)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
+			for i, got := range propertyList.Get() {
+				if got.Compare(tt.want[i]) != 0 {
+					t.Errorf("GetList() = %v, want %v", got, tt.want[i])
+				}
 			}
 		})
 	}
@@ -126,7 +129,7 @@ func Test_propertyList_GetProperty(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			defer func() {
 				r := recover()
 
@@ -152,7 +155,7 @@ func Test_propertyList_GetPropertyIDList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.GetPropertyIDList(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetPropertyIDList() = %v, want %v", got, tt.want)
 			}
@@ -176,9 +179,12 @@ func Test_propertyList_Mutate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.Mutate(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mutate() = %v, want %v", got, tt.want)
+			} else if !reflect.DeepEqual(propertyList, PropertyList{propertiesToAnyProperties(tt.fields.List...)}) { // check if the original list is mutated
+				t.Errorf("Mutate() = %v, want %v", propertyList, NewPropertyList(tt.fields.List...))
 			}
 		})
 	}
@@ -198,7 +204,7 @@ func Test_propertyList_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.Remove(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Remove() = %v, want %v", got, tt.want)
 			}
@@ -218,7 +224,7 @@ func Test_propertyList_ScrubData(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyList := NewPropertyList(tt.fields.List...)
+			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.ScrubData(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ScrubData() = %v, want %v", got, tt.want)
 			}

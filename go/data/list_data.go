@@ -3,10 +3,13 @@
 
 package data
 
+import "github.com/AssetMantle/schema/go/ids"
+
 type ListData interface {
 	Data
-	Get() []AnyData
-	Search(Data) (int, bool)
-	Add(...Data) ListData
-	Remove(...Data) ListData
+	ValidateWithType(expectedTypeID ids.StringID) error
+	Get() []ListableData
+	Search(ListableData) (int, bool)
+	Add(...ListableData) ListData
+	Remove(...ListableData) ListData
 }
