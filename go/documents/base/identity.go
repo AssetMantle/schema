@@ -30,7 +30,7 @@ func (identity identity) GetAuthentication() data.ListData {
 	var dataList []data.ListableData
 
 	if property := identity.Document.GetProperty(constants.AuthenticationProperty.GetID()); property != nil && property.IsMeta() {
-		for _, anyData := range property.Get().(properties.MetaProperty).GetData().Get().(data.ListData).Get() {
+		for _, anyData := range property.(properties.MetaProperty).GetData().Get().(data.ListData).Get() {
 			dataList = append(dataList, anyData)
 		}
 	} else {
