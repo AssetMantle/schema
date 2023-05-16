@@ -55,6 +55,14 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 
 		var err error
 
+		if strings.HasSuffix(dataTypeString, PrototypeIDData().GetTypeID().AsString()) {
+			Data, err = PrototypeIDData().FromString(dataString)
+			if err != nil {
+				return nil, err
+			}
+			return Data, nil
+		}
+
 		switch baseIDs.NewStringID(dataTypeString).AsString() {
 		case PrototypeAccAddressData().GetTypeID().AsString():
 			Data, err = PrototypeAccAddressData().FromString(dataValueString)
@@ -64,8 +72,6 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 			Data, err = PrototypeDecData().FromString(dataValueString)
 		case PrototypeHeightData().GetTypeID().AsString():
 			Data, err = PrototypeHeightData().FromString(dataValueString)
-		case PrototypeIDData().GetTypeID().AsString():
-			Data, err = PrototypeIDData().FromString(dataValueString)
 		case PrototypeListData().GetTypeID().AsString():
 			Data, err = PrototypeListData().FromString(dataValueString)
 		case PrototypeNumberData().GetTypeID().AsString():
