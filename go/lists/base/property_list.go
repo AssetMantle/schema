@@ -141,6 +141,15 @@ func propertiesToAnyProperties(properties ...properties.Property) []*base.AnyPro
 	}
 	return anyProperties
 }
+func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []properties.Property {
+	returnProperties := make([]properties.Property, len(anyProperties))
+
+	for i, anyProperty := range anyProperties {
+		returnProperties[i] = anyProperty
+	}
+
+	return returnProperties
+}
 
 func NewPropertyList(properties ...properties.Property) lists.PropertyList {
 	sort.Slice(properties, func(i, j int) bool {
