@@ -37,20 +37,20 @@ func (listData *ListData) ValidateBasic() error {
 
 	return nil
 }
-func (listData *ListData) Get() []data.ListableData {
-	listableData := make([]data.ListableData, len(listData.AnyListableData))
+func (listData *ListData) Get() []data.AnyListableData {
+	anyListableData := make([]data.AnyListableData, len(listData.AnyListableData))
 
 	for i, anyListableDataList := range listData.AnyListableData {
-		listableData[i] = anyListableDataList
+		anyListableData[i] = anyListableDataList
 	}
 
-	return listableData
+	return anyListableData
 }
 func (listData *ListData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.ListDataWeight
 }
 func (listData *ListData) AsString() string {
-	sortedListData := NewListData(listData.Get()...).(*ListData)
+	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 	dataStrings := make([]string, len(sortedListData.AnyListableData))
 
 	for i, anyListableData := range sortedListData.AnyListableData {
@@ -81,7 +81,7 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 	return NewListData(dataList...), nil
 }
 func (listData *ListData) Search(data data.ListableData) (int, bool) {
-	sortedListData := NewListData(listData.Get()...).(*ListData)
+	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	index := sort.Search(
 		len(sortedListData.AnyListableData),
@@ -97,7 +97,7 @@ func (listData *ListData) Search(data data.ListableData) (int, bool) {
 	return index, false
 }
 func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
-	updatedListData := NewListData(listData.Get()...).(*ListData)
+	updatedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	for _, datum := range listableData {
 		if index, found := updatedListData.Search(datum); !found {
@@ -110,7 +110,7 @@ func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
 	return updatedListData
 }
 func (listData *ListData) Remove(data ...data.ListableData) data.ListData {
-	updatedListData := NewListData(listData.Get()...).(*ListData)
+	updatedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	for _, listable := range data {
 		if index, found := updatedListData.Search(listable); found {
@@ -153,7 +153,7 @@ func (listData *ListData) ToAnyData() data.AnyData {
 		},
 	}
 }
-func anyListableDataFromListableData(listableData ...data.ListableData) []*AnyListableData {
+func listableDataToAnyListableData(listableData ...data.ListableData) []*AnyListableData {
 	anyListableData := make([]*AnyListableData, len(listableData))
 
 	for i, listableDatum := range listableData {
@@ -161,6 +161,15 @@ func anyListableDataFromListableData(listableData ...data.ListableData) []*AnyLi
 	}
 
 	return anyListableData
+}
+func anyListableDataToListableData(anyListableData ...data.AnyListableData) []data.ListableData {
+	listableData := make([]data.ListableData, len(anyListableData))
+
+	for i, anyListableDatum := range anyListableData {
+		listableData[i] = anyListableDatum.Get().(data.ListableData)
+	}
+
+	return listableData
 }
 func PrototypeListData() data.ListData {
 	return (&ListData{}).ZeroValue().(data.ListData)
@@ -173,5 +182,5 @@ func NewListData(listableData ...data.ListableData) data.ListData {
 		return listableData[i].Compare(listableData[j]) < 0
 	})
 
-	return &ListData{anyListableDataFromListableData(listableData...)}
+	return &ListData{listableDataToAnyListableData(listableData...)}
 }
