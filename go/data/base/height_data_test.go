@@ -8,13 +8,14 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
-	"github.com/stretchr/testify/assert"
 )
 
 type fields struct {

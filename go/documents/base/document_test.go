@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
@@ -16,7 +18,6 @@ import (
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	"github.com/AssetMantle/schema/go/qualified"
 	baseQualified "github.com/AssetMantle/schema/go/qualified/base"
-	"github.com/stretchr/testify/require"
 )
 
 func ValidatedParameter[V *baseIDs.ClassificationID | *baseQualified.Immutables | *baseQualified.Mutables](value any) V {

@@ -7,13 +7,14 @@ import (
 	"reflect"
 	"testing"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNewDecData(t *testing.T) {

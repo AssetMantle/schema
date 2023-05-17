@@ -6,11 +6,12 @@ package base
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewIDData(t *testing.T) {

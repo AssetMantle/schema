@@ -8,13 +8,14 @@ import (
 	"sort"
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/data/utilities"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.ListData = (*ListData)(nil)

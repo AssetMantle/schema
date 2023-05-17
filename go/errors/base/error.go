@@ -1,8 +1,9 @@
 package base
 
 import (
-	"github.com/AssetMantle/schema/go/errors"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/AssetMantle/schema/go/errors"
 )
 
 var _ errors.Error = (*sdkErrors.Error)(nil)
