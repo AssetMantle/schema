@@ -47,7 +47,6 @@ func TestReadData(t *testing.T) {
 				t.Errorf("ReadData() error = %v, wantErr %v", err, tt.wantErr)
 			} else if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ReadData() got = %v, want %v", got, tt.want)
-				t.Errorf("ReadData() got = %T, want %T", got, tt.want)
 			}
 		})
 	}

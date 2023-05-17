@@ -15,7 +15,7 @@ type Document interface {
 	GetClassificationID() ids.ClassificationID
 	// GetProperty returns property from a document searching in both Mutables and Immutables
 	// * Returns nil if property is not found
-	GetProperty(ids.PropertyID) properties.Property
+	GetProperty(ids.PropertyID) properties.AnyProperty
 	GetImmutables() qualified.Immutables
 	GetMutables() qualified.Mutables
 

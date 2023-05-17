@@ -18,7 +18,7 @@ var _ documents.Classification = (*classification)(nil)
 
 func (classification classification) GetBondAmount() sdkTypes.Int {
 	if property := classification.Document.GetProperty(constants.BondAmountProperty.GetID()); property != nil && property.IsMeta() {
-		return property.(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
 
 	return constants.BondAmountProperty.GetData().Get().(data.NumberData).Get()
