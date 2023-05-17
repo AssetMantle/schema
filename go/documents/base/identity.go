@@ -1,6 +1,8 @@
 package base
 
 import (
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
@@ -10,7 +12,6 @@ import (
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
 	"github.com/AssetMantle/schema/go/types"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type identity struct {

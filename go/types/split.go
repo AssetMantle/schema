@@ -4,8 +4,9 @@
 package types
 
 import (
-	"github.com/AssetMantle/schema/go/ids"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/AssetMantle/schema/go/ids"
 )
 
 type Split interface {

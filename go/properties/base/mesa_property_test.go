@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
@@ -14,7 +16,6 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/traits"
-	"github.com/stretchr/testify/assert"
 )
 
 func ValidatedID[V *baseIDs.PropertyID | *baseIDs.DataID](value any) V {

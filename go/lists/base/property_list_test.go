@@ -7,13 +7,14 @@ import (
 	"reflect"
 	"testing"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type fields struct {

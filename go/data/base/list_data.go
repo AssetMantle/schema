@@ -8,13 +8,14 @@ import (
 	"sort"
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/data/utilities"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ data.ListData = (*ListData)(nil)
@@ -124,14 +125,16 @@ func (listData *ListData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(listData)
 }
 func (listData *ListData) Bytes() []byte {
-	bytesList := make([][]byte, len(listData.AnyListableData))
+	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
+	bytesList := make([][]byte, len(sortedListData.AnyListableData))
 
-	for i, anyListableData := range listData.AnyListableData {
+	for i, anyListableData := range sortedListData.AnyListableData {
 		if anyListableData != nil {
 			bytesList[i] = anyListableData.Bytes()
 		}
 	}
-	return bytes.Join(bytesList, nil)
+
+	return bytes.Join(bytesList, dataConstants.ListBytesSeparator)
 }
 func (listData *ListData) GetTypeID() ids.StringID {
 	return dataConstants.ListDataTypeID

@@ -4,6 +4,8 @@
 package base
 
 import (
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/data/base"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
@@ -11,7 +13,6 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/traits"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ properties.MesaProperty = (*MesaProperty)(nil)

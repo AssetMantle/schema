@@ -1,9 +1,10 @@
 package base
 
 import (
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type listableDataGetter interface {

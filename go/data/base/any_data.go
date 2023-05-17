@@ -3,11 +3,12 @@ package base
 import (
 	"strings"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type dataGetter interface {

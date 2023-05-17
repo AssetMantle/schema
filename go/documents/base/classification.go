@@ -1,13 +1,14 @@
 package base
 
 import (
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/documents"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type classification struct {

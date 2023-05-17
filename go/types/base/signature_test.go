@@ -8,12 +8,13 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
-	"github.com/AssetMantle/schema/go/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
+
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/traits"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type testableStringID struct {
@@ -21,17 +22,17 @@ type testableStringID struct {
 }
 
 func (t testableStringID) GetTypeID() ids.StringID {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (t testableStringID) ValidateBasic() error {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (t testableStringID) FromString(s string) (ids.ID, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 

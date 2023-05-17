@@ -7,13 +7,14 @@ import (
 	"reflect"
 	"testing"
 
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/parameters"
 	"github.com/AssetMantle/schema/go/properties/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 func dummyValidator(interface{}) error {

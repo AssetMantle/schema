@@ -6,9 +6,10 @@ package base
 import (
 	"encoding/base64"
 
+	"github.com/tendermint/tendermint/crypto"
+
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/types"
-	"github.com/tendermint/tendermint/crypto"
 )
 
 type signature struct {
