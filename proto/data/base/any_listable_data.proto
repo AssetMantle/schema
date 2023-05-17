@@ -19,7 +19,7 @@ message AnyListableData {
     DecData dec_data = 3;
     HeightData height_data = 4;
     IDData i_d_data = 5;
-    NumberData number_data = 7;
-    StringData string_data = 8;
+    NumberData number_data = 6;
+    StringData string_data = 7;
   }
 }
