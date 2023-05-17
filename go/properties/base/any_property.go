@@ -24,6 +24,7 @@ func (m *AnyProperty_MesaProperty) get() properties.Property {
 
 var _ properties.AnyProperty = (*AnyProperty)(nil)
 
+func (m *AnyProperty) IsAnyProperty() {}
 func (m *AnyProperty) Get() properties.Property {
 	return m.Impl.(getter).get()
 }
