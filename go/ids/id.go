@@ -3,12 +3,8 @@
 
 package ids
 
-import (
-	"github.com/AssetMantle/schema/go/traits"
-)
-
 type ID interface {
-	traits.Listable
+	Compare(ID) int
 	GetTypeID() StringID
 	ValidateBasic() error
 	FromString(string) (ID, error)

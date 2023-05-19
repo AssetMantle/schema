@@ -10,7 +10,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.StringID = (*StringID)(nil)
@@ -47,8 +46,8 @@ func (stringID *StringID) AsString() string {
 func (stringID *StringID) Bytes() []byte {
 	return []byte(stringID.IDString)
 }
-func (stringID *StringID) Compare(listable traits.Listable) int {
-	return strings.Compare(stringID.AsString(), stringIDFromInterface(listable).AsString())
+func (stringID *StringID) Compare(id ids.ID) int {
+	return strings.Compare(stringID.AsString(), id.AsString())
 }
 func (stringID *StringID) ToAnyID() ids.AnyID {
 	return &AnyID{

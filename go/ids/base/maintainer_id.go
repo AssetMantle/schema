@@ -1,13 +1,13 @@
 package base
 
 import (
+	"bytes"
 	"strings"
 
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.MaintainerID = (*MaintainerID)(nil)
@@ -39,8 +39,8 @@ func (maintainerID *MaintainerID) Bytes() []byte {
 	return maintainerID.HashID.IDBytes
 }
 func (maintainerID *MaintainerID) IsMaintainerID() {}
-func (maintainerID *MaintainerID) Compare(listable traits.Listable) int {
-	return maintainerID.HashID.Compare(maintainerIDFromInterface(listable).HashID)
+func (maintainerID *MaintainerID) Compare(id ids.ID) int {
+	return bytes.Compare(maintainerID.Bytes(), id.Bytes())
 }
 func (maintainerID *MaintainerID) ToAnyID() ids.AnyID {
 	return &AnyID{

@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 func createTestInputForPropertyID() (ids.StringID, ids.StringID, ids.PropertyID) {
@@ -36,30 +35,6 @@ func TestNewPropertyID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := NewPropertyID(tt.args.key, tt.args.Type); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewPropertyID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_propertyIDFromInterface(t *testing.T) {
-	testKey, testType, testPropertyID := createTestInputForPropertyID()
-	type args struct {
-		listable traits.Listable
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *PropertyID
-		wantErr bool
-	}{
-
-		{"+ve", args{testPropertyID}, &PropertyID{testKey.(*StringID), testType.(*StringID)}, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := propertyIDFromInterface(tt.args.listable)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("propertyIDFromInterface() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -99,7 +74,7 @@ func Test_propertyID_Compare(t *testing.T) {
 		Type ids.StringID
 	}
 	type args struct {
-		listable traits.Listable
+		id ids.ID
 	}
 	tests := []struct {
 		name   string
@@ -117,7 +92,7 @@ func Test_propertyID_Compare(t *testing.T) {
 				KeyID:  tt.fields.Key.(*StringID),
 				TypeID: tt.fields.Type.(*StringID),
 			}
-			if got := propertyID.Compare(tt.args.listable); got != tt.want {
+			if got := propertyID.Compare(tt.args.id); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

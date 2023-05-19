@@ -11,7 +11,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.PropertyID = (*PropertyID)(nil)
@@ -65,8 +64,8 @@ func (propertyID *PropertyID) Bytes() []byte {
 
 	return Bytes
 }
-func (propertyID *PropertyID) Compare(listable traits.Listable) int {
-	return bytes.Compare(propertyID.Bytes(), propertyIDFromInterface(listable).Bytes())
+func (propertyID *PropertyID) Compare(id ids.ID) int {
+	return bytes.Compare(propertyID.Bytes(), id.Bytes())
 }
 func (propertyID *PropertyID) ToAnyID() ids.AnyID {
 	return &AnyID{
@@ -76,14 +75,6 @@ func (propertyID *PropertyID) ToAnyID() ids.AnyID {
 	}
 }
 
-func propertyIDFromInterface(listable traits.Listable) *PropertyID {
-	switch value := listable.(type) {
-	case *PropertyID:
-		return value
-	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *PropertyID, got %T", listable))
-	}
-}
 func PrototypePropertyID() ids.PropertyID {
 	return &PropertyID{
 		KeyID:  PrototypeStringID().(*StringID),

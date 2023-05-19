@@ -10,7 +10,6 @@ import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 // type hashID struct {
@@ -51,8 +50,8 @@ func (hashID *HashID) AsString() string {
 func (hashID *HashID) Bytes() []byte {
 	return hashID.IDBytes
 }
-func (hashID *HashID) Compare(listable traits.Listable) int {
-	return bytes.Compare(hashID.Bytes(), hashIDFromInterface(listable).Bytes())
+func (hashID *HashID) Compare(id ids.ID) int {
+	return bytes.Compare(hashID.Bytes(), id.Bytes())
 }
 func (hashID *HashID) ToAnyID() ids.AnyID {
 	return &AnyID{

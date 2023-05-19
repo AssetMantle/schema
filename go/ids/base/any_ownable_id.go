@@ -3,7 +3,6 @@ package base
 import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 type ownableIDGetter interface {
@@ -27,8 +26,8 @@ var _ ids.AnyOwnableID = (*AnyOwnableID)(nil)
 func (m *AnyOwnableID) Get() ids.OwnableID {
 	return m.Impl.(ownableIDGetter).get()
 }
-func (m *AnyOwnableID) Compare(listable traits.Listable) int {
-	return m.Impl.(ownableIDGetter).get().Compare(listable)
+func (m *AnyOwnableID) Compare(id ids.ID) int {
+	return m.Impl.(ownableIDGetter).get().Compare(id)
 }
 func (m *AnyOwnableID) GetTypeID() ids.StringID {
 	return m.Impl.(ownableIDGetter).get().GetTypeID()

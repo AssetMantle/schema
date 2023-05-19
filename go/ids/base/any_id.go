@@ -5,7 +5,6 @@ import (
 
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 type idGetter interface {
@@ -115,8 +114,8 @@ func (m *AnyID) AsString() string {
 func (m *AnyID) Get() ids.ID {
 	return m.Impl.(idGetter).get()
 }
-func (m *AnyID) Compare(listable traits.Listable) int {
-	return m.Impl.(idGetter).get().Compare(listable)
+func (m *AnyID) Compare(id ids.ID) int {
+	return m.Impl.(idGetter).get().Compare(id)
 }
 func (m *AnyID) Bytes() []byte {
 	return m.Impl.(idGetter).get().Bytes()
@@ -136,15 +135,6 @@ func PrototypeAnyID() ids.AnyID {
 	}
 }
 
-func idFromListable(listable traits.Listable) (ids.ID, error) {
-	switch listable.(type) {
-	case ids.ID:
-		return listable.(ids.ID), nil
-
-	default:
-		return nil, errorConstants.IncorrectFormat.Wrapf("unsupported type")
-	}
-}
 func joinIDTypeAndValueStrings(idTypes, idValue string) string {
 	return strings.TrimSpace(idTypes) + idTypeAndValueSeparator + strings.TrimSpace(idValue)
 }

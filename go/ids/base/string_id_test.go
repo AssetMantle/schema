@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 func TestNewStringID(t *testing.T) {
@@ -91,7 +90,7 @@ func Test_stringID_Compare(t *testing.T) {
 		IDString string
 	}
 	type args struct {
-		listable traits.Listable
+		id ids.ID
 	}
 	tests := []struct {
 		name   string
@@ -109,7 +108,7 @@ func Test_stringID_Compare(t *testing.T) {
 			stringID := &StringID{
 				IDString: tt.fields.IDString,
 			}
-			if got := stringID.Compare(tt.args.listable); got != tt.want {
+			if got := stringID.Compare(tt.args.id); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

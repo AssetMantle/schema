@@ -8,7 +8,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.SplitID = (*SplitID)(nil)
@@ -61,8 +60,8 @@ func (splitID *SplitID) Bytes() []byte {
 func (splitID *SplitID) SplitIDString() string {
 	return stringUtilities.JoinIDStrings(splitID.OwnerID.AsString(), splitID.OwnableID.AsString())
 }
-func (splitID *SplitID) Compare(listable traits.Listable) int {
-	return bytes.Compare(splitID.Bytes(), splitIDFromInterface(listable).Bytes())
+func (splitID *SplitID) Compare(id ids.ID) int {
+	return bytes.Compare(splitID.Bytes(), id.Bytes())
 }
 func (splitID *SplitID) ToAnyID() ids.AnyID {
 	return &AnyID{

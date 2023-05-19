@@ -11,7 +11,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ ids.AssetID = (*AssetID)(nil)
@@ -44,12 +43,8 @@ func (assetID *AssetID) Bytes() []byte {
 }
 func (assetID *AssetID) IsOwnableID() {}
 func (assetID *AssetID) IsAssetID()   {}
-func (assetID *AssetID) Compare(listable traits.Listable) int {
-	compareID, err := idFromListable(listable)
-	if err != nil {
-		panic(err)
-	}
-	return bytes.Compare(assetID.Bytes(), compareID.Bytes())
+func (assetID *AssetID) Compare(id ids.ID) int {
+	return bytes.Compare(assetID.Bytes(), id.Bytes())
 }
 func (assetID *AssetID) ToAnyID() ids.AnyID {
 	return &AnyID{

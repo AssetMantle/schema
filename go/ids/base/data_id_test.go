@@ -10,7 +10,6 @@ import (
 	"github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/ids"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 func Test_dataIDFromInterface(t *testing.T) {
@@ -75,7 +74,7 @@ func Test_dataID_Compare(t *testing.T) {
 		HashID ids.HashID
 	}
 	type args struct {
-		listable traits.Listable
+		id ids.ID
 	}
 	tests := []struct {
 		name   string
@@ -92,7 +91,7 @@ func Test_dataID_Compare(t *testing.T) {
 				TypeID: tt.fields.Type.(*StringID),
 				HashID: tt.fields.HashID.(*HashID),
 			}
-			if got := dataID.Compare(tt.args.listable); got != tt.want {
+			if got := dataID.Compare(tt.args.id); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

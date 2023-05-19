@@ -13,7 +13,6 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 	"github.com/AssetMantle/schema/go/types"
 )
 
@@ -46,7 +45,7 @@ func (t testableStringID) ToAnyID() ids.AnyID {
 	panic("implement me")
 }
 
-func (t testableStringID) Compare(listable traits.Listable) int {
+func (t testableStringID) Compare(id ids.ID) int {
 	// TODO implement me
 	panic("implement me")
 }
