@@ -1,4 +1,4 @@
-package utilities
+package codec
 
 import (
 	"reflect"

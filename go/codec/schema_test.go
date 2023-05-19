@@ -1,4 +1,4 @@
-package x
+package codec
 
 import (
 	"testing"
@@ -18,7 +18,7 @@ func TestRegisterCodec(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			RegisterLegacyAminoCodec(tt.args.legacyAmino)
+			RegisterSchemaLegacyAminoCodec(tt.args.legacyAmino)
 		})
 	}
 }
