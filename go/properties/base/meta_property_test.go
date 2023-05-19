@@ -1,5 +1,5 @@
 // Copyright [2021] - [2022], AssetMantle Pte. Ltd. and the code contributors
-// SPDX-License-IDentifier: Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 
 package base
 
@@ -14,7 +14,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 func ValidatedData(value data.Data) *baseData.AnyData {
@@ -95,7 +94,7 @@ func Test_metaProperty_Compare(t *testing.T) {
 		Data data.Data
 	}
 	type args struct {
-		listable traits.Listable
+		property properties.Property
 	}
 	tests := []struct {
 		name   string
@@ -112,7 +111,7 @@ func Test_metaProperty_Compare(t *testing.T) {
 				ID:   ValidatedID[*baseIDs.PropertyID](tt.fields.ID),
 				Data: ValidatedData(tt.fields.Data),
 			}
-			if got := metaProperty.Compare(tt.args.listable); got != tt.want {
+			if got := metaProperty.Compare(tt.args.property); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

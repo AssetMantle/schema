@@ -1,5 +1,5 @@
 // Copyright [2021] - [2022], AssetMantle Pte. Ltd. and the code contributors
-// SPDX-License-IDentifier: Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 
 package base
 
@@ -7,15 +7,11 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 func ValidatedID[V *baseIDs.PropertyID | *baseIDs.DataID](value any) V {
@@ -94,34 +90,6 @@ func TestNewMesaProperty(t *testing.T) {
 	}
 }
 
-func Test_mesaPropertyFromInterface(t *testing.T) {
-	_, testMesaPropertyID, testData, testMesaProperty := createTestInputForMesaProperty()
-	type args struct {
-		listable traits.Listable
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *MesaProperty
-		wantErr bool
-	}{
-		{"+ve with nil", args{}, &MesaProperty{}, true},
-		{"+ve", args{testMesaProperty}, &MesaProperty{testMesaPropertyID.(*baseIDs.PropertyID), testData.GetID().(*baseIDs.DataID)}, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := propertyFromInterface(tt.args.listable)
-			if tt.wantErr {
-				assert.ErrorIs(t, err, errorConstants.MetaDataError)
-			} else {
-				if !reflect.DeepEqual(got, tt.want) {
-					t.Errorf("mesaPropertyFromInterface() got = %v, want %v", got, tt.want)
-				}
-			}
-		})
-	}
-}
-
 func Test_mesaProperty_Compare(t *testing.T) {
 	_, testMesaPropertyID, testData, testMesaProperty := createTestInputForMesaProperty()
 	type fields struct {
@@ -129,7 +97,7 @@ func Test_mesaProperty_Compare(t *testing.T) {
 		DataID ids.DataID
 	}
 	type args struct {
-		listable traits.Listable
+		property properties.Property
 	}
 	tests := []struct {
 		name    string
@@ -158,7 +126,7 @@ func Test_mesaProperty_Compare(t *testing.T) {
 					t.Errorf("error = %v, wantErr %v", r, tt.wantErr)
 				}
 			}()
-			if got := mesaProperty.Compare(tt.args.listable); got != tt.want {
+			if got := mesaProperty.Compare(tt.args.property); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

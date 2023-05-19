@@ -1,10 +1,12 @@
-package parameters
+package lists
 
 import (
 	"github.com/gogo/protobuf/proto"
+
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type ParameterList interface {
 	proto.Message
-	Get() []Parameter
+	Get() []types.Parameter
 }

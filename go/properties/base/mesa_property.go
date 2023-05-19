@@ -12,7 +12,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ properties.MesaProperty = (*MesaProperty)(nil)
@@ -57,13 +56,9 @@ func (mesaProperty *MesaProperty) IsMeta() bool {
 func (mesaProperty *MesaProperty) IsMesa() bool {
 	return true
 }
-func (mesaProperty *MesaProperty) Compare(listable traits.Listable) int {
+func (mesaProperty *MesaProperty) Compare(property properties.Property) int {
 	// NOTE: compare property can be meta or mesa, so listable must only be cast to Property Interface and not MesaProperty
-	if compareProperty, err := propertyFromInterface(listable); err != nil {
-		panic(err)
-	} else {
-		return mesaProperty.GetID().Compare(compareProperty.GetID())
-	}
+	return mesaProperty.GetID().Compare(property.GetID())
 }
 func (mesaProperty *MesaProperty) ToAnyProperty() properties.AnyProperty {
 	return &AnyProperty{
@@ -76,14 +71,6 @@ func (mesaProperty *MesaProperty) ToAnyProperty() properties.AnyProperty {
 func (mesaProperty *MesaProperty) Mutate(data data.Data) properties.Property {
 	mesaProperty.DataID = data.GetID().(*baseIDs.DataID)
 	return mesaProperty
-}
-func propertyFromInterface(listable traits.Listable) (properties.Property, error) {
-	switch value := listable.(type) {
-	case properties.Property:
-		return value, nil
-	default:
-		return nil, errorConstants.IncorrectFormat.Wrapf("expected Property, got %T", listable)
-	}
 }
 func NewEmptyMesaPropertyFromID(propertyID ids.PropertyID) properties.MesaProperty {
 	return &MesaProperty{

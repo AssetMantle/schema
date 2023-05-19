@@ -1,7 +1,7 @@
 // Copyright [2021] - [2022], AssetMantle Pte. Ltd. and the code contributors
 // SPDX-License-Identifier: Apache-2.0
 
-package x
+package codec
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -19,12 +19,11 @@ import (
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	"github.com/AssetMantle/schema/go/qualified"
 	baseQualified "github.com/AssetMantle/schema/go/qualified/base"
-	"github.com/AssetMantle/schema/go/traits"
 	typesSchema "github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
 
-func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
+func RegisterSchemaLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 	data.RegisterLegacyAminoCodec(legacyAmino)
 	baseData.RegisterLegacyAminoCodec(legacyAmino)
@@ -45,8 +44,6 @@ func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 	qualified.RegisterLegacyAminoCodec(legacyAmino)
 	baseQualified.RegisterLegacyAminoCodec(legacyAmino)
-
-	traits.RegisterLegacyAminoCodec(legacyAmino)
 
 	typesSchema.RegisterLegacyAminoCodec(legacyAmino)
 	baseTypes.RegisterLegacyAminoCodec(legacyAmino)

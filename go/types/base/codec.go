@@ -6,11 +6,11 @@ package base
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	codecUtilities "github.com/AssetMantle/schema/go/utilities"
+	codecUtilities "github.com/AssetMantle/schema/go/codec"
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 	codecUtilities.RegisterModuleConcrete(legacyAmino, Height{})
-	codecUtilities.RegisterModuleConcrete(legacyAmino, signature{})
+	codecUtilities.RegisterModuleConcrete(legacyAmino, Parameter{})
 	codecUtilities.RegisterModuleConcrete(legacyAmino, Split{})
 }

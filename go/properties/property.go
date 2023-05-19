@@ -8,7 +8,6 @@ import (
 
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 type Property interface {
@@ -24,5 +23,5 @@ type Property interface {
 	ToAnyProperty() AnyProperty
 
 	Mutate(data.Data) Property
-	traits.Listable
+	Compare(Property) int
 }

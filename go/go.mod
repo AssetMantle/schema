@@ -7,7 +7,6 @@ require (
 	github.com/cosmos/gogoproto v1.4.3
 	github.com/gogo/protobuf v1.3.3
 	github.com/stretchr/testify v1.8.1
-	github.com/tendermint/tendermint v0.34.26
 )
 
 require (
@@ -64,6 +63,7 @@ require (
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
+	github.com/tendermint/tendermint v0.34.26 // indirect
 	github.com/tendermint/tm-db v0.6.7 // indirect
 	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
