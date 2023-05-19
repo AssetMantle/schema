@@ -12,7 +12,7 @@ import (
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/AssetMantle/schema/go/parameters/base"
+	"github.com/AssetMantle/schema/go/types/base"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
