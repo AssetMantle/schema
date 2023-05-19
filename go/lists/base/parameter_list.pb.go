@@ -4,12 +4,15 @@
 package base
 
 import (
-	fmt "fmt"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	io "io"
-	math "math"
+	"fmt"
+	"io"
+	"math"
 	math_bits "math/bits"
+
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	"github.com/gogo/protobuf/proto"
+
+	"github.com/AssetMantle/schema/go/parameters/base"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -24,7 +27,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type ParameterList struct {
-	Parameters []*Parameter `protobuf:"bytes,1,rep,name=parameters,proto3" json:"parameters,omitempty"`
+	Parameters []*base.Parameter `protobuf:"bytes,1,rep,name=parameters,proto3" json:"parameters,omitempty"`
 }
 
 func (m *ParameterList) Reset()         { *m = ParameterList{} }
@@ -218,7 +221,7 @@ func (m *ParameterList) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Parameters = append(m.Parameters, &Parameter{})
+			m.Parameters = append(m.Parameters, &base.Parameter{})
 			if err := m.Parameters[len(m.Parameters)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
