@@ -12,7 +12,6 @@ import (
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 var _ properties.MetaProperty = (*MetaProperty)(nil)
@@ -59,13 +58,9 @@ func (metaProperty *MetaProperty) Mutate(data data.Data) properties.Property {
 	metaProperty.Data = data.ToAnyData().(*base.AnyData)
 	return metaProperty
 }
-func (metaProperty *MetaProperty) Compare(listable traits.Listable) int {
+func (metaProperty *MetaProperty) Compare(property properties.Property) int {
 	// NOTE: compare property can be meta or mesa, so listable must only be cast to Property Interface
-	if compareProperty, err := propertyFromInterface(listable); err != nil {
-		panic(err)
-	} else {
-		return metaProperty.GetID().Compare(compareProperty.GetID())
-	}
+	return metaProperty.GetID().Compare(property.GetID())
 }
 func (metaProperty *MetaProperty) ToAnyProperty() properties.AnyProperty {
 	return &AnyProperty{

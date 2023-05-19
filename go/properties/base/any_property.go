@@ -6,7 +6,6 @@ import (
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/properties"
-	"github.com/AssetMantle/schema/go/traits"
 )
 
 type getter interface {
@@ -50,8 +49,8 @@ func (m *AnyProperty) IsMeta() bool {
 func (m *AnyProperty) ToAnyProperty() properties.AnyProperty {
 	return m.Impl.(getter).get().ToAnyProperty()
 }
-func (m *AnyProperty) Compare(listable traits.Listable) int {
-	return m.Impl.(getter).get().Compare(listable)
+func (m *AnyProperty) Compare(property properties.Property) int {
+	return m.Impl.(getter).get().Compare(property)
 }
 func (m *AnyProperty) ValidateBasic() error {
 	return m.Impl.(getter).get().ValidateBasic()

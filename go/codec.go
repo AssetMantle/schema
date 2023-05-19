@@ -19,7 +19,6 @@ import (
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	"github.com/AssetMantle/schema/go/qualified"
 	baseQualified "github.com/AssetMantle/schema/go/qualified/base"
-	"github.com/AssetMantle/schema/go/traits"
 	typesSchema "github.com/AssetMantle/schema/go/types"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
@@ -45,8 +44,6 @@ func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 	qualified.RegisterLegacyAminoCodec(legacyAmino)
 	baseQualified.RegisterLegacyAminoCodec(legacyAmino)
-
-	traits.RegisterLegacyAminoCodec(legacyAmino)
 
 	typesSchema.RegisterLegacyAminoCodec(legacyAmino)
 	baseTypes.RegisterLegacyAminoCodec(legacyAmino)
