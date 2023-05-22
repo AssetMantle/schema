@@ -13,15 +13,15 @@ import (
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/parameters"
 	"github.com/AssetMantle/schema/go/properties/base"
-	"github.com/AssetMantle/schema/go/types"
 )
 
 func dummyValidator(interface{}) error {
 	return nil
 }
 
-func createTestInput() (*baseIDs.StringID, data.Data, types.Parameter) {
+func createTestInput() (*baseIDs.StringID, data.Data, parameters.Parameter) {
 	id := baseIDs.NewStringID("ID")
 	stringData := baseData.NewStringData("Data")
 
@@ -39,7 +39,7 @@ func TestNewParameter(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    types.Parameter
+		want    parameters.Parameter
 		wantErr bool
 	}{
 
@@ -78,7 +78,7 @@ func Test_parameter_Mutate(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		want   types.Parameter
+		want   parameters.Parameter
 	}{
 
 		{name: "+ve", fields: fields{id, testData, dummyValidator}, args: args{newData}, want: &Parameter{MetaProperty: base.NewMetaProperty(id, testData).(*base.MetaProperty)}},

@@ -2,12 +2,12 @@ package base
 
 import (
 	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/parameters"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/base"
-	"github.com/AssetMantle/schema/go/types"
 )
 
-var _ types.Parameter = (*Parameter)(nil)
+var _ parameters.Parameter = (*Parameter)(nil)
 
 func (m *Parameter) ValidateBasic() error {
 	return m.MetaProperty.ValidateBasic()
@@ -15,15 +15,15 @@ func (m *Parameter) ValidateBasic() error {
 func (m *Parameter) GetMetaProperty() properties.MetaProperty {
 	return m.MetaProperty
 }
-func (m *Parameter) Mutate(data data.Data) types.Parameter {
+func (m *Parameter) Mutate(data data.Data) parameters.Parameter {
 	if m.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
 		m.MetaProperty = base.NewMetaProperty(m.MetaProperty.GetKey(), data).(*base.MetaProperty)
 	}
 	return m
 }
 
-func ParametersToInterface(inParameters []*Parameter) []types.Parameter {
-	returnParameters := make([]types.Parameter, len(inParameters))
+func ParametersToInterface(inParameters []*Parameter) []parameters.Parameter {
+	returnParameters := make([]parameters.Parameter, len(inParameters))
 
 	for i, parameter := range inParameters {
 		returnParameters[i] = parameter
@@ -32,7 +32,7 @@ func ParametersToInterface(inParameters []*Parameter) []types.Parameter {
 	return returnParameters
 }
 
-func ParametersFromInterface(parameters []types.Parameter) []*Parameter {
+func ParametersFromInterface(parameters []parameters.Parameter) []*Parameter {
 	returnParameters := make([]*Parameter, len(parameters))
 
 	for i, parameter := range parameters {

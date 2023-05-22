@@ -9,6 +9,5 @@ import (
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 	legacyAmino.RegisterInterface((*Height)(nil), nil)
-	legacyAmino.RegisterInterface((*Parameter)(nil), nil)
 	legacyAmino.RegisterInterface((*Split)(nil), nil)
 }
