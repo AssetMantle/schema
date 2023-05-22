@@ -4,13 +4,15 @@
 package base
 
 import (
-	fmt "fmt"
-	base "github.com/AssetMantle/schema/go/properties/base"
-	_ "github.com/cosmos/gogoproto/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	io "io"
-	math "math"
+	"fmt"
+	"io"
+	"math"
 	math_bits "math/bits"
+
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	"github.com/gogo/protobuf/proto"
+
+	"github.com/AssetMantle/schema/go/properties/base"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
