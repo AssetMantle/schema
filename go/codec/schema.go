@@ -23,7 +23,7 @@ import (
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
 
-func RegisterSchemaLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
+func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
 
 	data.RegisterLegacyAminoCodec(legacyAmino)
 	baseData.RegisterLegacyAminoCodec(legacyAmino)
