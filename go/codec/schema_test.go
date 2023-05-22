@@ -18,7 +18,7 @@ func TestRegisterCodec(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			RegisterSchemaLegacyAminoCodec(tt.args.legacyAmino)
+			RegisterLegacyAminoCodec(tt.args.legacyAmino)
 		})
 	}
 }
