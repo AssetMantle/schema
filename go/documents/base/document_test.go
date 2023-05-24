@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	baseData "github.com/AssetMantle/schema/go/data/base"
@@ -269,6 +271,46 @@ func Test_document_Mutate(t *testing.T) {
 				})
 			} else if got := document.Mutate(tt.args.propertyList...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Mutate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDocument_GenerateHashID(t *testing.T) {
+	zeroStringDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewStringData("").ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(types.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+
+	sameKeyDifferentDataImmutables := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroNumberDataProperty))
+	sameKeyAndDataImmutables := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroStringDataProperty))
+
+	emptyMutables := baseQualified.NewMutables(baseLists.NewPropertyList())
+
+	sameKeyDifferentDataDocument := NewDocument(baseIDs.NewClassificationID(sameKeyDifferentDataImmutables, emptyMutables), sameKeyDifferentDataImmutables, emptyMutables)
+	sameKeyAndDataDocument := NewDocument(baseIDs.NewClassificationID(sameKeyAndDataImmutables, emptyMutables), sameKeyAndDataImmutables, emptyMutables)
+
+	assert.NotEqual(t, sameKeyDifferentDataDocument.GenerateHashID(), sameKeyAndDataDocument.GenerateHashID(), "hash of same key and different data should not be same")
+
+	type fields struct {
+		ClassificationID *baseIDs.ClassificationID
+		Immutables       *baseQualified.Immutables
+		Mutables         *baseQualified.Mutables
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   ids.HashID
+	}{
+		{"generate hash of empty classification, immutables and mutables", fields{ClassificationID: &baseIDs.ClassificationID{HashID: &baseIDs.HashID{}}, Immutables: &baseQualified.Immutables{&baseLists.PropertyList{}}, Mutables: &baseQualified.Mutables{&baseLists.PropertyList{}}}, &baseIDs.HashID{}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			document := &Document{
+				ClassificationID: tt.fields.ClassificationID,
+				Immutables:       tt.fields.Immutables,
+				Mutables:         tt.fields.Mutables,
+			}
+			if got := document.GenerateHashID(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GenerateHashID() = %v, want %v", got, tt.want)
 			}
 		})
 	}
