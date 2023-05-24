@@ -4,6 +4,7 @@
 package base
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -299,6 +300,28 @@ func Test_decData_ZeroValue(t *testing.T) {
 				Value: tt.fields.Value.String(),
 			}
 			assert.Equalf(t, tt.want, decData.ZeroValue(), "ZeroValue()")
+		})
+	}
+}
+
+func TestDecData_ValidateBasic(t *testing.T) {
+	type fields struct {
+		Value string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{"validate empty string", fields{""}, assert.Error},
+		{"validate zero value", fields{sdkTypes.ZeroDec().String()}, assert.NoError},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			decData := &DecData{
+				Value: tt.fields.Value,
+			}
+			tt.wantErr(t, decData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
 		})
 	}
 }
