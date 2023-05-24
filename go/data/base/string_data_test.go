@@ -4,6 +4,7 @@
 package base
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -214,6 +215,29 @@ func Test_stringData_ZeroValue(t *testing.T) {
 				Value: tt.fields.Value,
 			}
 			assert.Equalf(t, tt.want, stringData.ZeroValue(), "ZeroValue()")
+		})
+	}
+}
+
+func TestStringData_ValidateBasic(t *testing.T) {
+	type fields struct {
+		Value string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{"validate random string", fields{"abcdefhijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "}, assert.NoError},
+		{"validate empty string", fields{""}, assert.NoError},
+		{"validate string with special characters", fields{"data+data"}, assert.Error},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stringData := &StringData{
+				Value: tt.fields.Value,
+			}
+			tt.wantErr(t, stringData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
 		})
 	}
 }

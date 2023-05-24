@@ -4,6 +4,7 @@
 package base
 
 import (
+	"fmt"
 	"testing"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -255,6 +256,31 @@ func Test_accAddressData_Bytes(t *testing.T) {
 				Value: tt.fields.Value,
 			}
 			assert.Equalf(t, tt.want, accAddressData.Bytes(), "Bytes()")
+		})
+	}
+}
+
+func TestAccAddressData_ValidateBasic(t *testing.T) {
+	type fields struct {
+		Value []byte
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{"validate address bytes", fields{[]byte("xxxxxxxxxxxxx")}, assert.NoError},
+		{"validate zero value", fields{[]byte{}}, assert.NoError},
+		{"validate nil value", fields{nil}, assert.NoError},
+		{"validate empty address", fields{[]byte("")}, assert.NoError},
+		{"validate address bytes grater than 255", fields{[]byte("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")}, assert.Error},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			accAddressData := &AccAddressData{
+				Value: tt.fields.Value,
+			}
+			tt.wantErr(t, accAddressData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
 		})
 	}
 }
