@@ -300,7 +300,7 @@ func TestDocument_GenerateHashID(t *testing.T) {
 		fields fields
 		want   ids.HashID
 	}{
-		{"generate hash of empty classification, immutables and mutables", fields{ClassificationID: &baseIDs.ClassificationID{HashID: &baseIDs.HashID{}}, Immutables: &baseQualified.Immutables{&baseLists.PropertyList{}}, Mutables: &baseQualified.Mutables{&baseLists.PropertyList{}}}, &baseIDs.HashID{}},
+		{name: "generate hash of empty classification, immutables and mutables", fields: fields{ClassificationID: &baseIDs.ClassificationID{HashID: &baseIDs.HashID{}}, Immutables: &baseQualified.Immutables{PropertyList: &baseLists.PropertyList{}}, Mutables: &baseQualified.Mutables{PropertyList: &baseLists.PropertyList{}}}, want: &baseIDs.HashID{}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
