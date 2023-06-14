@@ -66,6 +66,16 @@ func stringIDFromInterface(i interface{}) *StringID {
 	}
 }
 
+func StringIDsToIDs(stringIDs []ids.StringID) []ids.ID {
+	ids := make([]ids.ID, len(stringIDs))
+
+	for i, stringID := range stringIDs {
+		ids[i] = stringID
+	}
+
+	return ids
+}
+
 func NewStringID(idString string) ids.StringID {
 	return &StringID{IDString: idString}
 }
