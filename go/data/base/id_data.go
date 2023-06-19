@@ -76,7 +76,7 @@ func (idData *IDData) ToAnyListableData() data.AnyListableData {
 }
 
 func PrototypeIDData() data.IDData {
-	return NewIDData(baseIDs.NewStringID(""))
+	return NewIDData(baseIDs.PrototypeAnyID())
 }
 
 func NewIDData(value ids.ID) data.IDData {
