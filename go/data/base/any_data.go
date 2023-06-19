@@ -6,6 +6,7 @@ import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/go/data"
+	"github.com/AssetMantle/schema/go/data/constants"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
@@ -102,7 +103,11 @@ func (x *AnyData) Bytes() []byte {
 	return x.Impl.(dataGetter).get().Bytes()
 }
 func (x *AnyData) GetTypeID() ids.StringID {
-	return x.Impl.(dataGetter).get().GetTypeID()
+	if x.Impl != nil {
+		return x.Impl.(dataGetter).get().GetTypeID()
+	}
+
+	return constants.AnyDataTypeID
 }
 func (x *AnyData) ZeroValue() data.Data {
 	return x.Impl.(dataGetter).get().ZeroValue()

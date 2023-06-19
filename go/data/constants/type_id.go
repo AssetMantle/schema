@@ -10,10 +10,10 @@ import (
 // TODO use enum
 var (
 	AccAddressDataTypeID = baseIDs.NewStringID("A")
+	AnyDataTypeID        = baseIDs.NewStringID("Y")
 	BooleanDataTypeID    = baseIDs.NewStringID("B")
 	DecDataTypeID        = baseIDs.NewStringID("D")
 	HeightDataTypeID     = baseIDs.NewStringID("H")
-	IDDataTypeID         = baseIDs.NewStringID("I")
 	ListDataTypeID       = baseIDs.NewStringID("L")
 	NumberDataTypeID     = baseIDs.NewStringID("N")
 	StringDataTypeID     = baseIDs.NewStringID("S")

@@ -5,6 +5,7 @@ import (
 
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
 )
 
 type idGetter interface {
@@ -64,7 +65,11 @@ func (m *AnyID_StringID) get() ids.ID {
 var _ ids.AnyID = (*AnyID)(nil)
 
 func (m *AnyID) GetTypeID() ids.StringID {
-	return m.Impl.(idGetter).get().GetTypeID()
+	if m.Impl != nil {
+		return m.Impl.(idGetter).get().GetTypeID()
+	}
+
+	return NewStringID(constants.AnyIDType)
 }
 func (m *AnyID) FromString(idString string) (ids.ID, error) {
 	idTypeString, idValueString := splitIDTypeAndValueStrings(idString)
