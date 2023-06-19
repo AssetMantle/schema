@@ -49,7 +49,7 @@ func (idData *IDData) Bytes() []byte {
 	return idData.Value.Bytes()
 }
 func (idData *IDData) GetTypeID() ids.StringID {
-	return dataConstants.IDDataTypeID
+	return idData.Value.GetTypeID()
 }
 func (idData *IDData) ZeroValue() data.Data {
 	return PrototypeIDData()
