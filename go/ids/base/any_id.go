@@ -126,18 +126,14 @@ func (m *AnyID) Bytes() []byte {
 	return m.Impl.(idGetter).get().Bytes()
 }
 func (m *AnyID) ToAnyID() ids.AnyID {
-	return m.Impl.(idGetter).get().ToAnyID()
+	return m
 }
 func (m *AnyID) ValidateBasic() error {
 	return m.Impl.(idGetter).get().ValidateBasic()
 }
 
 func PrototypeAnyID() ids.AnyID {
-	return &AnyID{
-		Impl: &AnyID_StringID{
-			StringID: PrototypeStringID().(*StringID),
-		},
-	}
+	return &AnyID{}
 }
 
 func joinIDTypeAndValueStrings(idTypes, idValue string) string {
