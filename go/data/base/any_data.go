@@ -81,7 +81,7 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 		case PrototypeStringData().GetTypeID().AsString():
 			Data, err = PrototypeStringData().FromString(dataValueString)
 		default:
-			Data, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognized")
+			Data, err = nil, errorConstants.IncorrectFormat.Wrapf("type %s identifier is not recognized", dataTypeString)
 		}
 
 		if err != nil {
@@ -116,7 +116,7 @@ func (x *AnyData) GenerateHashID() ids.HashID {
 	return x.Impl.(dataGetter).get().GenerateHashID()
 }
 func (x *AnyData) ToAnyData() data.AnyData {
-	return x.Impl.(dataGetter).get().ToAnyData()
+	return x
 }
 func (x *AnyData) GetBondWeight() sdkTypes.Int {
 	return x.Impl.(dataGetter).get().GetBondWeight()
