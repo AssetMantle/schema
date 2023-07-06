@@ -10,6 +10,8 @@ type PropertyList interface {
 	Get() []properties.AnyProperty
 	GetPropertyIDList() IDList
 
+	FromMetaPropertiesString(string) (PropertyList, error)
+
 	Add(...properties.Property) PropertyList
 	Remove(...properties.Property) PropertyList
 	Mutate(...properties.Property) PropertyList
