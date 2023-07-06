@@ -27,9 +27,12 @@ func (coinID *CoinID) FromString(idString string) (ids.ID, error) {
 	if stringID, err := PrototypeStringID().FromString(idString); err != nil {
 		return PrototypeCoinID(), err
 	} else {
-		return &CoinID{
-			StringID: stringID.(*StringID),
-		}, nil
+		coinID := &CoinID{StringID: stringID.(*StringID)}
+		if coinID.ValidateBasic() != nil {
+			return PrototypeCoinID(), err
+		}
+
+		return coinID, nil
 	}
 }
 func (coinID *CoinID) AsString() string {
@@ -68,12 +71,5 @@ func NewCoinID(stringID ids.StringID) ids.CoinID {
 func PrototypeCoinID() ids.OwnableID {
 	return &CoinID{
 		StringID: PrototypeStringID().(*StringID),
-	}
-}
-
-func ReadCoinID(idString string) ids.CoinID {
-	// TODO ***** do not allow hashes
-	return &CoinID{
-		StringID: NewStringID(idString).(*StringID),
 	}
 }

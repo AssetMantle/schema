@@ -169,7 +169,7 @@ func TestReadDataID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ReadDataID(tt.args.dataIDString)
+			got, err := PrototypeDataID().FromString(tt.args.dataIDString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadDataID() error = %v, wantErr %v", err, tt.wantErr)
 				return

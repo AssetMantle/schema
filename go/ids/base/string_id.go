@@ -30,15 +30,12 @@ func (stringID *StringID) FromString(idString string) (ids.ID, error) {
 		return PrototypeStringID(), nil
 	}
 
-	returnStringID := &StringID{
-		IDString: idString,
+	stringID.IDString = idString
+	if err := stringID.ValidateBasic(); err != nil {
+		return PrototypeStringID(), err
 	}
 
-	if err := returnStringID.ValidateBasic(); err != nil {
-		return PrototypeStringID(), err
-	} else {
-		return returnStringID, nil
-	}
+	return stringID, nil
 }
 func (stringID *StringID) AsString() string {
 	return stringID.IDString
@@ -67,13 +64,13 @@ func stringIDFromInterface(i interface{}) *StringID {
 }
 
 func StringIDsToIDs(stringIDs []ids.StringID) []ids.ID {
-	ids := make([]ids.ID, len(stringIDs))
+	IDs := make([]ids.ID, len(stringIDs))
 
 	for i, stringID := range stringIDs {
-		ids[i] = stringID
+		IDs[i] = stringID
 	}
 
-	return ids
+	return IDs
 }
 
 func NewStringID(idString string) ids.StringID {

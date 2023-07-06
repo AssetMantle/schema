@@ -27,9 +27,12 @@ func (maintainerID *MaintainerID) FromString(idString string) (ids.ID, error) {
 	if hashID, err := PrototypeHashID().FromString(idString); err != nil {
 		return PrototypeMaintainerID(), err
 	} else {
-		return &MaintainerID{
-			HashID: hashID.(*HashID),
-		}, nil
+		maintainerID := &MaintainerID{HashID: hashID.(*HashID)}
+		if err := maintainerID.ValidateBasic(); err != nil {
+			return PrototypeMaintainerID(), err
+		}
+
+		return maintainerID, nil
 	}
 }
 func (maintainerID *MaintainerID) AsString() string {
@@ -68,18 +71,4 @@ func PrototypeMaintainerID() ids.MaintainerID {
 	return &MaintainerID{
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func ReadMaintainerID(maintainerIDString string) (ids.MaintainerID, error) {
-	if hashID, err := ReadHashID(maintainerIDString); err == nil {
-		return &MaintainerID{
-			HashID: hashID.(*HashID),
-		}, nil
-	}
-
-	if maintainerIDString == "" {
-		return PrototypeMaintainerID(), nil
-	}
-
-	return &MaintainerID{}, errorConstants.IncorrectFormat.Wrapf("invalid maintainer ID: %s", maintainerIDString)
 }

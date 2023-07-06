@@ -40,7 +40,12 @@ func (idData *IDData) FromString(dataString string) (data.Data, error) {
 		return PrototypeIDData(), err
 	}
 
-	return NewIDData(id), nil
+	idData.Value = id.ToAnyID().(*baseIDs.AnyID)
+	if idData.ValidateBasic() != nil {
+		return PrototypeIDData(), err
+	}
+
+	return idData, nil
 }
 func (idData *IDData) Compare(listableData data.ListableData) int {
 	return bytes.Compare(idData.Bytes(), listableData.Bytes())

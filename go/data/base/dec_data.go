@@ -64,7 +64,12 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 		return PrototypeDecData(), err
 	}
 
-	return NewDecData(dec), nil
+	decData.Value = dec.String()
+	if decData.ValidateBasic() != nil {
+		return PrototypeDecData(), err
+	}
+
+	return decData, nil
 }
 func (decData *DecData) Get() sdkTypes.Dec {
 	if decData.Value == "<nil>" {

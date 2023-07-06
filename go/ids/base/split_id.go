@@ -39,10 +39,12 @@ func (splitID *SplitID) FromString(idString string) (ids.ID, error) {
 	} else if ownableID, err := PrototypeOwnableID().FromString(ownerIDAndOwnableID[1]); err != nil {
 		return PrototypeSplitID(), err
 	} else {
-		return &SplitID{
-			OwnerID:   ownerID.(*IdentityID),
-			OwnableID: ownableID.(*AnyOwnableID),
-		}, nil
+		splitID := &SplitID{OwnerID: ownerID.(*IdentityID), OwnableID: ownableID.(*AnyOwnableID)}
+		if err := splitID.ValidateBasic(); err != nil {
+			return PrototypeSplitID(), err
+		}
+
+		return splitID, nil
 	}
 }
 func (splitID *SplitID) AsString() string {
@@ -92,23 +94,4 @@ func PrototypeSplitID() ids.SplitID {
 		OwnerID:   PrototypeIdentityID().(*IdentityID),
 		OwnableID: PrototypeOwnableID().(*AnyOwnableID),
 	}
-}
-
-func ReadSplitID(splitIDString string) (ids.SplitID, error) {
-	if splitIDStringSplit := stringUtilities.SplitCompositeIDString(splitIDString); len(splitIDStringSplit) == 2 {
-		if ownerID, err := ReadIdentityID(splitIDStringSplit[0]); err == nil {
-			if ownableID, err := ReadOwnableID(splitIDStringSplit[1]); err == nil {
-				return &SplitID{
-					OwnerID:   ownerID.(*IdentityID),
-					OwnableID: ownableID.(*AnyOwnableID),
-				}, nil
-			}
-		}
-	}
-
-	if splitIDString == "" {
-		return PrototypeSplitID(), nil
-	}
-
-	return PrototypeSplitID(), errorConstants.IncorrectFormat.Wrapf("%s is not valid splitID", splitIDString)
 }

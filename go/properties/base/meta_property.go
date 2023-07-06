@@ -4,6 +4,8 @@
 package base
 
 import (
+	"strings"
+
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/go/data"
@@ -16,7 +18,26 @@ import (
 
 var _ properties.MetaProperty = (*MetaProperty)(nil)
 
+const propertyIDAndDataSeparator = ":"
+
 func (metaProperty *MetaProperty) IsMetaProperty() {
+}
+func (metaProperty *MetaProperty) FromString(metaPropertyString string) (properties.MetaProperty, error) {
+	if propertyIDAndData := strings.Split(metaPropertyString, propertyIDAndDataSeparator); len(propertyIDAndData) == 2 {
+		Data, err := base.PrototypeAnyData().FromString(propertyIDAndData[1])
+		if err != nil {
+			return PrototypeMetaProperty(), err
+		}
+
+		metaProperty := NewMetaProperty(baseIDs.NewStringID(propertyIDAndData[0]), Data)
+		if err := metaProperty.ValidateBasic(); err != nil {
+			return PrototypeMetaProperty(), err
+		}
+
+		return metaProperty, nil
+	}
+
+	return nil, errorConstants.IncorrectFormat.Wrapf("propertyID missing from metaPropertyString %s", metaPropertyString)
 }
 func (metaProperty *MetaProperty) ValidateBasic() error {
 	if err := metaProperty.ID.ValidateBasic(); err != nil {
@@ -74,12 +95,17 @@ func NewEmptyMetaPropertyFromID(propertyID ids.PropertyID) properties.MetaProper
 		ID: propertyID.(*baseIDs.PropertyID),
 	}
 }
+
 func NewMetaProperty(key ids.StringID, data data.Data) properties.MetaProperty {
-	if data == nil || key == nil {
-		panic(errorConstants.IncorrectFormat.Wrapf("meta property data or key cannot be nil"))
-	}
 	return &MetaProperty{
 		ID:   baseIDs.NewPropertyID(key, data.GetTypeID()).(*baseIDs.PropertyID),
 		Data: data.ToAnyData().(*base.AnyData),
+	}
+}
+
+func PrototypeMetaProperty() properties.MetaProperty {
+	return &MetaProperty{
+		ID:   baseIDs.PrototypePropertyID().(*baseIDs.PropertyID),
+		Data: base.PrototypeAnyData().(*base.AnyData),
 	}
 }

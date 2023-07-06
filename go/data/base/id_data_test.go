@@ -9,7 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
-	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
@@ -155,7 +154,7 @@ func Test_idData_GetType(t *testing.T) {
 		fields fields
 		want   ids.StringID
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, dataConstants.IDDataTypeID},
+		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.NewStringID("SI")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

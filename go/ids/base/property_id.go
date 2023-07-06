@@ -41,10 +41,12 @@ func (propertyID *PropertyID) FromString(idString string) (ids.ID, error) {
 	} else if typeID, err := PrototypeStringID().FromString(keyIDAndTypeID[1]); err != nil {
 		return PrototypePropertyID(), err
 	} else {
-		return &PropertyID{
-			KeyID:  keyID.(*StringID),
-			TypeID: typeID.(*StringID),
-		}, nil
+		propertyID := &PropertyID{KeyID: keyID.(*StringID), TypeID: typeID.(*StringID)}
+		if propertyID.ValidateBasic() != nil {
+			return PrototypePropertyID(), err
+		}
+
+		return propertyID, nil
 	}
 }
 func (propertyID *PropertyID) AsString() string {

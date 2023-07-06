@@ -42,7 +42,12 @@ func (numberData *NumberData) FromString(dataString string) (data.Data, error) {
 		return PrototypeNumberData(), errorConstants.IncorrectFormat.Wrapf("number data value %s is not a valid integer", dataString)
 	}
 
-	return NewNumberData(value), nil
+	numberData.Value = value.String()
+	if err := numberData.ValidateBasic(); err != nil {
+		return PrototypeNumberData(), err
+	}
+
+	return numberData, nil
 }
 func (numberData *NumberData) Bytes() []byte {
 	return []byte(numberData.Value)

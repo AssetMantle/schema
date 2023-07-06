@@ -44,7 +44,12 @@ func (heightData *HeightData) FromString(dataString string) (data.Data, error) {
 		return PrototypeHeightData(), err
 	}
 
-	return NewHeightData(baseTypes.NewHeight(Height)), nil
+	heightData.Value = baseTypes.NewHeight(Height).(*baseTypes.Height)
+	if heightData.ValidateBasic() != nil {
+		return PrototypeHeightData(), err
+	}
+
+	return heightData, nil
 }
 func (heightData *HeightData) Compare(listableData data.ListableData) int {
 	return bytes.Compare(heightData.Bytes(), listableData.Bytes())

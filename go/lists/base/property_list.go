@@ -3,6 +3,7 @@ package base
 import (
 	"sort"
 
+	dataUtilities "github.com/AssetMantle/schema/go/data/utilities"
 	"github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/lists"
@@ -76,6 +77,23 @@ func (propertyList *PropertyList) GetPropertyIDList() lists.IDList {
 	}
 
 	return propertyIDList
+}
+func (propertyList *PropertyList) FromMetaPropertiesString(metaPropertiesString string) (lists.PropertyList, error) {
+	var Properties []properties.Property
+
+	metaProperties := dataUtilities.SplitListString(metaPropertiesString)
+	for _, metaPropertyString := range metaProperties {
+		if metaPropertyString != "" {
+			metaProperty, err := base.PrototypeMetaProperty().FromString(metaPropertyString)
+			if err != nil {
+				return nil, err
+			}
+
+			Properties = append(Properties, metaProperty)
+		}
+	}
+
+	return NewPropertyList(Properties...), nil
 }
 func (propertyList *PropertyList) Add(properties ...properties.Property) lists.PropertyList {
 	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
@@ -157,4 +175,8 @@ func NewPropertyList(properties ...properties.Property) lists.PropertyList {
 	})
 
 	return &PropertyList{propertiesToAnyProperties(properties...)}
+}
+
+func PrototypePropertyList() lists.PropertyList {
+	return &PropertyList{}
 }
