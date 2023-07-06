@@ -57,7 +57,12 @@ func (stringData *StringData) FromString(dataString string) (data.Data, error) {
 		return PrototypeStringData(), nil
 	}
 
-	return NewStringData(dataString), nil
+	stringData.Value = dataString
+	if err := stringData.ValidateBasic(); err != nil {
+		return PrototypeStringData(), err
+	}
+
+	return stringData, nil
 }
 func (stringData *StringData) ToAnyData() data.AnyData {
 	return &AnyData{

@@ -47,7 +47,12 @@ func (accAddressData *AccAddressData) FromString(dataString string) (data.Data, 
 		return PrototypeAccAddressData(), err
 	}
 
-	return NewAccAddressData(accAddress), nil
+	accAddressData.Value = accAddress
+	if accAddressData.ValidateBasic() != nil {
+		return PrototypeAccAddressData(), err
+	}
+
+	return accAddressData, nil
 }
 func (accAddressData *AccAddressData) Bytes() []byte {
 	return sdkTypes.AccAddress(accAddressData.Value).Bytes()

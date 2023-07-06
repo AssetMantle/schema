@@ -50,7 +50,12 @@ func (booleanData *BooleanData) FromString(dataString string) (data.Data, error)
 		return PrototypeBooleanData(), err
 	}
 
-	return NewBooleanData(Bool), nil
+	booleanData.Value = Bool
+	if booleanData.ValidateBasic() != nil {
+		return PrototypeBooleanData(), err
+	}
+
+	return booleanData, nil
 }
 func (booleanData *BooleanData) Bytes() []byte {
 	if booleanData.Get() {
