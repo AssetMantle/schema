@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"strings"
 
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
@@ -30,9 +29,12 @@ func (assetID *AssetID) FromString(idString string) (ids.ID, error) {
 	if hashID, err := PrototypeHashID().FromString(idString); err != nil {
 		return PrototypeAssetID(), err
 	} else {
-		return &AssetID{
-			HashID: hashID.(*HashID),
-		}, nil
+		assetID := &AssetID{HashID: hashID.(*HashID)}
+		if assetID.ValidateBasic() != nil {
+			return PrototypeAssetID(), err
+		}
+
+		return assetID, nil
 	}
 }
 func (assetID *AssetID) AsString() string {
@@ -71,18 +73,4 @@ func PrototypeAssetID() ids.AssetID {
 	return &AssetID{
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func ReadAssetID(assetIDString string) (ids.AssetID, error) {
-	if hashID, err := ReadHashID(assetIDString); err == nil {
-		return &AssetID{
-			HashID: hashID.(*HashID),
-		}, nil
-	}
-
-	if assetIDString == "" {
-		return PrototypeAssetID(), nil
-	}
-
-	return PrototypeAssetID(), errorConstants.MetaDataError.Wrapf("invalid assetID string: %s", assetIDString)
 }

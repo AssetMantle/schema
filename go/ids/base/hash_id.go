@@ -37,9 +37,12 @@ func (hashID *HashID) FromString(idString string) (ids.ID, error) {
 	if hashBytes, err := base64.URLEncoding.DecodeString(idString); err != nil {
 		return PrototypeHashID(), err
 	} else {
-		return &HashID{
-			IDBytes: hashBytes,
-		}, nil
+		hashID := &HashID{IDBytes: hashBytes}
+		if err := hashID.ValidateBasic(); err != nil {
+			return PrototypeHashID(), err
+		}
+
+		return hashID, nil
 	}
 }
 
@@ -81,7 +84,7 @@ func GenerateHashID(toHashList ...[]byte) ids.HashID {
 	}
 
 	if len(nonEmptyByteList) == 0 {
-		return &HashID{IDBytes: nil}
+		return &HashID{IDBytes: []byte{}}
 	}
 
 	sort.Slice(nonEmptyByteList, func(i, j int) bool { return bytes.Compare(nonEmptyByteList[i], nonEmptyByteList[j]) == -1 })
@@ -98,16 +101,4 @@ func GenerateHashID(toHashList ...[]byte) ids.HashID {
 
 func PrototypeHashID() ids.HashID {
 	return GenerateHashID()
-}
-
-func ReadHashID(hashIDString string) (ids.HashID, error) {
-	if hashBytes, err := base64.URLEncoding.DecodeString(hashIDString); err == nil {
-		return &HashID{IDBytes: hashBytes}, nil
-	}
-
-	if hashIDString == "" {
-		return PrototypeHashID(), nil
-	}
-
-	return PrototypeHashID(), errorConstants.IncorrectFormat.Wrapf("incorrect format for HashID, expected base64 encoded string, got %s", hashIDString)
 }

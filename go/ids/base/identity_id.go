@@ -28,9 +28,12 @@ func (identityID *IdentityID) FromString(idString string) (ids.ID, error) {
 	if hashID, err := PrototypeHashID().FromString(idString); err != nil {
 		return PrototypeIdentityID(), err
 	} else {
-		return &IdentityID{
-			HashID: hashID.(*HashID),
-		}, nil
+		identityID := &IdentityID{HashID: hashID.(*HashID)}
+		if err := identityID.ValidateBasic(); err != nil {
+			return PrototypeIdentityID(), err
+		}
+
+		return identityID, nil
 	}
 }
 func (identityID *IdentityID) AsString() string {
@@ -71,15 +74,5 @@ func NewIdentityID(classificationID ids.ClassificationID, immutables qualified.I
 func PrototypeIdentityID() ids.IdentityID {
 	return &IdentityID{
 		HashID: PrototypeHashID().(*HashID),
-	}
-}
-
-func ReadIdentityID(identityIDString string) (ids.IdentityID, error) {
-	if hashID, err := ReadHashID(identityIDString); err == nil {
-		return &IdentityID{
-			HashID: hashID.(*HashID),
-		}, nil
-	} else {
-		return PrototypeIdentityID(), err
 	}
 }

@@ -27,9 +27,12 @@ func (classificationID *ClassificationID) FromString(idString string) (ids.ID, e
 	if hashID, err := PrototypeHashID().FromString(idString); err != nil {
 		return PrototypeClassificationID(), err
 	} else {
-		return &ClassificationID{
-			HashID: hashID.(*HashID),
-		}, nil
+		classificationID := &ClassificationID{HashID: hashID.(*HashID)}
+		if err := classificationID.ValidateBasic(); err != nil {
+			return PrototypeClassificationID(), err
+		}
+
+		return classificationID, nil
 	}
 }
 func (classificationID *ClassificationID) AsString() string {
@@ -77,16 +80,4 @@ func PrototypeClassificationID() ids.ClassificationID {
 	return &ClassificationID{
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func ReadClassificationID(classificationIDString string) (ids.ClassificationID, error) {
-	if hashID, err := ReadHashID(classificationIDString); err == nil {
-		return &ClassificationID{HashID: hashID.(*HashID)}, nil
-	}
-
-	if classificationIDString == "" {
-		return PrototypeClassificationID(), nil
-	}
-
-	return &ClassificationID{}, errorConstants.IncorrectFormat.Wrapf("Invalid ClassificationID: %s", classificationIDString)
 }

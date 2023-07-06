@@ -39,14 +39,15 @@ func (dataID *DataID) FromString(idString string) (ids.ID, error) {
 		return PrototypeDataID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")
 	} else if typeID, err := PrototypeStringID().FromString(typeIDAndHashID[0]); err != nil {
 		return PrototypeDataID(), err
-
 	} else if hashID, err := PrototypeHashID().FromString(typeIDAndHashID[1]); err != nil {
 		return PrototypeDataID(), err
 	} else {
-		return &DataID{
-			TypeID: typeID.(*StringID),
-			HashID: hashID.(*HashID),
-		}, nil
+		dataID := &DataID{TypeID: typeID.(*StringID), HashID: hashID.(*HashID)}
+		if dataID.ValidateBasic() != nil {
+			return PrototypeDataID(), err
+		}
+
+		return dataID, nil
 	}
 }
 func (dataID *DataID) AsString() string {
@@ -103,22 +104,4 @@ func PrototypeDataID() ids.DataID {
 		TypeID: PrototypeStringID().(*StringID),
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func ReadDataID(dataIDString string) (ids.DataID, error) {
-	if typeAndHashIdString := stringUtilities.SplitCompositeIDString(dataIDString); len(typeAndHashIdString) == 2 {
-		Type := NewStringID(typeAndHashIdString[0])
-		if hashID, err := ReadHashID(typeAndHashIdString[1]); err == nil {
-			return &DataID{
-				TypeID: Type.(*StringID),
-				HashID: hashID.(*HashID),
-			}, nil
-		}
-	}
-
-	if dataIDString == "" {
-		return PrototypeDataID(), nil
-	}
-
-	return PrototypeDataID(), errorConstants.MetaDataError.Wrapf("invalid dataIDString: %s", dataIDString)
 }

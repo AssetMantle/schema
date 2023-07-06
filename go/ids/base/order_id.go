@@ -27,9 +27,12 @@ func (orderID *OrderID) FromString(idString string) (ids.ID, error) {
 	if hashID, err := PrototypeHashID().FromString(idString); err != nil {
 		return PrototypeOrderID(), err
 	} else {
-		return &OrderID{
-			HashID: hashID.(*HashID),
-		}, nil
+		orderID := &OrderID{HashID: hashID.(*HashID)}
+		if err := orderID.ValidateBasic(); err != nil {
+			return PrototypeOrderID(), err
+		}
+
+		return orderID, nil
 	}
 }
 func (orderID *OrderID) AsString() string {
@@ -69,18 +72,4 @@ func PrototypeOrderID() ids.OrderID {
 	return &OrderID{
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func ReadOrderID(orderIDString string) (ids.OrderID, error) {
-	if hashID, err := ReadHashID(orderIDString); err == nil {
-		return &OrderID{
-			HashID: hashID.(*HashID),
-		}, nil
-	}
-
-	if orderIDString == "" {
-		return PrototypeOrderID(), nil
-	}
-
-	return &OrderID{}, nil
 }

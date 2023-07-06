@@ -78,11 +78,3 @@ func (m *AnyOwnableID) ValidateBasic() error {
 func PrototypeOwnableID() ids.AnyOwnableID {
 	return PrototypeAssetID().ToAnyOwnableID()
 }
-
-func ReadOwnableID(ownableIDString string) (ids.AnyOwnableID, error) {
-	if assetID, err := ReadAssetID(ownableIDString); err == nil {
-		return assetID.ToAnyOwnableID(), nil
-	} else {
-		return ReadCoinID(ownableIDString).ToAnyOwnableID(), nil
-	}
-}
