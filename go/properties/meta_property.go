@@ -9,6 +9,7 @@ import (
 
 type MetaProperty interface {
 	IsMetaProperty()
+	FromString(string) (MetaProperty, error)
 	GetData() data.AnyData
 	ScrubData() MesaProperty
 	Property
