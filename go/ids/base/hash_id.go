@@ -34,7 +34,7 @@ func (hashID *HashID) FromString(idString string) (ids.ID, error) {
 		return PrototypeHashID(), nil
 	}
 
-	if hashBytes, err := base64.URLEncoding.DecodeString(idString); err != nil {
+	if hashBytes, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(strings.ReplaceAll(idString, "-", "+"), "_", "/")); err != nil {
 		return PrototypeHashID(), err
 	} else {
 		hashID := &HashID{IDBytes: hashBytes}
@@ -48,7 +48,7 @@ func (hashID *HashID) FromString(idString string) (ids.ID, error) {
 
 // TODO test if nil and empty result in ""
 func (hashID *HashID) AsString() string {
-	return base64.URLEncoding.EncodeToString(hashID.IDBytes)
+	return base64.StdEncoding.EncodeToString(hashID.IDBytes)
 }
 func (hashID *HashID) Bytes() []byte {
 	return hashID.IDBytes
