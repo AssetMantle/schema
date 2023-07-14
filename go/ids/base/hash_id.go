@@ -20,7 +20,7 @@ var _ ids.HashID = (*HashID)(nil)
 
 func (hashID *HashID) IsHashID() {}
 func (hashID *HashID) ValidateBasic() error {
-	if len(hashID.IDBytes) != 32 && hashID.IDBytes != nil {
+	if len(hashID.IDBytes) != 0 && len(hashID.IDBytes) != 32 && hashID.IDBytes != nil {
 		return errorConstants.IncorrectFormat
 	}
 	return nil
