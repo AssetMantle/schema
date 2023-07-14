@@ -11,10 +11,10 @@ import (
 var _ types.Split = (*Split)(nil)
 
 func (split *Split) ValidateBasic() error {
-	if err := split.OwnerID.ValidateBasic(); err != nil {
+	if err := split.OwnableID.ValidateBasic(); err != nil {
 		return err
 	}
-	if err := split.OwnableID.ValidateBasic(); err != nil {
+	if err := split.OwnerID.ValidateBasic(); err != nil {
 		return err
 	}
 	if _, err := sdkTypes.NewDecFromStr(split.Value); err != nil {
@@ -47,10 +47,10 @@ func (split *Split) CanSend(outValue sdkTypes.Int) bool {
 	return split.GetValue().GTE(outValue)
 }
 
-func NewSplit(ownerID ids.IdentityID, ownableID ids.OwnableID, value sdkTypes.Int) types.Split {
+func NewSplit(ownableID ids.OwnableID, ownerID ids.IdentityID, value sdkTypes.Int) types.Split {
 	return &Split{
-		OwnerID:   ownerID.(*baseIDs.IdentityID),
 		OwnableID: ownableID.ToAnyOwnableID().(*baseIDs.AnyOwnableID),
+		OwnerID:   ownerID.(*baseIDs.IdentityID),
 		Value:     value.String(),
 	}
 }
