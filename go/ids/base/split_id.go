@@ -38,7 +38,7 @@ func (splitID *SplitID) FromString(idString string) (ids.ID, error) {
 	} else if ownerID, err := PrototypeIdentityID().FromString(ownableIDAndOwnerID[1]); err != nil {
 		return PrototypeSplitID(), err
 	} else {
-		splitID := &SplitID{OwnableID: ownableID.(*AnyOwnableID), OwnerID: ownerID.(*IdentityID)}
+		splitID := &SplitID{OwnableID: ownableID.(ids.OwnableID).ToAnyOwnableID().(*AnyOwnableID), OwnerID: ownerID.(*IdentityID)}
 		if err := splitID.ValidateBasic(); err != nil {
 			return PrototypeSplitID(), err
 		}
