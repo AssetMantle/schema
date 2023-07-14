@@ -32,3 +32,26 @@ func TestReadHashID(t *testing.T) {
 		})
 	}
 }
+
+func TestHashID_AsString(t *testing.T) {
+	type fields struct {
+		IDBytes []byte
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{"", fields{GenerateHashID(NewStringID("sdfsdfsdf").Bytes()).Bytes()}, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hashID := &HashID{
+				IDBytes: tt.fields.IDBytes,
+			}
+			if got := hashID.AsString(); got != tt.want {
+				t.Errorf("AsString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
