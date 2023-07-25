@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"strings"
 
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
@@ -24,27 +23,35 @@ func (splitID *SplitID) ValidateBasic() error {
 func (splitID *SplitID) GetTypeID() ids.StringID {
 	return NewStringID(constants.SplitIDType)
 }
-func (splitID *SplitID) FromString(idString string) (ids.ID, error) {
+func (*SplitID) FromString(idString string) (ids.ID, error) {
 	idString = strings.TrimSpace(idString)
 	if idString == "" {
 		return PrototypeSplitID(), nil
 	}
 
 	ownableIDAndOwnerID := stringUtilities.SplitCompositeIDString(idString)
-	if len(ownableIDAndOwnerID) != 2 {
-		return PrototypeSplitID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")
-	} else if ownableID, err := PrototypeOwnableID().FromString(ownableIDAndOwnerID[0]); err != nil {
+	ownableID, err := PrototypeOwnableID().FromString(ownableIDAndOwnerID[0])
+	if err != nil {
 		return PrototypeSplitID(), err
-	} else if ownerID, err := PrototypeIdentityID().FromString(ownableIDAndOwnerID[1]); err != nil {
-		return PrototypeSplitID(), err
-	} else {
-		splitID := &SplitID{OwnableID: ownableID.(ids.OwnableID).ToAnyOwnableID().(*AnyOwnableID), OwnerID: ownerID.(*IdentityID)}
-		if err := splitID.ValidateBasic(); err != nil {
+	}
+
+	ownerID := PrototypeIdentityID()
+
+	if len(ownableIDAndOwnerID) == 2 {
+		OwnerID, err := PrototypeIdentityID().FromString(ownableIDAndOwnerID[1])
+		if err != nil {
 			return PrototypeSplitID(), err
 		}
 
-		return splitID, nil
+		ownerID = OwnerID.(*IdentityID)
 	}
+
+	splitID := &SplitID{OwnableID: ownableID.(ids.OwnableID).ToAnyOwnableID().(*AnyOwnableID), OwnerID: ownerID.(*IdentityID)}
+	if err := splitID.ValidateBasic(); err != nil {
+		return PrototypeSplitID(), err
+	}
+
+	return splitID, nil
 }
 func (splitID *SplitID) AsString() string {
 	return stringUtilities.JoinIDStrings(splitID.OwnableID.AsString(), splitID.OwnerID.AsString())

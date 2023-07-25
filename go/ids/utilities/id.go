@@ -12,5 +12,5 @@ func JoinIDStrings(idStrings ...string) string {
 }
 
 func SplitCompositeIDString(idString string) []string {
-	return strings.Split(idString, IDSeparator)
+	return strings.SplitN(idString, IDSeparator, 2)
 }
