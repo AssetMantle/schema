@@ -30,7 +30,7 @@ func (*SplitID) FromString(idString string) (ids.ID, error) {
 	}
 
 	ownableIDAndOwnerID := stringUtilities.SplitCompositeIDString(idString)
-	ownableID, err := PrototypeOwnableID().FromString(ownableIDAndOwnerID[0])
+	ownableID, err := PrototypeAnyOwnableID().FromString(ownableIDAndOwnerID[0])
 	if err != nil {
 		return PrototypeSplitID(), err
 	}
@@ -100,7 +100,7 @@ func NewSplitID(ownableID ids.OwnableID, ownerID ids.IdentityID) ids.SplitID {
 
 func PrototypeSplitID() ids.SplitID {
 	return &SplitID{
-		OwnableID: PrototypeOwnableID().(*AnyOwnableID),
+		OwnableID: PrototypeAnyOwnableID().(*AnyOwnableID),
 		OwnerID:   PrototypeIdentityID().(*IdentityID),
 	}
 }
