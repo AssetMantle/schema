@@ -51,7 +51,11 @@ func (m *AnyOwnableID) FromString(idString string) (ids.ID, error) {
 			return nil, err
 		}
 
-		return id, nil
+		return id.(ids.OwnableID).ToAnyOwnableID(), nil
+	}
+
+	if valueString == "" {
+		return PrototypeAnyOwnableID(), nil
 	}
 
 	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
@@ -75,6 +79,6 @@ func (m *AnyOwnableID) ValidateBasic() error {
 	return m.Impl.(ownableIDGetter).get().ValidateBasic()
 }
 
-func PrototypeOwnableID() ids.AnyOwnableID {
+func PrototypeAnyOwnableID() ids.AnyOwnableID {
 	return PrototypeAssetID().ToAnyOwnableID()
 }
