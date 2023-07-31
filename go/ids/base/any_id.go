@@ -73,6 +73,7 @@ func (m *AnyID) GetTypeID() ids.StringID {
 }
 func (m *AnyID) FromString(idString string) (ids.ID, error) {
 	idTypeString, idValueString := splitIDTypeAndValueStrings(idString)
+
 	if idTypeString != "" {
 		var id ids.ID
 		var err error
@@ -108,7 +109,11 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 			return nil, err
 		}
 
-		return id, nil
+		return id.ToAnyID(), nil
+	}
+
+	if idValueString == "" {
+		return PrototypeAnyID(), nil
 	}
 
 	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")

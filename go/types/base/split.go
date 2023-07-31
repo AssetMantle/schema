@@ -3,30 +3,17 @@ package base
 import (
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/schema/go/ids"
-	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	"github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/types"
 )
 
 var _ types.Split = (*Split)(nil)
 
 func (split *Split) ValidateBasic() error {
-	if err := split.OwnableID.ValidateBasic(); err != nil {
-		return err
-	}
-	if err := split.OwnerID.ValidateBasic(); err != nil {
-		return err
-	}
-	if _, err := sdkTypes.NewDecFromStr(split.Value); err != nil {
-		return err
+	if _, ok := sdkTypes.NewIntFromString(split.Value); !ok {
+		return constants.IncorrectFormat.Wrapf("invalid split value %s", split.Value)
 	}
 	return nil
-}
-func (split *Split) GetOwnerID() ids.IdentityID {
-	return split.OwnerID
-}
-func (split *Split) GetOwnableID() ids.OwnableID {
-	return split.OwnableID
 }
 func (split *Split) GetValue() sdkTypes.Int {
 	if value, ok := sdkTypes.NewIntFromString(split.Value); !ok {
@@ -35,11 +22,11 @@ func (split *Split) GetValue() sdkTypes.Int {
 		return value
 	}
 }
-func (split *Split) Send(outValue sdkTypes.Int) types.Split {
+func (split *Split) Subtract(outValue sdkTypes.Int) types.Split {
 	split.Value = split.GetValue().Sub(outValue).String()
 	return split
 }
-func (split *Split) Receive(inValue sdkTypes.Int) types.Split {
+func (split *Split) Add(inValue sdkTypes.Int) types.Split {
 	split.Value = split.GetValue().Add(inValue).String()
 	return split
 }
@@ -47,10 +34,8 @@ func (split *Split) CanSend(outValue sdkTypes.Int) bool {
 	return split.GetValue().GTE(outValue)
 }
 
-func NewSplit(ownableID ids.OwnableID, ownerID ids.IdentityID, value sdkTypes.Int) types.Split {
+func NewSplit(value sdkTypes.Int) types.Split {
 	return &Split{
-		OwnableID: ownableID.ToAnyOwnableID().(*baseIDs.AnyOwnableID),
-		OwnerID:   ownerID.(*baseIDs.IdentityID),
-		Value:     value.String(),
+		Value: value.String(),
 	}
 }
