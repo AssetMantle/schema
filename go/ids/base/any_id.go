@@ -109,7 +109,7 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 			return nil, err
 		}
 
-		return id.ToAnyID().ToAnyID(), nil
+		return id.ToAnyID(), nil
 	}
 
 	if idValueString == "" {
