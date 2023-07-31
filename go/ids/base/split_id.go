@@ -64,9 +64,34 @@ func (splitID *SplitID) GetOwnerID() ids.IdentityID {
 }
 func (splitID *SplitID) IsSplitID() {}
 func (splitID *SplitID) Bytes() []byte {
+	// NOTE: if modified, also modify the FromBytes Method
 	return append(
 		splitID.OwnableID.Bytes(),
 		splitID.OwnerID.Bytes()...)
+}
+
+// TODO optimize this
+func (*SplitID) MustGetFromPrefixedStoreKeyBytes(prefixBytes, storeKeyBytes []byte) ids.SplitID {
+	keyBytes := bytes.TrimPrefix(storeKeyBytes, prefixBytes)
+	anyOwnableIDBytes := keyBytes[:len(keyBytes)-32]
+
+	var anyOwnableID *AnyOwnableID
+	if len(anyOwnableIDBytes) < 32 {
+		anyOwnableID = NewCoinID(NewStringID(string(anyOwnableIDBytes))).ToAnyOwnableID().(*AnyOwnableID)
+	} else {
+		anyOwnableID = (&AssetID{HashID: &HashID{IDBytes: anyOwnableIDBytes}}).ToAnyOwnableID().(*AnyOwnableID)
+	}
+
+	splitID := &SplitID{
+		OwnableID: anyOwnableID,
+		OwnerID:   &IdentityID{HashID: &HashID{IDBytes: keyBytes[len(keyBytes)-32:]}},
+	}
+
+	if bytes.Compare(splitID.Bytes(), keyBytes) != 0 {
+		panic("invalid key")
+	}
+
+	return splitID
 }
 func (splitID *SplitID) SplitIDString() string {
 	return stringUtilities.JoinIDStrings(splitID.OwnableID.AsString(), splitID.OwnerID.AsString())
