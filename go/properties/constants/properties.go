@@ -24,6 +24,7 @@ var (
 	// TODO check default value
 	ExchangeRateProperty               = base.NewMetaProperty(baseIDs.NewStringID("exchangeRate"), baseData.NewDecData(sdkTypes.SmallestDec()).ZeroValue())
 	ExpiryHeightProperty               = base.NewMetaProperty(baseIDs.NewStringID("expiryHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
+	ExecutionHeightProperty            = base.NewMetaProperty(baseIDs.NewStringID("executionHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
 	LockProperty                       = base.NewMetaProperty(baseIDs.NewStringID("lock"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
 	IdentityIDProperty                 = base.NewMetaProperty(baseIDs.NewStringID("identityID"), baseData.NewIDData(baseIDs.PrototypeIdentityID()))
 	MaintainedClassificationIDProperty = base.NewMetaProperty(baseIDs.NewStringID("maintainedClassificationID"), baseData.NewIDData(baseIDs.PrototypeClassificationID()))
@@ -32,7 +33,7 @@ var (
 	MakerIDProperty = base.NewMetaProperty(baseIDs.NewStringID("makerID"), baseData.NewIDData(baseIDs.PrototypeIdentityID()))
 	// TODO check default value
 	MakerOwnableIDProperty           = base.NewMetaProperty(baseIDs.NewStringID("makerOwnableID"), baseData.NewIDData(baseIDs.PrototypeAnyOwnableID()))
-	MakerOwnableSplitProperty        = base.NewMetaProperty(baseIDs.NewStringID("makerOwnableSplit"), baseData.NewNumberData(sdkTypes.OneInt()))
+	MakerSplitProperty               = base.NewMetaProperty(baseIDs.NewStringID("makerSplit"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	MaxPropertyCountProperty         = base.NewMetaProperty(baseIDs.NewStringID("maxPropertyCount"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	MaxProvisionAddressCountProperty = base.NewMetaProperty(baseIDs.NewStringID("maxProvisionAddressCount"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	MaxOrderLifeProperty             = base.NewMetaProperty(baseIDs.NewStringID("maxOrderLife"), baseData.NewHeightData(baseTypes.NewHeight(-1)))
@@ -46,6 +47,7 @@ var (
 	TakerIDProperty           = base.NewMetaProperty(baseIDs.NewStringID("takerID"), baseData.NewIDData(baseIDs.PrototypeStringID()))
 	// TODO check default value
 	TakerOwnableIDProperty   = base.NewMetaProperty(baseIDs.NewStringID("takerOwnableID"), baseData.NewIDData(baseIDs.PrototypeAnyOwnableID()))
+	TakerSplitProperty       = base.NewMetaProperty(baseIDs.NewStringID("takerSplit"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	SupplyProperty           = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.OneInt()))
 	WrapAllowedCoinsProperty = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
 )

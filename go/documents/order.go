@@ -11,14 +11,16 @@ import (
 )
 
 type Order interface {
-	GetExchangeRate() sdkTypes.Dec
-	GetCreationHeight() types.Height
+	GetMakerID() ids.IdentityID
 	GetMakerOwnableID() ids.OwnableID
 	GetTakerOwnableID() ids.OwnableID
-	GetMakerID() ids.IdentityID
-	GetTakerID() ids.IdentityID
-	GetExpiryHeight() types.Height
 	GetMakerOwnableSplit() sdkTypes.Int
+	GetTakerOwnableSplit() sdkTypes.Int
+	GetExpiryHeight() types.Height
+
+	GetTakerID() ids.IdentityID
+	GetExchangeRate() sdkTypes.Dec
+	GetExecutionHeight() types.Height
 
 	Document
 }

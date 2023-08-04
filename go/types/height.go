@@ -11,5 +11,8 @@ type Height interface {
 	Get() int64
 	ValidateBasic() error
 
+	// Compare returns 1 if height is greater than compareHeight
+	// Compare returns 0 if height is equal to compareHeight
+	// Compare returns -1 if height is less than compareHeight
 	Compare(Height) int
 }

@@ -12,6 +12,7 @@ type PropertyList interface {
 
 	FromMetaPropertiesString(string) (PropertyList, error)
 
+	// Add will add a new property or update if already present
 	Add(...properties.Property) PropertyList
 	Remove(...properties.Property) PropertyList
 	Mutate(...properties.Property) PropertyList
