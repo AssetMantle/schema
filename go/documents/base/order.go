@@ -37,16 +37,16 @@ func (order order) GetTakerOwnableID() ids.OwnableID {
 	return constants.TakerOwnableIDProperty.GetData().Get().(data.IDData).Get().Get().(ids.OwnableID)
 }
 func (order order) GetMakerOwnableSplit() sdkTypes.Int {
-	if property := order.GetProperty(constants.MakerOwnableSplitProperty.GetID()); property != nil && property.IsMeta() {
+	if property := order.GetProperty(constants.MakerSplitProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
-	return constants.MakerOwnableSplitProperty.GetData().Get().(data.NumberData).Get()
+	return constants.MakerSplitProperty.GetData().Get().(data.NumberData).Get()
 }
 func (order order) GetTakerOwnableSplit() sdkTypes.Int {
-	if property := order.GetProperty(constants.TakerOwnableSplitProperty.GetID()); property != nil && property.IsMeta() {
+	if property := order.GetProperty(constants.TakerSplitProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
-	return constants.TakerOwnableSplitProperty.GetData().Get().(data.NumberData).Get()
+	return constants.TakerSplitProperty.GetData().Get().(data.NumberData).Get()
 }
 func (order order) GetExpiryHeight() types.Height {
 	if property := order.GetProperty(constants.ExpiryHeightProperty.GetID()); property != nil && property.IsMeta() {
