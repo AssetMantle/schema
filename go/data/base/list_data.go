@@ -21,7 +21,7 @@ import (
 var _ data.ListData = (*ListData)(nil)
 
 func (listData *ListData) ValidateWithType(expectedTypeID ids.StringID) error {
-	for _, anyListableDatum := range listData.AnyListableData {
+	for _, anyListableDatum := range listData.Value {
 		if anyListableDatum.GetTypeID().Compare(expectedTypeID) == 0 {
 			return errorConstants.IncorrectFormat.Wrapf("data type doesnt conform to expected type for list")
 		}
@@ -30,7 +30,7 @@ func (listData *ListData) ValidateWithType(expectedTypeID ids.StringID) error {
 	return listData.ValidateBasic()
 }
 func (listData *ListData) ValidateBasic() error {
-	for _, anyListableData := range listData.AnyListableData {
+	for _, anyListableData := range listData.Value {
 		if err := anyListableData.ValidateBasic(); err != nil {
 			return err
 		}
@@ -39,9 +39,9 @@ func (listData *ListData) ValidateBasic() error {
 	return nil
 }
 func (listData *ListData) Get() []data.AnyListableData {
-	anyListableData := make([]data.AnyListableData, len(listData.AnyListableData))
+	anyListableData := make([]data.AnyListableData, len(listData.Value))
 
-	for i, anyListableDataList := range listData.AnyListableData {
+	for i, anyListableDataList := range listData.Value {
 		anyListableData[i] = anyListableDataList
 	}
 
@@ -52,9 +52,9 @@ func (listData *ListData) GetBondWeight() sdkTypes.Int {
 }
 func (listData *ListData) AsString() string {
 	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
-	dataStrings := make([]string, len(sortedListData.AnyListableData))
+	dataStrings := make([]string, len(sortedListData.Value))
 
-	for i, anyListableData := range sortedListData.AnyListableData {
+	for i, anyListableData := range sortedListData.Value {
 		dataStrings[i] = anyListableData.AsString()
 	}
 
@@ -85,13 +85,13 @@ func (listData *ListData) Search(data data.ListableData) (int, bool) {
 	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	index := sort.Search(
-		len(sortedListData.AnyListableData),
+		len(sortedListData.Value),
 		func(i int) bool {
-			return sortedListData.AnyListableData[i].Compare(data) >= 0
+			return sortedListData.Value[i].Compare(data) >= 0
 		},
 	)
 
-	if index < len(sortedListData.AnyListableData) && sortedListData.AnyListableData[index].Compare(data) == 0 {
+	if index < len(sortedListData.Value) && sortedListData.Value[index].Compare(data) == 0 {
 		return index, true
 	}
 
@@ -102,9 +102,9 @@ func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
 
 	for _, datum := range listableData {
 		if index, found := updatedListData.Search(datum); !found {
-			updatedListData.AnyListableData = append(updatedListData.AnyListableData, datum.ToAnyListableData().(*AnyListableData))
-			copy(updatedListData.AnyListableData[index+1:], updatedListData.AnyListableData[index:])
-			updatedListData.AnyListableData[index] = datum.ToAnyListableData().(*AnyListableData)
+			updatedListData.Value = append(updatedListData.Value, datum.ToAnyListableData().(*AnyListableData))
+			copy(updatedListData.Value[index+1:], updatedListData.Value[index:])
+			updatedListData.Value[index] = datum.ToAnyListableData().(*AnyListableData)
 		}
 	}
 
@@ -115,7 +115,7 @@ func (listData *ListData) Remove(data ...data.ListableData) data.ListData {
 
 	for _, listable := range data {
 		if index, found := updatedListData.Search(listable); found {
-			updatedListData.AnyListableData = append(updatedListData.AnyListableData[:index], updatedListData.AnyListableData[index+1:]...)
+			updatedListData.Value = append(updatedListData.Value[:index], updatedListData.Value[index+1:]...)
 		}
 	}
 
@@ -126,9 +126,9 @@ func (listData *ListData) GetID() ids.DataID {
 }
 func (listData *ListData) Bytes() []byte {
 	sortedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
-	bytesList := make([][]byte, len(sortedListData.AnyListableData))
+	bytesList := make([][]byte, len(sortedListData.Value))
 
-	for i, anyListableData := range sortedListData.AnyListableData {
+	for i, anyListableData := range sortedListData.Value {
 		if anyListableData != nil {
 			bytesList[i] = anyListableData.Bytes()
 		}
@@ -143,7 +143,7 @@ func (listData *ListData) ZeroValue() data.Data {
 	return NewListData([]data.ListableData{}...)
 }
 func (listData *ListData) GenerateHashID() ids.HashID {
-	if len(listData.AnyListableData) == 0 {
+	if len(listData.Value) == 0 {
 		return baseIDs.GenerateHashID()
 	}
 
