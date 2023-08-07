@@ -3,6 +3,7 @@ package base
 import (
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
 )
 
 type ownableIDGetter interface {
@@ -30,7 +31,11 @@ func (m *AnyOwnableID) Compare(id ids.ID) int {
 	return m.Impl.(ownableIDGetter).get().Compare(id)
 }
 func (m *AnyOwnableID) GetTypeID() ids.StringID {
-	return m.Impl.(ownableIDGetter).get().GetTypeID()
+	if m.Impl != nil {
+		return m.Impl.(ownableIDGetter).get().GetTypeID()
+	}
+
+	return NewStringID(constants.AnyOwnableIDType)
 }
 func (m *AnyOwnableID) FromString(idString string) (ids.ID, error) {
 	idTypeString, valueString := splitIDTypeAndValueStrings(idString)
@@ -80,5 +85,5 @@ func (m *AnyOwnableID) ValidateBasic() error {
 }
 
 func PrototypeAnyOwnableID() ids.AnyOwnableID {
-	return PrototypeAssetID().ToAnyOwnableID()
+	return &AnyOwnableID{}
 }

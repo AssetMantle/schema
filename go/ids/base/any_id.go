@@ -78,31 +78,31 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 		var id ids.ID
 		var err error
 
-		switch NewStringID(idTypeString).AsString() {
-		case PrototypeAssetID().GetTypeID().AsString():
-			id, err = PrototypeAssetID().FromString(idValueString)
-		case PrototypeClassificationID().GetTypeID().AsString():
-			id, err = PrototypeClassificationID().FromString(idValueString)
-		case PrototypeCoinID().GetTypeID().AsString():
-			id, err = PrototypeCoinID().FromString(idValueString)
-		case PrototypeDataID().GetTypeID().AsString():
-			id, err = PrototypeDataID().FromString(idValueString)
-		case PrototypeHashID().GetTypeID().AsString():
-			id, err = PrototypeHashID().FromString(idValueString)
-		case PrototypeIdentityID().GetTypeID().AsString():
-			id, err = PrototypeIdentityID().FromString(idValueString)
-		case PrototypeMaintainerID().GetTypeID().AsString():
-			id, err = PrototypeMaintainerID().FromString(idValueString)
-		case PrototypeOrderID().GetTypeID().AsString():
-			id, err = PrototypeOrderID().FromString(idValueString)
-		case PrototypePropertyID().GetTypeID().AsString():
-			id, err = PrototypePropertyID().FromString(idValueString)
-		case PrototypeSplitID().GetTypeID().AsString():
-			id, err = PrototypeSplitID().FromString(idValueString)
-		case PrototypeStringID().GetTypeID().AsString():
-			id, err = PrototypeStringID().FromString(idValueString)
-		default:
-			id, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")
+		if strings.HasSuffix(idTypeString, PrototypeAnyOwnableID().GetTypeID().AsString()) {
+			id, err = PrototypeAnyOwnableID().FromString(idValueString)
+		} else {
+			switch NewStringID(idTypeString).AsString() {
+			case PrototypeClassificationID().GetTypeID().AsString():
+				id, err = PrototypeClassificationID().FromString(idValueString)
+			case PrototypeDataID().GetTypeID().AsString():
+				id, err = PrototypeDataID().FromString(idValueString)
+			case PrototypeHashID().GetTypeID().AsString():
+				id, err = PrototypeHashID().FromString(idValueString)
+			case PrototypeIdentityID().GetTypeID().AsString():
+				id, err = PrototypeIdentityID().FromString(idValueString)
+			case PrototypeMaintainerID().GetTypeID().AsString():
+				id, err = PrototypeMaintainerID().FromString(idValueString)
+			case PrototypeOrderID().GetTypeID().AsString():
+				id, err = PrototypeOrderID().FromString(idValueString)
+			case PrototypePropertyID().GetTypeID().AsString():
+				id, err = PrototypePropertyID().FromString(idValueString)
+			case PrototypeSplitID().GetTypeID().AsString():
+				id, err = PrototypeSplitID().FromString(idValueString)
+			case PrototypeStringID().GetTypeID().AsString():
+				id, err = PrototypeStringID().FromString(idValueString)
+			default:
+				id, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")
+			}
 		}
 
 		if err != nil {

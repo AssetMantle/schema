@@ -3,7 +3,7 @@ module github.com/AssetMantle/schema/go
 go 1.19
 
 require (
-	github.com/cosmos/cosmos-sdk v0.45.14
+	github.com/cosmos/cosmos-sdk v0.45.16
 	github.com/cosmos/gogoproto v1.4.3
 	github.com/gogo/protobuf v1.3.3
 	github.com/stretchr/testify v1.8.1
