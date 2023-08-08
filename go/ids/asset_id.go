@@ -1,6 +1,6 @@
 package ids
 
 type AssetID interface {
-	OwnableID
+	ID
 	IsAssetID()
 }
