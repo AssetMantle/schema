@@ -1,11 +1,9 @@
 package constants
 
 const (
-	AssetIDType          = "AAI"
+	AssetIDType          = "AI"
 	AnyIDType            = "I"
-	AnyOwnableIDType     = "AI"
-	ClassificationIDType = "CI"
-	CoinIDType           = "CAI"
+	ClassificationIDType = "CLI"
 	DataIDType           = "DI"
 	HashIDType           = "HI"
 	IdentityIDType       = "II"
