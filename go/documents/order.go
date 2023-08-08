@@ -12,10 +12,10 @@ import (
 
 type Order interface {
 	GetMakerID() ids.IdentityID
-	GetMakerOwnableID() ids.OwnableID
-	GetTakerOwnableID() ids.OwnableID
-	GetMakerOwnableSplit() sdkTypes.Int
-	GetTakerOwnableSplit() sdkTypes.Int
+	GetMakerAssetID() ids.AssetID
+	GetTakerAssetID() ids.AssetID
+	GetMakerSplit() sdkTypes.Int
+	GetTakerSplit() sdkTypes.Int
 	GetExpiryHeight() types.Height
 
 	GetTakerID() ids.IdentityID
