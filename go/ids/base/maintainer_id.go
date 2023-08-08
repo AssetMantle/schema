@@ -61,9 +61,9 @@ func maintainerIDFromInterface(i interface{}) *MaintainerID {
 		panic(errorConstants.IncorrectFormat.Wrapf("expected *MaintainerID, got %T", i))
 	}
 }
-func NewMaintainerID(classificationID ids.ClassificationID, immutables qualified.Immutables) ids.MaintainerID {
+func NewMaintainerID(maintainerClassificationID ids.ClassificationID, immutables qualified.Immutables) ids.MaintainerID {
 	return &MaintainerID{
-		HashID: GenerateHashID(classificationID.Bytes(), immutables.GenerateHashID().Bytes()).(*HashID),
+		HashID: GenerateHashID(maintainerClassificationID.Bytes(), immutables.GenerateHashID().Bytes()).(*HashID),
 	}
 }
 

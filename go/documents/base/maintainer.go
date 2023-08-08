@@ -4,8 +4,8 @@ import (
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
-	"github.com/AssetMantle/schema/go/documents/constants"
 	"github.com/AssetMantle/schema/go/ids"
+	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
 	baseLists "github.com/AssetMantle/schema/go/lists/base"
 	"github.com/AssetMantle/schema/go/properties"
@@ -19,6 +19,8 @@ type maintainer struct {
 }
 
 var _ documents.Maintainer = (*maintainer)(nil)
+
+var maintainerClassificationID = baseIDs.NewClassificationID(baseQualified.NewImmutables(baseLists.NewPropertyList(constantProperties.IdentityIDProperty, constantProperties.MaintainedClassificationIDProperty)), baseQualified.NewMutables(baseLists.NewPropertyList(constantProperties.MaintainedPropertiesProperty, constantProperties.PermissionsProperty)))
 
 func (maintainer maintainer) GetIdentityID() ids.IdentityID {
 	if property := maintainer.GetProperty(constantProperties.IdentityIDProperty.GetID()); property != nil && property.IsMeta() {
@@ -64,9 +66,17 @@ func idListToListData(idList lists.IDList) data.ListData {
 	return dataList
 }
 
+func PrototypeMaintainer() documents.Maintainer {
+	return NewMaintainer(baseIDs.PrototypeIdentityID(), baseIDs.PrototypeClassificationID(), baseLists.NewIDList(), baseLists.NewIDList())
+}
+
+func NewMaintainerFromDocument(document documents.Document) documents.Maintainer {
+	return maintainer{Document: document}
+}
+
 func NewMaintainer(identityID ids.IdentityID, maintainedClassificationID ids.ClassificationID, maintainedPropertyIDList lists.IDList, permissions lists.IDList) documents.Maintainer {
 	return maintainer{
-		Document: NewDocument(constants.MaintainerClassificationID,
+		Document: NewDocument(maintainerClassificationID,
 			baseQualified.NewImmutables(baseLists.NewPropertyList(
 				baseProperties.NewMetaProperty(constantProperties.IdentityIDProperty.GetKey(), baseData.NewIDData(identityID)),
 				baseProperties.NewMetaProperty(constantProperties.MaintainedClassificationIDProperty.GetKey(), baseData.NewIDData(maintainedClassificationID)),
@@ -77,7 +87,4 @@ func NewMaintainer(identityID ids.IdentityID, maintainedClassificationID ids.Cla
 			)),
 		),
 	}
-}
-func NewMaintainerFromDocument(document documents.Document) documents.Maintainer {
-	return maintainer{Document: document}
 }

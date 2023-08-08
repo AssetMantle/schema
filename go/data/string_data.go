@@ -5,5 +5,5 @@ package data
 
 type StringData interface {
 	ListableData
-	AsString() string
+	Get() string
 }

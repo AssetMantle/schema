@@ -19,6 +19,9 @@ import (
 
 var _ data.StringData = (*StringData)(nil)
 
+func (stringData *StringData) Get() string {
+	return stringData.Value
+}
 func (stringData *StringData) ValidateBasic() error {
 	if !utilities.IsValidStringData(stringData.Value) {
 		return errorConstants.IncorrectFormat
