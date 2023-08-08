@@ -72,7 +72,7 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 	for i, datumString := range dataStringList {
 		if datum, err := PrototypeAnyData().FromString(datumString); err != nil {
 			return PrototypeListData(), err
-		} else if listableData, ok := datum.(data.ListableData); !ok {
+		} else if listableData, ok := datum.ToAnyData().Get().(data.ListableData); !ok {
 			return PrototypeListData(), errorConstants.IncorrectFormat.Wrapf("data type %T is not listable", datum)
 		} else {
 			dataList[i] = listableData
