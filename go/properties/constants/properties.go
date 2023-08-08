@@ -46,8 +46,9 @@ var (
 	RevealEnabledProperty     = base.NewMetaProperty(baseIDs.NewStringID("revealEnabled"), baseData.NewBooleanData(false))
 	TakerIDProperty           = base.NewMetaProperty(baseIDs.NewStringID("takerID"), baseData.NewIDData(baseIDs.PrototypeStringID()))
 	// TODO check default value
-	TakerAssetIDProperty     = base.NewMetaProperty(baseIDs.NewStringID("takerAssetID"), baseData.NewIDData(baseIDs.PrototypeAssetID()))
-	TakerSplitProperty       = base.NewMetaProperty(baseIDs.NewStringID("takerSplit"), baseData.NewNumberData(sdkTypes.ZeroInt()))
-	SupplyProperty           = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.OneInt()))
-	WrapAllowedCoinsProperty = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
+	TakerAssetIDProperty       = base.NewMetaProperty(baseIDs.NewStringID("takerAssetID"), baseData.NewIDData(baseIDs.PrototypeAssetID()))
+	TakerSplitProperty         = base.NewMetaProperty(baseIDs.NewStringID("takerSplit"), baseData.NewNumberData(sdkTypes.ZeroInt()))
+	SupplyProperty             = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.OneInt()))
+	WrapAllowedCoinsProperty   = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
+	UnwrapAllowedCoinsProperty = base.NewMetaProperty(baseIDs.NewStringID("unwrapAllowedCoins"), baseData.NewListData())
 )
