@@ -18,6 +18,7 @@ var (
 	BondRateProperty        = base.NewMetaProperty(baseIDs.NewStringID("bondRate"), baseData.NewNumberData(sdkTypes.ZeroInt()))
 	BurnEnabledProperty     = base.NewMetaProperty(baseIDs.NewStringID("burnEnabled"), baseData.NewBooleanData(false))
 	BurnHeightProperty      = base.NewMetaProperty(baseIDs.NewStringID("burnHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
+	DenomIDProperty         = base.NewMetaProperty(baseIDs.NewStringID("denomID"), baseData.NewIDData(baseIDs.PrototypeStringID()))
 	DeputizeAllowedProperty = base.NewMetaProperty(baseIDs.NewStringID("deputizeAllowed"), baseData.NewBooleanData(false))
 	// TODO check default value
 	CreationHeightProperty = base.NewMetaProperty(baseIDs.NewStringID("creationHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
