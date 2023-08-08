@@ -67,6 +67,6 @@ func PrototypeAssetID() ids.AssetID {
 	}
 }
 
-func NewCoinID(_ ids.StringID) ids.AssetID {
+func GenerateCoinAssetID(denom string) ids.AssetID {
 	return PrototypeAssetID()
 }
