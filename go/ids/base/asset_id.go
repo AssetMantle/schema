@@ -43,21 +43,13 @@ func (assetID *AssetID) AsString() string {
 func (assetID *AssetID) Bytes() []byte {
 	return assetID.HashID.IDBytes
 }
-func (assetID *AssetID) IsOwnableID() {}
-func (assetID *AssetID) IsAssetID()   {}
+func (assetID *AssetID) IsAssetID() {}
 func (assetID *AssetID) Compare(id ids.ID) int {
 	return bytes.Compare(assetID.Bytes(), id.Bytes())
 }
 func (assetID *AssetID) ToAnyID() ids.AnyID {
 	return &AnyID{
 		Impl: &AnyID_AssetID{
-			AssetID: assetID,
-		},
-	}
-}
-func (assetID *AssetID) ToAnyOwnableID() ids.AnyOwnableID {
-	return &AnyOwnableID{
-		Impl: &AnyOwnableID_AssetID{
 			AssetID: assetID,
 		},
 	}
@@ -73,4 +65,8 @@ func PrototypeAssetID() ids.AssetID {
 	return &AssetID{
 		HashID: PrototypeHashID().(*HashID),
 	}
+}
+
+func NewCoinID(_ ids.StringID) ids.AssetID {
+	return PrototypeAssetID()
 }

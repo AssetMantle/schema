@@ -14,13 +14,11 @@ type idGetter interface {
 
 var _ idGetter = (*AnyID_AssetID)(nil)
 var _ idGetter = (*AnyID_ClassificationID)(nil)
-var _ idGetter = (*AnyID_CoinID)(nil)
 var _ idGetter = (*AnyID_DataID)(nil)
 var _ idGetter = (*AnyID_HashID)(nil)
 var _ idGetter = (*AnyID_IdentityID)(nil)
 var _ idGetter = (*AnyID_MaintainerID)(nil)
 var _ idGetter = (*AnyID_OrderID)(nil)
-var _ idGetter = (*AnyID_OwnableID)(nil)
 var _ idGetter = (*AnyID_PropertyID)(nil)
 var _ idGetter = (*AnyID_SplitID)(nil)
 var _ idGetter = (*AnyID_StringID)(nil)
@@ -30,9 +28,6 @@ func (m *AnyID_AssetID) get() ids.ID {
 }
 func (m *AnyID_ClassificationID) get() ids.ID {
 	return m.ClassificationID
-}
-func (m *AnyID_CoinID) get() ids.ID {
-	return m.CoinID
 }
 func (m *AnyID_DataID) get() ids.ID {
 	return m.DataID
@@ -48,9 +43,6 @@ func (m *AnyID_MaintainerID) get() ids.ID {
 }
 func (m *AnyID_OrderID) get() ids.ID {
 	return m.OrderID
-}
-func (m *AnyID_OwnableID) get() ids.ID {
-	return m.OwnableID
 }
 func (m *AnyID_PropertyID) get() ids.ID {
 	return m.PropertyID
@@ -78,31 +70,29 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 		var id ids.ID
 		var err error
 
-		if strings.HasSuffix(idTypeString, PrototypeAnyOwnableID().GetTypeID().AsString()) {
-			id, err = PrototypeAnyOwnableID().FromString(idValueString)
-		} else {
-			switch NewStringID(idTypeString).AsString() {
-			case PrototypeClassificationID().GetTypeID().AsString():
-				id, err = PrototypeClassificationID().FromString(idValueString)
-			case PrototypeDataID().GetTypeID().AsString():
-				id, err = PrototypeDataID().FromString(idValueString)
-			case PrototypeHashID().GetTypeID().AsString():
-				id, err = PrototypeHashID().FromString(idValueString)
-			case PrototypeIdentityID().GetTypeID().AsString():
-				id, err = PrototypeIdentityID().FromString(idValueString)
-			case PrototypeMaintainerID().GetTypeID().AsString():
-				id, err = PrototypeMaintainerID().FromString(idValueString)
-			case PrototypeOrderID().GetTypeID().AsString():
-				id, err = PrototypeOrderID().FromString(idValueString)
-			case PrototypePropertyID().GetTypeID().AsString():
-				id, err = PrototypePropertyID().FromString(idValueString)
-			case PrototypeSplitID().GetTypeID().AsString():
-				id, err = PrototypeSplitID().FromString(idValueString)
-			case PrototypeStringID().GetTypeID().AsString():
-				id, err = PrototypeStringID().FromString(idValueString)
-			default:
-				id, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")
-			}
+		switch NewStringID(idTypeString).AsString() {
+		case PrototypeAssetID().GetTypeID().AsString():
+			id, err = PrototypeClassificationID().FromString(idValueString)
+		case PrototypeClassificationID().GetTypeID().AsString():
+			id, err = PrototypeClassificationID().FromString(idValueString)
+		case PrototypeDataID().GetTypeID().AsString():
+			id, err = PrototypeDataID().FromString(idValueString)
+		case PrototypeHashID().GetTypeID().AsString():
+			id, err = PrototypeHashID().FromString(idValueString)
+		case PrototypeIdentityID().GetTypeID().AsString():
+			id, err = PrototypeIdentityID().FromString(idValueString)
+		case PrototypeMaintainerID().GetTypeID().AsString():
+			id, err = PrototypeMaintainerID().FromString(idValueString)
+		case PrototypeOrderID().GetTypeID().AsString():
+			id, err = PrototypeOrderID().FromString(idValueString)
+		case PrototypePropertyID().GetTypeID().AsString():
+			id, err = PrototypePropertyID().FromString(idValueString)
+		case PrototypeSplitID().GetTypeID().AsString():
+			id, err = PrototypeSplitID().FromString(idValueString)
+		case PrototypeStringID().GetTypeID().AsString():
+			id, err = PrototypeStringID().FromString(idValueString)
+		default:
+			id, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")
 		}
 
 		if err != nil {
