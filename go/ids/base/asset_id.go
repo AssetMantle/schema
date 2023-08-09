@@ -5,6 +5,7 @@ package base
 
 import (
 	"bytes"
+	"github.com/AssetMantle/schema/go/documents/base"
 	"strings"
 
 	"github.com/AssetMantle/schema/go/ids"
@@ -68,5 +69,6 @@ func PrototypeAssetID() ids.AssetID {
 }
 
 func GenerateCoinAssetID(denom string) ids.AssetID {
-	return PrototypeAssetID()
+	coinAsset := base.NewCoinAsset(NewStringID(denom))
+	return NewAssetID(coinAsset.GetClassificationID(), coinAsset.GetImmutables())
 }
