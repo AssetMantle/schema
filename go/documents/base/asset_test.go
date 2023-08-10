@@ -69,7 +69,7 @@ func Test_asset_GetBurn(t *testing.T) {
 }
 func Test_asset_GetLock(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithLock := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMesaProperty(constants.LockProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))))))
+	testDocumentWithLock := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMesaProperty(constants.LockHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))))))
 
 	type fields struct {
 		Document documentsSchema.Document
@@ -79,8 +79,8 @@ func Test_asset_GetLock(t *testing.T) {
 		fields fields
 		want   properties.Property
 	}{
-		{"+ve with default lock", fields{testDocument}, constants.LockProperty},
-		{"+ve with mutated", fields{testDocumentWithLock}, baseProperties.NewMesaProperty(constants.LockProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))).ToAnyProperty()},
+		{"+ve with default lock", fields{testDocument}, constants.LockHeightProperty},
+		{"+ve with mutated", fields{testDocumentWithLock}, baseProperties.NewMesaProperty(constants.LockHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))).ToAnyProperty()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
