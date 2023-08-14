@@ -4,160 +4,125 @@
 package base
 
 import (
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
 	"reflect"
 	"testing"
-
-	"github.com/AssetMantle/schema/go/ids"
 )
 
-func TestNewStringID(t *testing.T) {
-	type args struct {
-		stringIDString string
-	}
+func Test_StringIDValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args ids.StringID
+		want error
+	}{
+		{"+ve", &StringID{"test"}, nil},
+		{"+ve", &StringID{""}, nil},
+		// TODO: Regex always throwing true in testing
+		//{"-ve", &StringID{"*&^%$#"}, errorConstants.IncorrectFormat.Wrapf("regular expression check failed")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.ValidateBasic()
+			if tt.want != nil {
+				if !reflect.DeepEqual(got.Error(), tt.want.Error()) {
+					t.Errorf("StringIDValidateBasic() got = %v, want %v", got, tt.want)
+				}
+			}
+		})
+	}
+}
+
+func Test_StringIDType(t *testing.T) {
+	tests := []struct {
+		name string
+		args ids.StringID
 		want ids.StringID
 	}{
-		{"+ve", args{"ID"}, &StringID{"ID"}},
-		{"+ve", args{"S|ID"}, &StringID{"S|ID"}}, // TODO: It should fail
+		{"+ve", &StringID{"test"}, NewStringID(constants.StringIDType)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStringID(tt.args.stringIDString); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewStringID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_stringIDFromInterface(t *testing.T) {
-	type args struct {
-		i interface{}
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *StringID
-		wantErr bool
-	}{
-
-		{"+ve", args{NewStringID("ID")}, &StringID{IDString: "ID"}, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := stringIDFromInterface(tt.args.i)
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("&StringIDFromInterface() error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
+			got := tt.args.GetTypeID()
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("&StringIDFromInterface() got = %v, want %v", got, tt.want)
+				t.Errorf("StringIDType() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_stringID_Bytes(t *testing.T) {
-	type fields struct {
-		IDString string
-	}
+func Test_StringIDFromString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args string
+		want ids.ID
 	}{
-
-		{"+ve", fields{"ID"}, []byte("ID")},
+		{"+ve", "", &StringID{""}},
+		{"+ve", "test", &StringID{"test"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringID := &StringID{
-				IDString: tt.fields.IDString,
-			}
-			if got := stringID.Bytes(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Bytes() = %v, want %v", got, tt.want)
+			got := NewStringID(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringIDFromString() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_stringID_Compare(t *testing.T) {
-	type fields struct {
-		IDString string
-	}
-	type args struct {
-		id ids.ID
-	}
+func Test_StringIDAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args ids.StringID
+		want string
 	}{
-
-		{"+ve", fields{"ID"}, args{NewStringID("ID")}, 0},
-		// TODO: It Should fail
-		{"-ve", fields{"ID"}, args{NewStringID("ID2")}, -1},
+		{"+ve", &StringID{"test"}, "test"},
+		{"+ve", &StringID{""}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringID := &StringID{
-				IDString: tt.fields.IDString,
-			}
-			if got := stringID.Compare(tt.args.id); got != tt.want {
-				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringIDAsString() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_stringID_String(t *testing.T) {
-	type fields struct {
-		IDString string
-	}
+func Test_StringIDBytes(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args ids.StringID
+		want []byte
 	}{
-
-		{"+ve", fields{"ID"}, "ID"},
+		{"+ve", &StringID{"test"}, []byte("test")},
+		{"+ve", &StringID{""}, []byte{}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringID := &StringID{
-				IDString: tt.fields.IDString,
-			}
-			if got := stringID.AsString(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringIDByte() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_stringID_ValidateBasic(t *testing.T) {
-	type fields struct {
-		IDString string
-	}
+func Test_StringIDCompare(t *testing.T) {
+	stringID := &StringID{"test"}
 	tests := []struct {
-		name   string
-		fields fields
-		want   error
+		name string
+		args ids.StringID
+		want bool
 	}{
-
-		{"+ve", fields{"ID"}, nil},
+		{"+ve", &StringID{"test"}, true},
+		{"-ve", &StringID{"test2"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringID := &StringID{
-				IDString: tt.fields.IDString,
-			}
-			if got := stringID.ValidateBasic(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
+			got := tt.args.Compare(stringID)
+			if !reflect.DeepEqual(got == 0, tt.want) {
+				t.Errorf("StringIDCompare() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

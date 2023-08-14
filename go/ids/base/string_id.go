@@ -19,7 +19,7 @@ func (stringID *StringID) Get() string {
 }
 func (stringID *StringID) ValidateBasic() error {
 	if !utilities.IsValidStringID(stringID.AsString()) {
-		return errorConstants.IncorrectFormat
+		return errorConstants.IncorrectFormat.Wrapf("regular expression check failed")
 	}
 	return nil
 }

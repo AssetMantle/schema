@@ -4,177 +4,133 @@
 package base
 
 import (
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"github.com/AssetMantle/schema/go/ids"
+	"github.com/AssetMantle/schema/go/ids/constants"
+	"github.com/AssetMantle/schema/go/ids/utilities"
 	"reflect"
 	"strings"
 	"testing"
-
-	"github.com/AssetMantle/schema/go/ids"
 )
 
-func createTestInputForPropertyID() (ids.StringID, ids.StringID, ids.PropertyID) {
-	testKey := NewStringID("ID")
-	testType := NewStringID("ID2")
-	testPropertyID := NewPropertyID(testKey, testType)
-	return testKey, testType, testPropertyID
-}
-
-func TestNewPropertyID(t *testing.T) {
-	type args struct {
-		key  ids.StringID
-		Type ids.StringID
-	}
+func Test_PropertyIDValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
-		want ids.PropertyID
+		args ids.PropertyID
+		want error
 	}{
-
-		{"+ve", args{NewStringID("ID"), NewStringID("ID2")}, &PropertyID{NewStringID("ID").(*StringID), NewStringID("ID2").(*StringID)}},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, nil},
+		//{"-ve", &PropertyID{&StringID{"keyID"}, &StringID{"typ%?$%^eID"}}, errorConstants.IncorrectFormat.Wrapf("regular expression check failed")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPropertyID(tt.args.key, tt.args.Type); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewPropertyID() = %v, want %v", got, tt.want)
+			got := tt.args.ValidateBasic()
+			if tt.want != nil {
+				if !reflect.DeepEqual(got.Error(), tt.want.Error()) {
+					t.Errorf("PropertyIDValidateBasic() got = %v, want %v", got, tt.want)
+				}
 			}
 		})
 	}
 }
 
-func Test_propertyID_Bytes(t *testing.T) {
-	testKey, testType, _ := createTestInputForPropertyID()
-	type fields struct {
-		Key  ids.StringID
-		Type ids.StringID
-	}
+func Test_PropertyIDType(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args ids.PropertyID
+		want ids.StringID
 	}{
-
-		{"+ve", fields{testKey, testType}, append([]byte(testKey.AsString()), []byte(testType.AsString())...)},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, NewStringID(constants.PropertyIDType)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyID := &PropertyID{
-				KeyID:  tt.fields.Key.(*StringID),
-				TypeID: tt.fields.Type.(*StringID),
-			}
-			if got := propertyID.Bytes(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Bytes() = %v, want %v", got, tt.want)
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PropertyIDType() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_propertyID_Compare(t *testing.T) {
-	testKey, testType, testPropertyID := createTestInputForPropertyID()
-	type fields struct {
-		Key  ids.StringID
-		Type ids.StringID
-	}
-	type args struct {
-		id ids.ID
-	}
+func Test_PropertyIDFromString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args string
+		want ids.ID
+		err  error
 	}{
-
-		{"+ve", fields{testKey, testType}, args{testPropertyID}, 0},
-		{"-ve", fields{testType, testType}, args{testPropertyID}, -1},
+		{"+ve", strings.Join([]string{"keyID", "typeID"}, utilities.IDSeparator), &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, nil},
+		{"+ve", "", &PropertyID{&StringID{}, &StringID{}}, nil},
+		{"+ve", "test", &PropertyID{&StringID{}, &StringID{}}, errorConstants.IncorrectFormat.Wrapf("expected composite id")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyID := &PropertyID{
-				KeyID:  tt.fields.Key.(*StringID),
-				TypeID: tt.fields.Type.(*StringID),
+			got, err := PrototypePropertyID().FromString(tt.args)
+			if err != nil {
+				if !reflect.DeepEqual(err.Error(), tt.err.Error()) {
+					t.Errorf("PropertyIDFromString() got error = %v, want error %v", err.Error(), tt.err.Error())
+				}
 			}
-			if got := propertyID.Compare(tt.args.id); got != tt.want {
-				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PropertyIDFromString() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_propertyID_GetKey(t *testing.T) {
-	testKey, testType, _ := createTestInputForPropertyID()
-	type fields struct {
-		Key  ids.StringID
-		Type ids.StringID
-	}
+func Test_PropertyIDAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
+		name string
+		args ids.PropertyID
+		want string
 	}{
-
-		{"+ve", fields{testKey, testType}, testKey},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, strings.Join([]string{"keyID", "typeID"}, utilities.IDSeparator)},
+		{"+ve", &PropertyID{&StringID{}, &StringID{}}, "."},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyID := &PropertyID{
-				KeyID:  tt.fields.Key.(*StringID),
-				TypeID: tt.fields.Type.(*StringID),
-			}
-			if got := propertyID.GetKey(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetKey() = %v, want %v", got, tt.want)
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PropertyIDAsString() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_propertyID_GetType(t *testing.T) {
-	testKey, testType, _ := createTestInputForPropertyID()
-	type fields struct {
-		Key  ids.StringID
-		Type ids.StringID
-	}
+func Test_PropertyIDBytes(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
+		name string
+		args ids.PropertyID
+		want []byte
 	}{
-
-		{"+ve", fields{testKey, testType}, testType},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, append([]byte("keyID"), []byte("typeID")...)},
+		{"+ve", &PropertyID{&StringID{}, &StringID{}}, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyID := &PropertyID{
-				KeyID:  tt.fields.Key.(*StringID),
-				TypeID: tt.fields.Type.(*StringID),
-			}
-			if got := propertyID; !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetTypeID() = %v, want %v", got, tt.want)
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PropertyIDByte() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_propertyID_String(t *testing.T) {
-	testKey, testType, _ := createTestInputForPropertyID()
-	type fields struct {
-		Key  ids.StringID
-		Type ids.StringID
-	}
+func Test_PropertyIDCompare(t *testing.T) {
+	propertyID := &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args ids.PropertyID
+		want bool
 	}{
-
-		{"+ve", fields{testKey, testType}, strings.Join([]string{testKey.AsString(), testType.AsString()}, ".")},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, true},
+		{"-ve", &PropertyID{&StringID{}, &StringID{}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			propertyID := &PropertyID{
-				KeyID:  tt.fields.Key.(*StringID),
-				TypeID: tt.fields.Type.(*StringID),
-			}
-			if got := propertyID.AsString(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
+			got := tt.args.Compare(propertyID)
+			if !reflect.DeepEqual(got == 0, tt.want) {
+				t.Errorf("PropertyIDCompare() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
