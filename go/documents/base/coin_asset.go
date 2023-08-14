@@ -32,3 +32,8 @@ func PrototypeCoinAsset() documents.CoinAsset {
 func NewCoinAsset(denomID ids.StringID) documents.CoinAsset {
 	return NewAsset(coinAssetClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.DenomIDProperty.GetKey(), baseData.NewIDData(denomID)))), baseQualified.NewMutables(baseLists.NewPropertyList())).(asset)
 }
+
+func GenerateCoinAssetID(denom string) ids.AssetID {
+	coinAsset := NewCoinAsset(baseIDs.NewStringID(denom))
+	return baseIDs.NewAssetID(coinAsset.GetClassificationID(), coinAsset.GetImmutables())
+}
