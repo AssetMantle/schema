@@ -6,7 +6,7 @@ package base
 import (
 	"bytes"
 	"strings"
-
+	
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
@@ -65,8 +65,4 @@ func PrototypeAssetID() ids.AssetID {
 	return &AssetID{
 		HashID: PrototypeHashID().(*HashID),
 	}
-}
-
-func GenerateCoinAssetID(denom string) ids.AssetID {
-	return PrototypeAssetID()
 }

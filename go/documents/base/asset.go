@@ -1,11 +1,15 @@
 package base
 
 import (
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type asset struct {
@@ -14,26 +18,26 @@ type asset struct {
 
 var _ documents.Asset = (*asset)(nil)
 
-func (asset asset) GetBurn() properties.Property {
-	if burn := asset.GetProperty(constants.BurnHeightProperty.GetID()); burn != nil {
-		return burn
+func (asset asset) GetBurnHeight() types.Height {
+	if property := asset.GetProperty(constants.BurnHeightProperty.GetID()); property != nil && property.IsMeta() {
+		return property.(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
 	}
 
-	return constants.BurnHeightProperty
+	return constants.BurnHeightProperty.GetData().Get().(data.HeightData).Get()
 }
-func (asset asset) GetLock() properties.Property {
-	if lock := asset.GetProperty(constants.LockProperty.GetID()); lock != nil {
-		return lock
+func (asset asset) GetLockHeight() types.Height {
+	if property := asset.GetProperty(constants.LockHeightProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
 	}
 
-	return constants.LockProperty
+	return constants.LockHeightProperty.GetData().Get().(data.HeightData).Get()
 }
-func (asset asset) GetSupply() properties.Property {
-	if supply := asset.GetProperty(constants.SupplyProperty.GetID()); supply != nil {
-		return supply
+func (asset asset) GetSupply() sdkTypes.Int {
+	if property := asset.GetProperty(constants.SupplyProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
 
-	return constants.SupplyProperty
+	return constants.SupplyProperty.GetData().Get().(data.NumberData).Get()
 }
 
 func NewAsset(classificationID ids.ClassificationID, immutables qualified.Immutables, mutables qualified.Mutables) documents.Asset {

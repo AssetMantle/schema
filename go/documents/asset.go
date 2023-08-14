@@ -4,12 +4,14 @@
 package documents
 
 import (
-	"github.com/AssetMantle/schema/go/documents/capabilities"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/AssetMantle/schema/go/types"
 )
 
 type Asset interface {
-	capabilities.Burnable
-	capabilities.Lockable
-	capabilities.Splittable
+	GetBurnHeight() types.Height
+	GetLockHeight() types.Height
+	GetSupply() sdkTypes.Int
 	Document
 }
