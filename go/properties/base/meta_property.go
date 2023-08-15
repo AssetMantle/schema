@@ -47,7 +47,7 @@ func (metaProperty *MetaProperty) ValidateBasic() error {
 		return err
 	}
 	if metaProperty.Data.GetTypeID().Compare(metaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat.Wrapf("data type id does not match property type id")
+		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", metaProperty.ID.KeyID.AsString(), metaProperty.ID.TypeID.AsString(), metaProperty.Data.GetTypeID().AsString())
 	}
 	return nil
 }

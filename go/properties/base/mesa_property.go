@@ -24,7 +24,7 @@ func (mesaProperty *MesaProperty) ValidateBasic() error {
 		return err
 	}
 	if mesaProperty.DataID.TypeID.Compare(mesaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat
+		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", mesaProperty.ID.KeyID.AsString(), mesaProperty.ID.TypeID.AsString(), mesaProperty.DataID.TypeID.AsString())
 	}
 	return nil
 }
