@@ -2,7 +2,6 @@ package base
 
 import (
 	"bytes"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"strings"
 
 	"github.com/AssetMantle/schema/go/ids"
@@ -31,9 +30,6 @@ func (*SplitID) FromString(idString string) (ids.ID, error) {
 	}
 
 	assetIDAndOwnerID := stringUtilities.SplitCompositeIDString(idString)
-	if len(assetIDAndOwnerID) != 2 {
-		return PrototypePropertyID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")
-	}
 	assetID, err := PrototypeAssetID().FromString(assetIDAndOwnerID[0])
 	if err != nil {
 		return PrototypeSplitID(), err
