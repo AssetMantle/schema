@@ -72,7 +72,7 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 
 		switch NewStringID(idTypeString).AsString() {
 		case PrototypeAssetID().GetTypeID().AsString():
-			id, err = PrototypeClassificationID().FromString(idValueString)
+			id, err = PrototypeAssetID().FromString(idValueString)
 		case PrototypeClassificationID().GetTypeID().AsString():
 			id, err = PrototypeClassificationID().FromString(idValueString)
 		case PrototypeDataID().GetTypeID().AsString():

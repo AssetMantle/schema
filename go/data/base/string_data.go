@@ -11,7 +11,6 @@ import (
 
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
-	"github.com/AssetMantle/schema/go/data/utilities"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
@@ -23,7 +22,7 @@ func (stringData *StringData) Get() string {
 	return stringData.Value
 }
 func (stringData *StringData) ValidateBasic() error {
-	if !utilities.IsValidStringData(stringData.Value) {
+	if !dataConstants.IsValidStringData(stringData.Value) {
 		return errorConstants.IncorrectFormat
 	}
 

@@ -40,6 +40,9 @@ func (x *AnyData_StringData) get() data.Data {
 func (x *AnyData_ListData) get() data.Data {
 	return x.ListData
 }
+func (x *AnyData_LinkedData) get() data.Data {
+	return x.LinkedData
+}
 
 var _ data.AnyData = (*AnyData)(nil)
 
@@ -70,6 +73,8 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 				Data, err = PrototypeHeightData().FromString(dataValueString)
 			case PrototypeListData().GetTypeID().AsString():
 				Data, err = PrototypeListData().FromString(dataValueString)
+			case PrototypeLinkedData().GetTypeID().AsString():
+				Data, err = PrototypeLinkedData().FromString(dataValueString)
 			case PrototypeNumberData().GetTypeID().AsString():
 				Data, err = PrototypeNumberData().FromString(dataValueString)
 			case PrototypeStringData().GetTypeID().AsString():

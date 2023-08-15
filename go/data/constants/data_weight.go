@@ -9,6 +9,7 @@ var (
 	HeightDataWeight     = sdkTypes.NewInt(8)
 	IDDataWeight         = sdkTypes.NewInt(64)
 	ListDataWeight       = sdkTypes.NewInt(1024)
+	LinkedDataWeight     = sdkTypes.NewInt(384)
 	NumberDataWeight     = sdkTypes.NewInt(8)
 	StringDataWeight     = sdkTypes.NewInt(256)
 )
