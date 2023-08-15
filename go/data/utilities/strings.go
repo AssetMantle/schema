@@ -14,3 +14,7 @@ func JoinListStrings(listStrings ...string) string {
 func SplitListString(listString string) []string {
 	return strings.Split(listString, constants.ListStringSeparator)
 }
+
+func SplitNListString(listString string, n int) []string {
+	return strings.SplitN(listString, constants.ListStringSeparator, n)
+}

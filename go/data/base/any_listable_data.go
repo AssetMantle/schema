@@ -32,6 +32,9 @@ func (x *AnyListableData_NumberData) get() data.ListableData {
 func (x *AnyListableData_StringData) get() data.ListableData {
 	return x.StringData
 }
+func (x *AnyListableData_LinkedData) get() data.ListableData {
+	return x.LinkedData
+}
 
 var _ data.AnyListableData = (*AnyListableData)(nil)
 
