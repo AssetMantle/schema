@@ -46,6 +46,9 @@ func (m *AnyProperty) GetBondWeight() sdkTypes.Int {
 func (m *AnyProperty) IsMeta() bool {
 	return m.Impl.(getter).get().IsMeta()
 }
+func (m *AnyProperty) IsMesa() bool {
+	return m.Impl.(getter).get().IsMesa()
+}
 func (m *AnyProperty) ToAnyProperty() properties.AnyProperty {
 	return m.Impl.(getter).get().ToAnyProperty()
 }

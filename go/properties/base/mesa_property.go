@@ -70,6 +70,9 @@ func (mesaProperty *MesaProperty) ToAnyProperty() properties.AnyProperty {
 
 func (mesaProperty *MesaProperty) Mutate(data data.Data) properties.Property {
 	mesaProperty.DataID = data.GetID().(*baseIDs.DataID)
+	if err := mesaProperty.ValidateBasic(); err != nil {
+		panic(err)
+	}
 	return mesaProperty
 }
 func NewEmptyMesaPropertyFromID(propertyID ids.PropertyID) properties.MesaProperty {

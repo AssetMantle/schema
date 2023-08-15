@@ -75,8 +75,14 @@ func (metaProperty *MetaProperty) GetBondWeight() sdkTypes.Int {
 func (metaProperty *MetaProperty) IsMeta() bool {
 	return true
 }
+func (metaProperty *MetaProperty) IsMesa() bool {
+	return false
+}
 func (metaProperty *MetaProperty) Mutate(data data.Data) properties.Property {
 	metaProperty.Data = data.ToAnyData().(*base.AnyData)
+	if err := metaProperty.ValidateBasic(); err != nil {
+		panic(err)
+	}
 	return metaProperty
 }
 func (metaProperty *MetaProperty) Compare(property properties.Property) int {

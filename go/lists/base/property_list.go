@@ -42,6 +42,8 @@ func (propertyList *PropertyList) Get() []properties.AnyProperty {
 
 	return anyProperties
 }
+
+// NOTE: No need to sort since it's an internal function, function calling it is already sorting it
 func (propertyList *PropertyList) search(property properties.Property) (index int, found bool) {
 	index = sort.Search(
 		len(propertyList.AnyProperties),
@@ -171,7 +173,7 @@ func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []proper
 
 func NewPropertyList(properties ...properties.Property) lists.PropertyList {
 	sort.Slice(properties, func(i, j int) bool {
-		return properties[i].Compare(properties[j]) <= 0
+		return properties[i].Compare(properties[j]) < 0
 	})
 
 	return &PropertyList{propertiesToAnyProperties(properties...)}

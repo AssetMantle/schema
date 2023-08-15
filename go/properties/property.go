@@ -18,6 +18,7 @@ type Property interface {
 	GetBondWeight() sdkTypes.Int
 
 	IsMeta() bool
+	IsMesa() bool
 	ValidateBasic() error
 
 	ToAnyProperty() AnyProperty
