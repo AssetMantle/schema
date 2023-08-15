@@ -15,20 +15,22 @@ import (
 
 func Test_PropertyIDValidateBasic(t *testing.T) {
 	tests := []struct {
-		name string
-		args ids.PropertyID
-		want error
+		name      string
+		args      ids.PropertyID
+		wantError bool
 	}{
-		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, nil},
-		//{"-ve", &PropertyID{&StringID{"keyID"}, &StringID{"typ%?$%^eID"}}, errorConstants.IncorrectFormat.Wrapf("regular expression check failed")},
+		{"+ve", &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, false},
+		// TODO: Regex always throwing true in testing
+		{"-ve", &PropertyID{&StringID{"keyID"}, &StringID{"typ%?$%^eID"}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.ValidateBasic()
-			if tt.want != nil {
-				if !reflect.DeepEqual(got.Error(), tt.want.Error()) {
-					t.Errorf("PropertyIDValidateBasic() got = %v, want %v", got, tt.want)
-				}
+			err := tt.args.ValidateBasic()
+			if err != nil && !tt.wantError {
+				t.Errorf("PropertyIDValidateBasic() got = %v, want %v", err, tt.wantError)
+			}
+			if err == nil && tt.wantError {
+				t.Errorf("PropertyIDValidateBasic() got = %v, want %v", err, tt.wantError)
 			}
 		})
 	}

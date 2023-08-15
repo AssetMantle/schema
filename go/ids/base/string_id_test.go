@@ -12,22 +12,23 @@ import (
 
 func Test_StringIDValidateBasic(t *testing.T) {
 	tests := []struct {
-		name string
-		args ids.StringID
-		want error
+		name      string
+		args      ids.StringID
+		wantError bool
 	}{
-		{"+ve", &StringID{"test"}, nil},
-		{"+ve", &StringID{""}, nil},
+		{"+ve", &StringID{"test"}, false},
+		{"+ve", &StringID{""}, false},
 		// TODO: Regex always throwing true in testing
-		//{"-ve", &StringID{"*&^%$#"}, errorConstants.IncorrectFormat.Wrapf("regular expression check failed")},
+		{"-ve", &StringID{"*&^%$#"}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.ValidateBasic()
-			if tt.want != nil {
-				if !reflect.DeepEqual(got.Error(), tt.want.Error()) {
-					t.Errorf("StringIDValidateBasic() got = %v, want %v", got, tt.want)
-				}
+			err := tt.args.ValidateBasic()
+			if err != nil && !tt.wantError {
+				t.Errorf("PropertyIDValidateBasic() got = %v, want %v", err, tt.wantError)
+			}
+			if err == nil && tt.wantError {
+				t.Errorf("PropertyIDValidateBasic() got = %v, want %v", err, tt.wantError)
 			}
 		})
 	}

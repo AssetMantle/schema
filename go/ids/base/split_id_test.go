@@ -61,7 +61,7 @@ func Test_SplitIDFromString(t *testing.T) {
 	}{
 		{"+ve", strings.Join([]string{testValidBase64URLString, testValidBase64URLString}, utilities.IDSeparator), &SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{testBytes}}}, nil},
 		{"+ve", ".", PrototypeSplitID(), nil},
-		{"+ve", "test", PrototypeSplitID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")},
+		{"+ve", testValidBase64URLString, &SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{[]byte{}}}}, nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
