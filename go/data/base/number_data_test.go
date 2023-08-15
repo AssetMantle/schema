@@ -4,7 +4,6 @@
 package base
 
 import (
-	"fmt"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
@@ -67,7 +66,6 @@ func Test_NumberData_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			fmt.Println(tt.args.Bytes())
 			got := tt.args.Compare(NewNumberData(sdkTypes.NewInt(10)))
 			if got != tt.want {
 				t.Errorf("NumberData_Compare() = %v, want %v", got, tt.want)

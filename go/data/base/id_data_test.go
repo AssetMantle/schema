@@ -37,7 +37,7 @@ func Test_IDDataValidateBasic(t *testing.T) {
 		want bool
 	}{
 		{"+ve", NewIDData(baseIDs.NewStringID("test")), false},
-		//{"-ve", NewIDData(baseIDs.NewStringID("test///")), true},
+		{"-ve", NewIDData(baseIDs.NewStringID("test///")), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -208,7 +208,7 @@ func Test_IDDataFromString(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve", "SI|id", &IDData{baseIDs.NewStringID("id").ToAnyID().(*baseIDs.AnyID)}, false},
-		{"-ve", "U|id", PrototypeIDData(), true},
+		{"-ve", "K|id", PrototypeIDData(), true},
 		{"-ve", "abc", PrototypeIDData(), true},
 		{"+ve", "", PrototypeIDData(), false},
 	}

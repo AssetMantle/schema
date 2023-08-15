@@ -1,3 +1,6 @@
+// Copyright [2021] - [2022], AssetMantle Pte. Ltd. and the code contributors
+// SPDX-License-Identifier: Apache-2.0
+
 package base
 
 import (
@@ -30,7 +33,7 @@ func Test_AnyDataFromString(t *testing.T) {
 		wantErr bool
 	}{
 		{"String Data", args{"S|newFact"}, NewStringData("newFact").ToAnyData(), false},
-		{"-ve Unknown Data", args{"U|test"}, nil, true},
+		{"-ve Unknown Data", args{"K|test"}, nil, true},
 		{"List Data", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewListData(dataList...).ToAnyData(), false},
 		{"List Data empty list", args{"L|"}, NewListData().ToAnyData(), false},
 		{"Id Data", args{"SI|data"}, NewIDData(baseIDs.NewStringID("data")).ToAnyData(), false},
@@ -40,7 +43,8 @@ func Test_AnyDataFromString(t *testing.T) {
 		{"+ve", args{""}, PrototypeAnyData(), false},
 		{"AccAddress data", args{"A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"}, NewAccAddressData(fromAccAddress).ToAnyData(), false},
 		{"-ve String Data", args{"S|S,|newFact"}, NewStringData("S,|newFact").ToAnyData(), false},
-		{"-ve List Data String", args{"L|S|,U|,S|"}, nil, true},
+		{"-ve List Data String", args{"L|S|,K|,S|"}, nil, true},
+		{"-ve List Data String", args{"U|" + testValidBase64String + ",jpg," + testService}, testLinkedData.ToAnyData(), false},
 		{"-ve List Data String", args{"L|S|a,N|-2,H|10"}, NewListData([]data.ListableData{NewHeightData(baseTypes.NewHeight(10)), NewNumberData(sdkTypes.NewInt(-2)), NewStringData("a")}...).ToAnyData(), true},
 	}
 
@@ -193,34 +197,6 @@ func Test_readHeightData(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readHeightData() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_readIDData(t *testing.T) {
-	type args struct {
-		dataString string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    data.IDData
-		wantErr bool
-	}{
-		{"+ve nil", args{}, PrototypeIDData(), false},
-		{"+ve", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewIDData(baseIDs.NewStringID("L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef")), false},
-		{"-ve string with special char", args{"testDataString|,"}, NewIDData(baseIDs.NewStringID("testDataString|,")), false},
-		{"-ve", args{"testData"}, NewIDData(baseIDs.NewStringID("testData")), false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := PrototypeIDData().FromString(tt.args.dataString)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("readIDData() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("readIDData() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

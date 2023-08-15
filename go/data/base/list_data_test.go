@@ -319,7 +319,7 @@ func Test_ListDataFromString(t *testing.T) {
 		{"+ve", "", &ListData{[]*AnyListableData{}}, false},
 		{"+ve", "S|Data,H|10", sortedTestListData, false},
 		{"-ve", "L|S|test", sortedTestListData, true},
-		{"-ve", "U|test,H|10", testListData, true},
+		{"-ve", "K|test,H|10", testListData, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
