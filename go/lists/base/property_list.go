@@ -27,8 +27,9 @@ func (propertyList *PropertyList) ValidateBasic() error {
 	return nil
 }
 func (propertyList *PropertyList) GetProperty(propertyID ids.PropertyID) properties.AnyProperty {
-	if i, found := propertyList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
-		return propertyList.Get()[i]
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	if i, found := updatedList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
+		return updatedList.Get()[i]
 	}
 
 	return nil
