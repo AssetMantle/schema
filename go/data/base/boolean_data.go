@@ -51,7 +51,7 @@ func (booleanData *BooleanData) FromString(dataString string) (data.Data, error)
 	}
 
 	booleanData.Value = Bool
-	if booleanData.ValidateBasic() != nil {
+	if err = booleanData.ValidateBasic(); err != nil {
 		return PrototypeBooleanData(), err
 	}
 

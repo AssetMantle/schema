@@ -5,12 +5,9 @@ package base
 
 import (
 	"bytes"
-	"fmt"
+	"github.com/AssetMantle/schema/go/types/base"
 	"reflect"
 	"testing"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
@@ -18,24 +15,27 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
-var fromAddress = "cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"
+var (
+	testListData       = NewListData(NewStringData("Data"), NewHeightData(base.NewHeight(10)))
+	sortedTestListData = NewListData(NewHeightData(base.NewHeight(10)), NewStringData("Data"))
+)
 
-var accAddress = NewAccAddressData(sdkTypes.AccAddress(fromAddress)).AsString()
-
-func TestListDataValidateBasic(t *testing.T) {
-	type args struct {
-		value data.ListData
-	}
+func Test_ListDataValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args data.ListData
 		want bool
 	}{
-		{"+ve", args{NewListData(NewStringData("Data"))}, true},
+		{"+ve", NewListData(NewStringData("Data")), false},
+		{"-ve", NewListData(&HeightData{&base.Height{-10}}), true},
 	}
 	for _, tt := range tests {
-		if err := tt.args.value.ValidateBasic(); (err != nil) != tt.want {
-			t.Errorf("got = %v, want = %v", err, tt.want)
+		err := tt.args.ValidateBasic()
+		if err == nil && tt.want {
+			t.Errorf("ListDataValidateBasic() got = %v, want = %v", err, tt.want)
+		}
+		if err != nil && !tt.want {
+			t.Errorf("ListDataValidateBasic() got = %v, want = %v", err, tt.want)
 		}
 	}
 }
@@ -48,290 +48,293 @@ func TestListDataPrototype(t *testing.T) {
 		args args
 		want data.Data
 	}{
-		{"+ve", args{}, &ListData{[]*AnyListableData(nil)}},
+		{"+ve", args{}, &ListData{[]*AnyListableData{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, PrototypeListData(), "Prototype(%v)", tt.args.value)
+			got := PrototypeListData()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ListDataPrototype() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func TestNewListData(t *testing.T) {
-	type args struct {
-		value data.ListableData
-	}
 	tests := []struct {
 		name string
-		args args
-		want data.Data
+		args []data.ListableData
+		want data.ListData
 	}{
-		{"+ve for some id", args{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
-		{"+ve for empty String", args{NewStringData("")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
-
-		// {"+ve empty datalist", args{data.Data()}, (&ListData{}).ZeroValue()},
-		{"+ve address string", args{NewStringData(fromAddress)}, &ListData{[]*AnyListableData{NewStringData(fromAddress).ToAnyListableData().(*AnyListableData)}}},
-		// TODO: Check address format
-		// {"-ve wrong address string format", args{NewListData(NewStringData(fromAddress))}, &ListData{}.ZeroValue()},
+		{"+ve for some id", []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve for empty String", []data.ListableData{NewStringData(""), NewHeightData(base.NewHeight(-1))}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewHeightData(base.NewHeight(-1)).ToAnyListableData().(*AnyListableData)}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewListData(tt.args.value); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got = %v, want = %v", got, tt.want)
+			got := NewListData(tt.args...)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewListData() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_listData_Add(t *testing.T) {
-	type fields struct {
-		Value []data.ListableData
-	}
-
+func Test_ListDataSearch(t *testing.T) {
 	tests := []struct {
-		name        string
-		fields      fields
-		want        data.ListData
-		wantFailure bool
+		name   string
+		args   data.ListData
+		search data.ListableData
+		want1  int
+		want2  bool
 	}{
-		{"+ve for multiple ids", fields{[]data.ListableData{NewStringData("Data"), NewStringData("Data"), NewStringData("Data")}}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve for multiple ids/nils", fields{[]data.ListableData{NewStringData("Data"), NewStringData(""), NewStringData("Data")}}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve for some id", fields{[]data.ListableData{NewStringData("Data")}}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve for empty String", fields{[]data.ListableData{NewStringData("")}}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}, false},
-		{"-ve for value inequality", fields{[]data.ListableData{NewStringData("Data")}}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData)}}, true},
-		{"-ve for occurrence inequality", fields{[]data.ListableData{NewStringData("Data"), NewStringData("Data"), NewStringData("Data")}}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}...), NewStringData("Data"), 1, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}...), NewHeightData(base.NewHeight(10)), 0, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...), NewStringData(""), 0, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...), NewStringData("test"), 2, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got1, got2 := tt.args.Search(tt.search)
+			if !reflect.DeepEqual(got1, tt.want1) || !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("ListDataSearch() got1 = %v, got2 = %v, want1 = %v want2 = %v", got1, got2, tt.want1, tt.want2)
+			}
+		})
+	}
+}
+
+func Test_ListDataAdd(t *testing.T) {
+	tests := []struct {
+		name      string
+		args      []data.ListableData
+		want      data.ListData
+		wantError bool
+	}{
+		{"+ve", []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10)), NewStringData("Data")}, &ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
+		{"+ve", []data.ListableData{NewStringData("Data"), NewStringData(""), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
+		{"+ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
+		{"+ve", []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}, false},
+		{"-ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData)}}, true},
+		{"-ve", []data.ListableData{NewStringData("Data"), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			listData := &ListData{}
-
-			if got := listData.Add(tt.fields.Value...); reflect.DeepEqual(got, tt.want) != !tt.wantFailure {
-				t.Errorf("got = %v, want = %v", got, tt.want)
+			if got := listData.Add(tt.args...); !reflect.DeepEqual(got, tt.want) && !tt.wantError {
+				t.Errorf("ListDataAdd got = %v, want = %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_listData_Bytes(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
+func Test_ListDataBytes(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args data.ListData
+		want []byte
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, NewStringData("Data").Bytes()}, // for a single data no loop iteration is required, so directly it's byte should match
-		{"+ve for multiple ids", fields{NewListData(NewStringData("Data"), NewStringData("Data1"))}, bytes.Join([][]byte{NewStringData("Data").Bytes(), NewStringData("Data1").Bytes()}, nil)},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, []byte(nil)},
+		{"+ve", NewListData(NewStringData("Data")), NewStringData("Data").Bytes()}, // for a single data no loop iteration is required, so directly it's byte should match
+		{"+ve", testListData, bytes.Join([][]byte{NewHeightData(base.NewHeight(10)).Bytes(), NewStringData("Data").Bytes()}, dataConstants.ListBytesSeparator)},
+		{"+ve", NewListData(NewStringData("")), []byte(nil)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.Bytes(), "Bytes()")
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ListDataBytes() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_GenerateHashID(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.ListData
+		want ids.HashID
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, baseIDs.GenerateHashID((&ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}).Bytes()).AsString()},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, baseIDs.GenerateHashID((&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}).Bytes()).AsString()},
-		{"empty string", fields{NewListData()}, baseIDs.NewStringID("").AsString()},
-		{"+ve case", fields{NewListData(NewStringData(accAddress))}, baseIDs.NewStringID("xrHmURH4R458qdPeDW8kU9eO3a3bvQRE0W6CAoZ8yCw=").AsString()},
-		{"-ve case", fields{NewListData(NewStringData(""))}, baseIDs.NewStringID("").AsString()},
-		{"-ve case with empty datalist", fields{NewListData([]data.ListableData{}...)}, baseIDs.NewStringID("").AsString()},
-		{"-ve case with nil data", fields{NewListData()}, baseIDs.NewStringID("").AsString()},
+		{"+ve", testListData, baseIDs.GenerateHashID(testListData.Bytes())},
+		{"+ve", NewListData(NewStringData("")), baseIDs.GenerateHashID(NewStringData("").Bytes())},
+		{"+ve", NewListData(), baseIDs.GenerateHashID()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.GenerateHashID().AsString(), "GenerateHashID()")
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_GenerateHashID() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_Get(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   []data.AnyListableData
+		name string
+		args data.ListData
+		want []data.AnyListableData
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, (&ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}).Get()},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, (&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}).Get()},
+		{"+ve", NewListData(NewStringData("Data")), (&ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}).Get()},
+		{"+ve", NewListData(NewStringData("")), (&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}).Get()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.Get(), "Get()")
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_Get() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_GetID(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
+		name string
+		args data.ListData
+		want ids.DataID
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}})},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}})},
+		{"+ve", testListData, baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}})},
+		{"+ve", NewListData(NewStringData("")), baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}})},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.GetID(), "GetID()")
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_GetID() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_GetType(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
+		name string
+		args data.ListData
+		want ids.StringID
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, dataConstants.ListDataTypeID},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, dataConstants.ListDataTypeID},
+		{"+ve", testListData, dataConstants.ListDataTypeID},
+		{"+ve", NewListData(NewHeightData(base.NewHeight(10))), dataConstants.ListDataTypeID},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.GetTypeID(), "GetTypeID()")
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_GetType() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_Remove(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
-	type args struct {
-		listableData []data.ListableData
-	}
 	tests := []struct {
 		name   string
-		fields fields
-		args   args
+		args   data.ListData
+		remove []data.ListableData
 		want   data.ListData
 	}{
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, args{[]data.ListableData{}}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
-		{"+ve for empty String & removing it", fields{NewListData(NewStringData(""))}, args{[]data.ListableData{NewStringData("")}}, &ListData{[]*AnyListableData{}}},
-		{"+ve ", fields{NewListData(NewStringData("data"))}, args{[]data.ListableData{NewStringData("data")}}, &ListData{[]*AnyListableData{}}},
+		{"+ve", NewListData(NewStringData("")), []data.ListableData{}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", NewListData(NewStringData("")), []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{}}},
+		{"+ve", NewListData(NewStringData("data")), []data.ListableData{NewStringData("data")}, &ListData{[]*AnyListableData{}}},
+		{"+ve", testListData, []data.ListableData{NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", testListData, []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.Remove(tt.args.listableData...), "Remove(%v)", tt.args.listableData)
-		})
-	}
-}
-
-func Test_listData_Search(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
-	type args struct {
-		listableData data.ListableData
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
-		want1  bool
-	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, args{NewStringData("Data")}, 0, true},
-		{"+ve for empty String", fields{NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...)}, args{NewStringData("")}, 0, true},
-		{"-ve", fields{NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...)}, args{NewStringData("test")}, 2, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			got, got1 := listData.Search(tt.args.listableData)
-			assert.Equalf(t, tt.want, got, "search(%v)", tt.args.listableData)
-			assert.Equalf(t, tt.want1, got1, "search(%v)", tt.args.listableData)
+			got := tt.args.Remove(tt.remove...)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_Remove() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_AsString(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.ListData
+		want string
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, "Data"},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, ""},
+		{"+ve", testListData, "10,Data"},
+		{"+ve", NewListData(NewStringData(""), NewHeightData(base.NewHeight(10))), ",10"},
+		{"+ve", NewListData(NewStringData("")), ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.AsString(), "String()")
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_AsString() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
 func Test_listData_ZeroValue(t *testing.T) {
-	type fields struct {
-		Value data.ListData
-	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
+		name string
+		args data.ListData
+		want data.Data
 	}{
-		{"+ve for some id", fields{NewListData(NewStringData("Data"))}, NewListData([]data.ListableData{}...)},
-		{"+ve for empty String", fields{NewListData(NewStringData(""))}, NewListData([]data.ListableData{}...)},
+		{"+ve", NewListData(NewStringData("Data")), NewListData([]data.ListableData{}...)},
+		{"+ve", NewListData(NewStringData("")), NewListData([]data.ListableData{}...)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := tt.fields.Value
-			assert.Equalf(t, tt.want, listData.ZeroValue(), "ZeroValue()")
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("listData_ZeroValue() got = %v, want = %v", got, tt.want)
+			}
 		})
 	}
 }
 
-func TestListData_ValidateWithType(t *testing.T) {
-	type fields struct {
-		AnyListableDataList []*AnyListableData
-	}
-	type args struct {
-		expectedTypeID ids.StringID
-	}
+func Test_ListDataValidateWithType(t *testing.T) {
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr assert.ErrorAssertionFunc
+		name         string
+		args         data.ListData
+		expectedType ids.StringID
+		wantError    bool
 	}{
-		{"+ve for some id", fields{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, args{baseIDs.NewStringID("string")}, assert.NoError},
+		{"-ve", testListData, baseIDs.NewStringID("S"), true},
+		{"-ve", testListData, baseIDs.NewStringID("H"), true},
+		{"+ve", NewListData(NewStringData("Data1"), NewStringData("Data2")), baseIDs.NewStringID("S"), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			listData := &ListData{
-				tt.fields.AnyListableDataList,
+			got := tt.args.ValidateWithType(tt.expectedType)
+			if got != nil && !tt.wantError {
+				t.Errorf("ListDataValidateWithType() got = %v, want = %v", got, tt.wantError)
 			}
-			tt.wantErr(t, listData.ValidateWithType(tt.args.expectedTypeID), fmt.Sprintf("ValidateWithType(%v)", tt.args.expectedTypeID))
+			if got == nil && tt.wantError {
+				t.Errorf("ListDataValidateWithType() got = %v, want = %v", got, tt.wantError)
+			}
+		})
+	}
+}
+
+func Test_ListDataFromString(t *testing.T) {
+	tests := []struct {
+		name      string
+		args      string
+		want      data.Data
+		wantError bool
+	}{
+		{"+ve", "", &ListData{[]*AnyListableData{}}, false},
+		{"+ve", "S|Data,H|10", sortedTestListData, false},
+		{"-ve", "L|S|test", sortedTestListData, true},
+		{"-ve", "U|test,H|10", testListData, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrototypeListData().FromString(tt.args)
+			if !tt.wantError {
+				if !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("ListDataFromString() got = %v, want = %v", got, tt.want)
+				}
+			}
+			if err != nil && !tt.wantError {
+				t.Errorf("ListDataFromString() got = %v, want = %v", err, tt.wantError)
+			}
+			if err == nil && tt.wantError {
+				t.Errorf("ListDataFromString() got = %v, want = %v", err, tt.wantError)
+			}
 		})
 	}
 }

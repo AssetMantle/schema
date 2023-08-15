@@ -41,7 +41,7 @@ func (idData *IDData) FromString(dataString string) (data.Data, error) {
 	}
 
 	idData.Value = id.ToAnyID().(*baseIDs.AnyID)
-	if idData.ValidateBasic() != nil {
+	if err = idData.ValidateBasic(); err != nil {
 		return PrototypeIDData(), err
 	}
 

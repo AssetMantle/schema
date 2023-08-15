@@ -4,324 +4,236 @@
 package base
 
 import (
-	"fmt"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
 	"github.com/AssetMantle/schema/go/data"
-	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
-func TestNewDecData(t *testing.T) {
-	type args struct {
-		value sdkTypes.Dec
-	}
+func Test_NewDecData(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args sdkTypes.Dec
 		want data.Data
 	}{
-		{"+ve with nil", args{}, &DecData{}},
-		{"+ve with zero dec", args{sdkTypes.ZeroDec()}, &DecData{sdkTypes.ZeroDec().String()}},
-		{"+ve", args{sdkTypes.NewDec(100)}, &DecData{sdkTypes.NewDec(100).String()}},
-		{"+ve with -ve Dec", args{sdkTypes.NewDec(-100)}, &DecData{sdkTypes.NewDec(-100).String()}},
+		{"+ve", sdkTypes.MustNewDecFromStr("1.0"), &DecData{sdkTypes.MustNewDecFromStr("1").String()}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDecData(tt.args.value), "NewDecData(%v)", tt.args.value)
+			got := NewDecData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewDecData() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
 
-// func Test_decDataFromInterface(t *testing.T) {
-//	type args struct {
-//		listable traits.Listable
-//	}
-//	tests := []struct {
-//		name    string
-//		args    args
-//		want    *DecData
-//		wantErr assert.ErrorAssertionFunc
-//	}{
-//		{"+ve with nil", args{&DecData{}}, &DecData{}, assert.NoError},
-//		{"+ve with nil", args{&DecData{sdkTypes.Dec{}}}, &DecData{}, assert.NoError},
-//		{"+ve with zero dec", args{&DecData{sdkTypes.ZeroDec()}}, &DecData{sdkTypes.ZeroDec()}, assert.NoError},
-//		{"+ve", args{&DecData{sdkTypes.NewDec(100)}}, &DecData{sdkTypes.NewDec(100)}, assert.NoError},
-//		{"+ve with -ve Dec", args{&DecData{sdkTypes.NewDec(-100)}}, &DecData{sdkTypes.NewDec(-100)}, assert.NoError},
-//		{"-ve with nil", args{nil}, &DecData{}, assert.Error},
-//		{"-ve stringData", args{&StringData{"testData"}}, &DecData{}, assert.Error},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			got, err := decDataFromInterface(tt.args.listable)
-//			if !tt.wantErr(t, err, fmt.Sprintf("decDataFromInterface(%v)", tt.args.listable)) {
-//				return
-//			}
-//			assert.Equalf(t, tt.want, got, "decDataFromInterface(%v)", tt.args.listable)
-//		})
-//	}
-// }
-
-func Test_decData_Bytes(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
+func Test_DecDataValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want bool
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), false},
+		{"+ve", NewDecData(sdkTypes.MaxSortableDec.Add(sdkTypes.MustNewDecFromStr("1.0"))), true},
+		{"-ve", &DecData{"abc"}, true},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("DecDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("DecDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecData_Compare(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want bool
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), true},
+		{"-ve", NewDecData(sdkTypes.MustNewDecFromStr("2.0")), false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Compare(NewDecData(sdkTypes.MustNewDecFromStr("1.0")))
+			if (got == 0) != tt.want {
+				t.Errorf("DecData_Compare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecData_GenerateHashID(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want ids.ID
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), baseIDs.GenerateHashID(sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr("1.0")))},
+		{"+ve", &DecData{"0.0"}, &baseIDs.HashID{[]byte{}}},
+		{"+ve", &DecData{"0.0000"}, &baseIDs.HashID{[]byte{}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecData_GenerateHashID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataGet(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want sdkTypes.Dec
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), sdkTypes.MustNewDecFromStr("1.0")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataGet() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataGetID(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want ids.DataID
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), &baseIDs.DataID{
+			TypeID: idsConstants.DecDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID(sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr("1.0"))).(*baseIDs.HashID),
+		}},
+		{"+ve", &DecData{"0"}, &baseIDs.DataID{
+			TypeID: idsConstants.DecDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID().(*baseIDs.HashID),
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataGetID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataGetType(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want ids.ID
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), idsConstants.DecDataTypeID},
+		{"+ve", &DecData{}, idsConstants.DecDataTypeID},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataGetTypeID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataAsString(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want string
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), sdkTypes.MustNewDecFromStr("1.0").String()},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataAsString() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataZeroValue(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want data.Data
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), &DecData{sdkTypes.MustNewDecFromStr("0.0").String()}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataZeroValue() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.DecData
+		want []byte
+	}{
+		{"+ve", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr("1.0"))},
+		{"+ve", &DecData{"0.0"}, sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr("0.0"))},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DecDataFromString(t *testing.T) {
 	tests := []struct {
 		name    string
-		fields  fields
-		want    []byte
+		args    string
+		want    data.Data
 		wantErr bool
 	}{
-		{"+ve with nil", fields{}, []byte{0x3c, 0x6e, 0x69, 0x6c, 0x3e}, false}, // TODO: Update test after fixing the bug
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, (&DecData{sdkTypes.ZeroDec().String()}).Bytes(), false},
-		{"+ve", fields{sdkTypes.NewDec(100)}, (&DecData{sdkTypes.NewDec(100).String()}).Bytes(), false},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, (&DecData{sdkTypes.NewDec(-100).String()}).Bytes(), false},
+		{"+ve", "1.0", NewDecData(sdkTypes.MustNewDecFromStr("1.0")), false},
+		{"-ve", sdkTypes.MaxSortableDec.Add(sdkTypes.MustNewDecFromStr("1.0")).String(), PrototypeDecData(), true},
+		{"-ve", "abc", PrototypeDecData(), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
+			got, err := PrototypeDecData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecDataFromString() got = %v, want %v", got, tt.want)
 			}
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
-			assert.Equalf(t, tt.want, decData.Bytes(), "Bytes()")
-		})
-	}
-}
-
-func Test_decData_Compare(t *testing.T) {
-	require.Panics(t, func() {
-		(&DecData{}).Compare(nil)
-	})
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	type args struct {
-		data.ListableData
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    int
-		wantErr bool
-	}{
-		{"panic with nil", fields{}, args{&DecData{}}, 0, true},
-		{"MetaDataError with nil", fields{sdkTypes.Dec{}}, args{&DecData{sdkTypes.Dec{}.String()}}, 0, true},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, args{&DecData{sdkTypes.ZeroDec().String()}}, 0, false},
-		{"+ve", fields{sdkTypes.NewDec(100)}, args{&DecData{sdkTypes.NewDec(100).String()}}, 0, false},
-		{"-ve", fields{sdkTypes.NewDec(-100)}, args{&DecData{sdkTypes.NewDec(100).String()}}, -1, false},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, args{&DecData{sdkTypes.NewDec(-100).String()}}, 0, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
+			if err != nil && !tt.wantErr {
+				t.Errorf("DecDataFromString() got = %v, want %v", got, tt.want)
 			}
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
-			assert.Equalf(t, tt.want, decData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
-		})
-	}
-}
-
-func Test_decData_GenerateHashID(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name      string
-		fields    fields
-		want      ids.HashID
-		wantPanic bool
-	}{
-		{"panic case with nil", fields{sdkTypes.Dec{}}, baseIDs.GenerateHashID(), true},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, baseIDs.GenerateHashID(), false},
-		{"+ve", fields{sdkTypes.NewDec(100)}, baseIDs.GenerateHashID((&DecData{sdkTypes.NewDec(100).String()}).Bytes()), false},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, baseIDs.GenerateHashID((&DecData{sdkTypes.NewDec(-100).String()}).Bytes()), false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
+			if err == nil && tt.wantErr {
+				t.Errorf("DecDataFromString() got = %v, want %v", got, tt.want)
 			}
-			if tt.wantPanic {
-				require.Panics(t, func() {
-					decData.GenerateHashID()
-				})
-			} else {
-				assert.Equalf(t, tt.want, decData.GenerateHashID(), "GenerateHashID()")
-			}
-
-		})
-	}
-}
-func decFromString(dec string) sdkTypes.Dec {
-	val, _ := sdkTypes.NewDecFromStr((&DecData{}).Value)
-	return val
-}
-
-func Test_decData_Get(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   sdkTypes.Dec
-	}{
-		{name: "+ve with nil", want: decFromString((&DecData{}).Value)},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, decFromString((&DecData{sdkTypes.ZeroDec().String()}).Value)},
-		{"+ve", fields{sdkTypes.NewDec(100)}, decFromString((&DecData{sdkTypes.NewDec(100).String()}).Value)},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, decFromString((&DecData{sdkTypes.NewDec(-100).String()}).Value)},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
-			}
-			assert.Equalf(t, tt.want, decData.Get(), "Get()")
-		})
-	}
-}
-
-func Test_decData_GetID(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name      string
-		fields    fields
-		want      ids.DataID
-		wantPanic bool
-	}{
-		{"panic case with nil", fields{sdkTypes.Dec{}}, nil, true}, // TODO: Check whether planned panic in GenerateDataID is expected behaviour
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, baseIDs.GenerateDataID(&DecData{sdkTypes.ZeroDec().String()}), false},
-		{"+ve", fields{sdkTypes.NewDec(100)}, baseIDs.GenerateDataID(&DecData{sdkTypes.NewDec(100).String()}), false},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, baseIDs.GenerateDataID(&DecData{sdkTypes.NewDec(-100).String()}), false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
-			}
-			if tt.wantPanic {
-				require.Panics(t, func() {
-					decData.GetID()
-				})
-			} else if got := decData.GetID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_decData_GetType(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
-	}{
-		{"+ve with nil", fields{}, dataConstants.DecDataTypeID},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, dataConstants.DecDataTypeID},
-		{"+ve", fields{sdkTypes.NewDec(100)}, dataConstants.DecDataTypeID},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, dataConstants.DecDataTypeID},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
-			}
-			assert.Equalf(t, tt.want, decData.GetTypeID(), "GetTypeID()")
-		})
-	}
-}
-
-func Test_decData_AsString(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{"+ve with nil", fields{}, (&DecData{}).Value},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, (&DecData{sdkTypes.ZeroDec().String()}).Value},
-		{"+ve", fields{sdkTypes.NewDec(100)}, (&DecData{sdkTypes.NewDec(100).String()}).Value},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, (&DecData{sdkTypes.NewDec(-100).String()}).Value},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
-			}
-			assert.Equalf(t, tt.want, decData.AsString(), "String()")
-		})
-	}
-}
-
-func Test_decData_ZeroValue(t *testing.T) {
-	type fields struct {
-		Value sdkTypes.Dec
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
-	}{
-		{"+ve with nil", fields{}, &DecData{sdkTypes.ZeroDec().String()}},
-		{"+ve with zero dec", fields{sdkTypes.ZeroDec()}, &DecData{sdkTypes.ZeroDec().String()}},
-		{"+ve", fields{sdkTypes.NewDec(100)}, &DecData{sdkTypes.ZeroDec().String()}},
-		{"+ve with -ve Dec", fields{sdkTypes.NewDec(-100)}, &DecData{sdkTypes.ZeroDec().String()}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value.String(),
-			}
-			assert.Equalf(t, tt.want, decData.ZeroValue(), "ZeroValue()")
-		})
-	}
-}
-
-func TestDecData_ValidateBasic(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
-	}{
-		{"validate empty string", fields{""}, assert.Error},
-		{"validate zero value", fields{sdkTypes.ZeroDec().String()}, assert.NoError},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			decData := &DecData{
-				Value: tt.fields.Value,
-			}
-			tt.wantErr(t, decData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
 		})
 	}
 }

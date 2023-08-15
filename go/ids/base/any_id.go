@@ -92,7 +92,7 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 		case PrototypeStringID().GetTypeID().AsString():
 			id, err = PrototypeStringID().FromString(idValueString)
 		default:
-			id, err = nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")
+			id, err = nil, errorConstants.IncorrectFormat.Wrapf("%s type identifier is not recognised", idTypeString)
 		}
 
 		if err != nil {

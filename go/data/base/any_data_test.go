@@ -1,6 +1,7 @@
 package base
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -13,12 +14,12 @@ import (
 
 var (
 	fromAddress1       = "cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"
-	fromAccAddress, _  = sdkTypes.AccAddressFromBech32(fromAddress)
+	fromAccAddress, _  = sdkTypes.AccAddressFromBech32(address)
 	fromAccAddress1, _ = sdkTypes.AccAddressFromBech32(fromAddress1)
 	dataList           = []data.ListableData{NewAccAddressData(fromAccAddress), NewAccAddressData(fromAccAddress1)}
 )
 
-func TestReadData(t *testing.T) {
+func Test_AnyDataFromString(t *testing.T) {
 	type args struct {
 		dataString string
 	}
@@ -28,26 +29,35 @@ func TestReadData(t *testing.T) {
 		want    data.Data
 		wantErr bool
 	}{
-		{"String Data", args{"S|newFact"}, NewStringData("newFact"), false},
-		{"-ve Unknown Data", args{"SomeRandomData"}, nil, true},
-		{"List Data", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewListData(dataList...), false},
-		{"List Data empty list", args{"L|"}, NewListData(), false},
-		{"Id Data", args{"I|data"}, NewIDData(baseIDs.NewStringID("data")), false},
-		{"Height Data", args{"H|100"}, NewHeightData(baseTypes.NewHeight(100)), false},
-		{"Dec Data", args{"D|100"}, NewDecData(sdkTypes.NewDec(100)), false},
-		{"Bool Data", args{"B|true"}, NewBooleanData(true), false},
-		{"AccAddress data", args{"A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"}, NewAccAddressData(fromAccAddress), false},
-		{"-ve String Data", args{"S|S,|newFact"}, NewStringData("S,|newFact"), true},
-		{"-ve List Data String", args{"L|S|,TestData,S|,Test"}, NewListData([]data.ListableData{NewStringData("S|,TestData"), NewStringData("S|,Test")}...), true},
+		{"String Data", args{"S|newFact"}, NewStringData("newFact").ToAnyData(), false},
+		{"-ve Unknown Data", args{"U|test"}, nil, true},
+		{"List Data", args{"L|A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c,A|cosmos1x53dugvr4xvew442l9v2r5x7j8gfvged2zk5ef"}, NewListData(dataList...).ToAnyData(), false},
+		{"List Data empty list", args{"L|"}, NewListData().ToAnyData(), false},
+		{"Id Data", args{"SI|data"}, NewIDData(baseIDs.NewStringID("data")).ToAnyData(), false},
+		{"Height Data", args{"H|100"}, NewHeightData(baseTypes.NewHeight(100)).ToAnyData(), false},
+		{"Dec Data", args{"D|100"}, NewDecData(sdkTypes.NewDec(100)).ToAnyData(), false},
+		{"Bool Data", args{"B|true"}, NewBooleanData(true).ToAnyData(), false},
+		{"+ve", args{""}, PrototypeAnyData(), false},
+		{"AccAddress data", args{"A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"}, NewAccAddressData(fromAccAddress).ToAnyData(), false},
+		{"-ve String Data", args{"S|S,|newFact"}, NewStringData("S,|newFact").ToAnyData(), false},
+		{"-ve List Data String", args{"L|S|,U|,S|"}, nil, true},
+		{"-ve List Data String", args{"L|S|a,N|-2,H|10"}, NewListData([]data.ListableData{NewHeightData(baseTypes.NewHeight(10)), NewNumberData(sdkTypes.NewInt(-2)), NewStringData("a")}...).ToAnyData(), true},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := PrototypeAnyData().FromString(tt.args.dataString)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ReadData() error = %v, wantErr %v", err, tt.wantErr)
-			} else if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ReadData() got = %v, want %v", got, tt.want)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AnyDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("AnyDataFromString() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("AnyDataFromString() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -96,7 +106,6 @@ func Test_readAccAddressData(t *testing.T) {
 			got, err := PrototypeAccAddressData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readAccAddressData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readAccAddressData() got = %v, want %v", got, tt.want)
@@ -125,7 +134,6 @@ func Test_readBooleanData(t *testing.T) {
 			got, err := PrototypeBooleanData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readBooleanData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readBooleanData() got = %v, want %v", got, tt.want)
@@ -154,7 +162,6 @@ func Test_readDecData(t *testing.T) {
 			got, err := PrototypeDecData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readDecData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readDecData() got = %v, want %v", got, tt.want)
@@ -183,7 +190,6 @@ func Test_readHeightData(t *testing.T) {
 			got, err := PrototypeHeightData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readHeightData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readHeightData() got = %v, want %v", got, tt.want)
@@ -212,7 +218,6 @@ func Test_readIDData(t *testing.T) {
 			got, err := PrototypeIDData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readIDData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readIDData() got = %v, want %v", got, tt.want)
@@ -240,7 +245,6 @@ func Test_readListData(t *testing.T) {
 			got, err := PrototypeListData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readListData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readListData() got = %v, want %v", got, tt.want)
@@ -268,7 +272,6 @@ func Test_readStringData(t *testing.T) {
 			got, err := PrototypeStringData().FromString(tt.args.dataString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("readStringData() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("readStringData() got = %v, want %v", got, tt.want)

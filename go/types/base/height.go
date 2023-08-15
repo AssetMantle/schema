@@ -17,7 +17,7 @@ var _ types.Height = (*Height)(nil)
 
 func (height *Height) ValidateBasic() error {
 	if height.Value < -1 {
-		return errorConstants.IncorrectFormat
+		return errorConstants.IncorrectFormat.Wrapf("height value %d is less than -1", height.Value)
 	}
 	return nil
 }

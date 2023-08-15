@@ -19,8 +19,10 @@ import (
 var _ data.DecData = (*DecData)(nil)
 
 func (decData *DecData) ValidateBasic() error {
-	if _, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
+	if dec, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
 		return errorConstants.IncorrectFormat.Wrapf("dec data value %s is not a valid decimal", decData.Value)
+	} else if !sdkTypes.ValidSortableDec(dec) {
+		return errorConstants.IncorrectFormat.Wrapf("dec value %s out of allowed range of -%s to %s", decData.Value, sdkTypes.MaxSortableDec.String(), sdkTypes.MaxSortableDec.String())
 	}
 
 	return nil
@@ -35,7 +37,7 @@ func (decData *DecData) Compare(listableData data.ListableData) int {
 	return bytes.Compare(decData.Bytes(), listableData.Bytes())
 }
 func (decData *DecData) Bytes() []byte {
-	return []byte(decData.Value)
+	return sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr(decData.Value))
 }
 func (decData *DecData) GetTypeID() ids.StringID {
 	return dataConstants.DecDataTypeID
@@ -65,7 +67,7 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 	}
 
 	decData.Value = dec.String()
-	if decData.ValidateBasic() != nil {
+	if err = decData.ValidateBasic(); err != nil {
 		return PrototypeDecData(), err
 	}
 
