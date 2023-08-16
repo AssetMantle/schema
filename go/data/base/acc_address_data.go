@@ -31,7 +31,7 @@ func (accAddressData *AccAddressData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.AccAddressDataWeight
 }
 func (accAddressData *AccAddressData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(accAddressData.Bytes(), listableData.Bytes())
+	return bytes.Compare(accAddressData.Get().Bytes(), listableData.ToAnyListableData().Get().(*AccAddressData).Get().Bytes())
 }
 func (accAddressData *AccAddressData) AsString() string {
 	return sdkTypes.AccAddress(accAddressData.Value).String()
@@ -55,7 +55,7 @@ func (accAddressData *AccAddressData) FromString(dataString string) (data.Data, 
 	return accAddressData, nil
 }
 func (accAddressData *AccAddressData) Bytes() []byte {
-	return sdkTypes.AccAddress(accAddressData.Value).Bytes()
+	return accAddressData.Value
 }
 func (accAddressData *AccAddressData) GetTypeID() ids.StringID {
 	return dataConstants.AccAddressDataTypeID

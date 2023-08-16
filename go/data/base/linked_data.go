@@ -24,7 +24,7 @@ func (linkedData *LinkedData) ToAnyListableData() data.AnyListableData {
 		}}
 }
 func (linkedData *LinkedData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(linkedData.Bytes(), listableData.Bytes())
+	return bytes.Compare(linkedData.Bytes(), listableData.ToAnyListableData().Get().(*LinkedData).Bytes())
 }
 func (linkedData *LinkedData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(linkedData)

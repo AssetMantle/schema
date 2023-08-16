@@ -4,7 +4,6 @@
 package base
 
 import (
-	"bytes"
 	"strings"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -34,7 +33,12 @@ func (decData *DecData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.DecDataWeight
 }
 func (decData *DecData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(decData.Bytes(), listableData.Bytes())
+	if difference := decData.Get().Sub(listableData.ToAnyListableData().Get().(*DecData).Get()); difference.IsZero() {
+		return 0
+	} else if difference.IsPositive() {
+		return 1
+	}
+	return -1
 }
 func (decData *DecData) Bytes() []byte {
 	return sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr(decData.Value))

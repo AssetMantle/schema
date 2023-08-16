@@ -4,7 +4,6 @@
 package base
 
 import (
-	"bytes"
 	"encoding/binary"
 	"strconv"
 	"strings"
@@ -52,7 +51,7 @@ func (heightData *HeightData) FromString(dataString string) (data.Data, error) {
 	return heightData, nil
 }
 func (heightData *HeightData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(heightData.Bytes(), listableData.Bytes())
+	return heightData.Get().Compare(listableData.ToAnyListableData().Get().(*HeightData).Get())
 }
 func (heightData *HeightData) Bytes() []byte {
 	Bytes := make([]byte, 8)
