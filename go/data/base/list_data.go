@@ -20,19 +20,18 @@ import (
 
 var _ data.ListData = (*ListData)(nil)
 
-func (listData *ListData) ValidateWithType(expectedTypeID ids.StringID) error {
-	for _, anyListableDatum := range listData.Value {
-		if anyListableDatum.GetTypeID().Compare(expectedTypeID) != 0 {
-			return errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", anyListableDatum.GetTypeID().AsString(), expectedTypeID.AsString())
-		}
-	}
-
-	return listData.ValidateBasic()
-}
 func (listData *ListData) ValidateBasic() error {
-	for _, anyListableData := range listData.Value {
-		if err := anyListableData.ValidateBasic(); err != nil {
-			return err
+	if len(listData.Get()) > 0 {
+		expectedTypeID := listData.Get()[0].GetTypeID()
+
+		for _, anyListableData := range listData.Value {
+			if err := anyListableData.ValidateBasic(); err != nil {
+				return errorConstants.IncorrectFormat.Wrapf("data %s invalid: %s", anyListableData.AsString(), err)
+			}
+
+			if anyListableData.GetTypeID().Compare(expectedTypeID) != 0 {
+				return errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", anyListableData.GetTypeID().AsString(), expectedTypeID.AsString())
+			}
 		}
 	}
 

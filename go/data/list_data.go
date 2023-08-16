@@ -3,11 +3,8 @@
 
 package data
 
-import "github.com/AssetMantle/schema/go/ids"
-
 type ListData interface {
 	Data
-	ValidateWithType(expectedTypeID ids.StringID) error
 	Get() []AnyListableData
 	Search(ListableData) (int, bool)
 	Add(...ListableData) ListData
