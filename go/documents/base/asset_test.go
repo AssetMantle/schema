@@ -1,6 +1,7 @@
 package base
 
 import (
+	"github.com/AssetMantle/schema/go/types"
 	"reflect"
 	"testing"
 
@@ -10,7 +11,6 @@ import (
 	documentsSchema "github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/lists/base"
-	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
@@ -41,9 +41,9 @@ func TestNewAsset(t *testing.T) {
 	}
 }
 
-func Test_asset_GetBurn(t *testing.T) {
+func Test_asset_GetBurnHeight(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithBurn := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMesaProperty(constants.BurnHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))))))
+	testDocumentWithBurn := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMetaProperty(constants.BurnHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(99))))))
 
 	type fields struct {
 		Document documentsSchema.Document
@@ -51,25 +51,25 @@ func Test_asset_GetBurn(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   properties.Property
+		want   types.Height
 	}{
-		{"+ve", fields{Document: testDocumentWithBurn}, baseProperties.NewMesaProperty(constants.BurnHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))).ToAnyProperty()},
-		{"+ve", fields{Document: testDocument}, constants.BurnHeightProperty},
+		{"+ve", fields{Document: testDocumentWithBurn}, baseTypes.NewHeight(99)},
+		{"+ve", fields{Document: testDocument}, baseTypes.NewHeight(-1)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			asset := asset{
 				Document: tt.fields.Document,
 			}
-			if got := asset.GetBurn(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetBurn() = %v, want %v", got, tt.want)
+			if got := asset.GetBurnHeight(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetBurnHeight() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
-func Test_asset_GetLock(t *testing.T) {
+func Test_asset_GetLockHeight(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithLock := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMesaProperty(constants.LockHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))))))
+	testDocumentWithLock := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMetaProperty(constants.LockHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(100))))))
 
 	type fields struct {
 		Document documentsSchema.Document
@@ -77,18 +77,18 @@ func Test_asset_GetLock(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   properties.Property
+		want   types.Height
 	}{
-		{"+ve with default lock", fields{testDocument}, constants.LockHeightProperty},
-		{"+ve with mutated", fields{testDocumentWithLock}, baseProperties.NewMesaProperty(constants.LockHeightProperty.GetKey(), baseData.NewHeightData(baseTypes.NewHeight(1))).ToAnyProperty()},
+		{"+ve with default lock", fields{testDocument}, baseTypes.NewHeight(-1)},
+		{"+ve with mutated", fields{testDocumentWithLock}, baseTypes.NewHeight(100)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			asset := asset{
 				Document: tt.fields.Document,
 			}
-			if got := asset.GetLock(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetLock() = %v, want %v", got, tt.want)
+			if got := asset.GetLockHeight(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetLockHeight() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -96,24 +96,22 @@ func Test_asset_GetLock(t *testing.T) {
 
 func Test_asset_GetSupply(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMesaProperty(constants.SupplyProperty.GetKey(), baseData.NewDecData(sdkTypes.NewDec(1))))))
+	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMetaProperty(constants.SupplyProperty.GetKey(), baseData.NewNumberData(sdkTypes.NewInt(77))))))
 	type fields struct {
 		Document documentsSchema.Document
 	}
 	tests := []struct {
 		name   string
 		fields fields
-		want   properties.AnyProperty
+		want   sdkTypes.Int
 	}{
-		{"+ve", fields{testDocument}, constants.SupplyProperty.ToAnyProperty()},
-		{"+ve with supply", fields{testDocumentWithSupply}, baseProperties.NewMesaProperty(constants.SupplyProperty.GetKey(), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty()},
+		{"+ve", fields{testDocument}, sdkTypes.OneInt()},
+		{"+ve with supply", fields{testDocumentWithSupply}, sdkTypes.NewInt(77)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			asset := asset{
-				Document: tt.fields.Document,
-			}
-			if got := asset.GetSupply().ToAnyProperty(); !reflect.DeepEqual(got, tt.want) {
+			asset := NewAssetFromDocument(tt.fields.Document)
+			if got := asset.GetSupply(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetSupply() = %v, want %v", got, tt.want)
 			}
 		})

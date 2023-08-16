@@ -4,6 +4,8 @@
 package base
 
 import (
+	"fmt"
+	baseTypes "github.com/AssetMantle/schema/go/types/base"
 	"reflect"
 	"testing"
 
@@ -31,7 +33,7 @@ func ValidatedParameter[V *baseIDs.ClassificationID | *baseQualified.Immutables 
 
 func createTestInput() (ids.ClassificationID, qualified.Immutables, qualified.Mutables, documents.Document) {
 	testImmutables := baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData"))))
-	testMutables := baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("authentication"), baseData.NewListData().ZeroValue())))
+	testMutables := baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("authentication"), baseData.NewListData().ZeroValue()), baseProperties.NewMetaProperty(baseIDs.NewStringID("expiry"), baseData.NewHeightData(baseTypes.NewHeight(10))), baseProperties.NewMetaProperty(baseIDs.NewStringID("expiryHeight"), baseData.NewHeightData(baseTypes.NewHeight(100)))))
 	classificationID := baseIDs.NewClassificationID(testImmutables, testMutables)
 	testDocument := NewDocument(classificationID, testImmutables, testMutables)
 	return classificationID, testImmutables, testMutables, testDocument
@@ -287,30 +289,64 @@ func TestDocument_GenerateHashID(t *testing.T) {
 
 	sameKeyDifferentDataDocument := NewDocument(baseIDs.NewClassificationID(sameKeyDifferentDataImmutables, emptyMutables), sameKeyDifferentDataImmutables, emptyMutables)
 	sameKeyAndDataDocument := NewDocument(baseIDs.NewClassificationID(sameKeyAndDataImmutables, emptyMutables), sameKeyAndDataImmutables, emptyMutables)
+	emptyDocument := NewDocument(&baseIDs.ClassificationID{HashID: &baseIDs.HashID{}}, &baseQualified.Immutables{PropertyList: &baseLists.PropertyList{}}, emptyMutables)
 
 	assert.NotEqual(t, sameKeyDifferentDataDocument.GenerateHashID(), sameKeyAndDataDocument.GenerateHashID(), "hash of same key and different data should not be same")
 
-	type fields struct {
-		ClassificationID *baseIDs.ClassificationID
-		Immutables       *baseQualified.Immutables
-		Mutables         *baseQualified.Mutables
-	}
 	tests := []struct {
 		name   string
-		fields fields
+		fields documents.Document
 		want   ids.HashID
 	}{
-		{name: "generate hash of empty classification, immutables and mutables", fields: fields{ClassificationID: &baseIDs.ClassificationID{HashID: &baseIDs.HashID{}}, Immutables: &baseQualified.Immutables{PropertyList: &baseLists.PropertyList{}}, Mutables: &baseQualified.Mutables{PropertyList: &baseLists.PropertyList{}}}, want: &baseIDs.HashID{}},
+		{name: "generate hash of empty classification, immutables and mutables", fields: emptyDocument, want: &baseIDs.HashID{[]byte{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			document := &Document{
-				ClassificationID: tt.fields.ClassificationID,
-				Immutables:       tt.fields.Immutables,
-				Mutables:         tt.fields.Mutables,
+			got := tt.fields.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GenerateHashID() got = %v, want %v", got, tt.want)
 			}
-			if got := document.GenerateHashID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GenerateHashID() = %v, want %v", got, tt.want)
+		})
+	}
+}
+
+func Test_DocumentValidateBasic(t *testing.T) {
+	zeroStringDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewStringData("").ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(types.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+
+	immutables1 := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroNumberDataProperty))
+	immutables2 := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroStringDataProperty))
+
+	mutables1 := baseQualified.NewMutables(baseLists.NewPropertyList(zeroStringDataProperty))
+	mutables2 := baseQualified.NewMutables(baseLists.NewPropertyList(zeroNumberDataProperty))
+	mutables3 := baseQualified.NewMutables(baseLists.NewPropertyList())
+
+	document1 := NewDocument(baseIDs.NewClassificationID(immutables1, mutables1), immutables1, mutables1)
+	document2 := NewDocument(baseIDs.NewClassificationID(immutables2, mutables2), immutables2, mutables2)
+	document3 := NewDocument(baseIDs.NewClassificationID(immutables1, mutables3), immutables1, mutables3)
+	document4 := &Document{&baseIDs.ClassificationID{&baseIDs.HashID{[]byte("a")}}, immutables1.(*baseQualified.Immutables), mutables3.(*baseQualified.Mutables)}
+
+	tests := []struct {
+		name string
+		args documents.Document
+		want bool
+	}{
+		{"-ve 1", document1, true},
+		{"-ve 2", document2, true},
+		{"-ve 3", document4, true},
+		{"+ve 4", document3, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if err == nil && tt.want {
+				t.Errorf("DocumentValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("DocumentValidateBasic() = %v, want %v", err, tt.want)
 			}
 		})
 	}

@@ -20,7 +20,7 @@ var _ documents.Asset = (*asset)(nil)
 
 func (asset asset) GetBurnHeight() types.Height {
 	if property := asset.GetProperty(constants.BurnHeightProperty.GetID()); property != nil && property.IsMeta() {
-		return property.(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
 	}
 
 	return constants.BurnHeightProperty.GetData().Get().(data.HeightData).Get()
