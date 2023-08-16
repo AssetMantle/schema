@@ -78,6 +78,8 @@ func (metaProperty *MetaProperty) IsMeta() bool {
 func (metaProperty *MetaProperty) IsMesa() bool {
 	return false
 }
+
+// Mutate NOTE: Need to check if propertyID type is not different from data after mutating
 func (metaProperty *MetaProperty) Mutate(data data.Data) properties.Property {
 	metaProperty.Data = data.ToAnyData().(*base.AnyData)
 	if err := metaProperty.ValidateBasic(); err != nil {

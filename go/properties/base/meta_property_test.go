@@ -4,6 +4,9 @@
 package base
 
 import (
+	"fmt"
+	"github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -24,7 +27,7 @@ func ValidatedData(value data.Data) *baseData.AnyData {
 }
 
 func createTestInput() (ids.StringID, ids.PropertyID, data.Data, properties.MetaProperty) {
-	testKey := baseIDs.NewStringID("ID")
+	testKey := baseIDs.NewStringID("key")
 	testData := baseData.NewStringData("Data")
 	testPropertyID := baseIDs.NewPropertyID(testKey, testData.GetTypeID())
 	testMetaProperty := NewMetaProperty(testKey, testData)
@@ -103,8 +106,8 @@ func Test_metaProperty_Compare(t *testing.T) {
 		want   int
 	}{
 		{"+ve", fields{testPropertyID, testData}, args{testMetaProperty}, 0},
-		{"+ve compare with metaProperty with no Data", fields{testPropertyID, testData}, args{&MetaProperty{ID: baseIDs.NewPropertyID(baseIDs.NewStringID("ID"), baseIDs.NewStringID("S")).(*baseIDs.PropertyID)}}, 0},
-		{"+ve", fields{testPropertyID, testData}, args{&MetaProperty{baseIDs.NewPropertyID(baseIDs.NewStringID("ID"), baseIDs.NewStringID("S")).(*baseIDs.PropertyID), baseData.NewStringData("Data2").ToAnyData().(*baseData.AnyData)}}, 0}}
+		{"+ve compare with metaProperty with no Data", fields{testPropertyID, testData}, args{&MetaProperty{ID: baseIDs.NewPropertyID(baseIDs.NewStringID("key"), baseIDs.NewStringID("S")).(*baseIDs.PropertyID)}}, 0},
+		{"+ve", fields{testPropertyID, testData}, args{&MetaProperty{baseIDs.NewPropertyID(baseIDs.NewStringID("key"), baseIDs.NewStringID("S")).(*baseIDs.PropertyID), baseData.NewStringData("Data2").ToAnyData().(*baseData.AnyData)}}, 0}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			metaProperty := &MetaProperty{
@@ -271,6 +274,104 @@ func Test_metaProperty_RemoveData(t *testing.T) {
 			}
 			if got := metaProperty.ScrubData(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ScrubData() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MetaPropertyValidateBasic(t *testing.T) {
+	_, testPropertyID, testData, testMetaProperty := createTestInput()
+	tests := []struct {
+		name string
+		args properties.MetaProperty
+		want bool
+	}{
+		{"+ve", testMetaProperty, false},
+		// Regex does not work
+		{"-ve", &MetaProperty{
+			ID:   baseIDs.NewPropertyID(baseIDs.NewStringID("/////ID"), testData.GetTypeID()).(*baseIDs.PropertyID),
+			Data: testData.ToAnyData().(*baseData.AnyData),
+		}, true},
+		{"-ve", &MetaProperty{
+			ID:   testPropertyID.(*baseIDs.PropertyID),
+			Data: baseData.NewNumberData(sdkTypes.NewInt(10)).ToAnyData().(*baseData.AnyData),
+		}, true},
+		{"-ve", &MetaProperty{
+			ID:   baseIDs.NewPropertyID(baseIDs.NewStringID("id"), baseData.PrototypeHeightData().GetTypeID()).(*baseIDs.PropertyID),
+			Data: (&baseData.HeightData{&base.Height{-10}}).ToAnyData().(*baseData.AnyData),
+		}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("StringDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("StringDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MetaPropertyMutate(t *testing.T) {
+	testKey, _, _, testMetaProperty := createTestInput()
+	tests := []struct {
+		name    string
+		args    properties.MetaProperty
+		change  data.Data
+		want    properties.MetaProperty
+		wantErr bool
+	}{
+		{"+ve", testMetaProperty, baseData.NewStringData("Data2"), NewMetaProperty(testKey, baseData.NewStringData("Data2")), false},
+		{"-ve", testMetaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), NewMetaProperty(testKey, baseData.NewNumberData(sdkTypes.NewInt(10))), true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				err := recover()
+
+				if err == nil && tt.wantErr {
+					t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
+				}
+				if err != nil && !tt.wantErr {
+					t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
+				}
+			}()
+			got := tt.args.Mutate(tt.change)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MetaPropertyGetBondedWeight() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MetaPropertyFromString(t *testing.T) {
+	_, _, _, testMetaProperty := createTestInput()
+	tests := []struct {
+		name    string
+		args    string
+		want    properties.MetaProperty
+		wantErr bool
+	}{
+		{"+ve", "key:S|Data", testMetaProperty, false},
+		{"+ve", "key:UNK|Data", PrototypeMetaProperty(), true},
+		//{"+ve", "test", &StringID{"test"}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrototypeMetaProperty().FromString(tt.args)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringIDFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
 			}
 		})
 	}

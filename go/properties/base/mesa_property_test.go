@@ -4,6 +4,8 @@
 package base
 
 import (
+	dataConstants "github.com/AssetMantle/schema/go/data/constants"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -344,7 +346,93 @@ func Test_mesaProperty_IsMeta(t *testing.T) {
 				DataID: ValidatedID[*baseIDs.DataID](tt.fields.DataID),
 			}
 			if got := mesaProperty.IsMeta(); got != tt.want {
-				t.Errorf("IsMeta() = %v, want %v", got, tt.want)
+				t.Errorf("IsMesa() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MesaPropertyGetBondedWeight(t *testing.T) {
+	_, _, _, testMesaProperty := createTestInputForMesaProperty()
+	tests := []struct {
+		name string
+		args properties.MesaProperty
+		want sdkTypes.Int
+	}{
+		{"+ve", testMesaProperty, dataConstants.StringDataWeight},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetBondWeight()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MesaPropertyGetBondedWeight() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MesaPropertyMutate(t *testing.T) {
+	testKey, _, _, testMesaProperty := createTestInputForMesaProperty()
+	tests := []struct {
+		name    string
+		args    properties.MesaProperty
+		change  data.Data
+		want    properties.MesaProperty
+		wantErr bool
+	}{
+		{"+ve", testMesaProperty, baseData.NewStringData("Data2"), NewMesaProperty(testKey, baseData.NewStringData("Data2")), false},
+		{"-ve", testMesaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), NewMesaProperty(testKey, baseData.NewNumberData(sdkTypes.NewInt(10))), true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				err := recover()
+
+				if err == nil && tt.wantErr {
+					t.Errorf("MesaPropertyMutate() = %v, want %v", err, tt.want)
+				}
+				if err != nil && !tt.wantErr {
+					t.Errorf("MesaPropertyMutate() = %v, want %v", err, tt.want)
+				}
+			}()
+			got := tt.args.Mutate(tt.change)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MesaPropertyGetBondedWeight() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_MesaPropertyValidateBasic(t *testing.T) {
+	_, testPropertyID, testData, testMesaProperty := createTestInputForMesaProperty()
+	tests := []struct {
+		name string
+		args properties.MesaProperty
+		want bool
+	}{
+		{"+ve", testMesaProperty, false},
+		// Regex not work in testing
+		{"-ve", &MesaProperty{
+			ID:     baseIDs.NewPropertyID(baseIDs.NewStringID("/////ID"), testData.GetTypeID()).(*baseIDs.PropertyID),
+			DataID: testData.GetID().(*baseIDs.DataID),
+		}, true},
+		{"-ve", &MesaProperty{
+			ID:     testPropertyID.(*baseIDs.PropertyID),
+			DataID: baseData.NewNumberData(sdkTypes.NewInt(10)).GetID().(*baseIDs.DataID),
+		}, true},
+		{"-ve", &MesaProperty{
+			ID:     testPropertyID.(*baseIDs.PropertyID),
+			DataID: &baseIDs.DataID{&baseIDs.StringID{"S"}, &baseIDs.HashID{[]byte("a")}}},
+			true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("MesaPropertyValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("MesaPropertyValidateBasic() = %v, want %v", err, tt.want)
 			}
 		})
 	}
