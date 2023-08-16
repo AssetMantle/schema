@@ -328,19 +328,15 @@ func Test_MetaPropertyMutate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer func() {
-				err := recover()
-
-				if err == nil && tt.wantErr {
-					t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
-				}
-				if err != nil && !tt.wantErr {
-					t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
-				}
-			}()
-			got := tt.args.Mutate(tt.change)
+			got, err := tt.args.Mutate(tt.change)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MetaPropertyGetBondedWeight() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("MetaPropertyMutate() = %v, want %v", err, tt.want)
 			}
 		})
 	}
