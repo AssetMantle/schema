@@ -4,10 +4,8 @@
 package base
 
 import (
-	"fmt"
+	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
@@ -15,229 +13,223 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
-func TestNewStringData(t *testing.T) {
-	type args struct {
-		value string
+func Test_NewStringData(t *testing.T) {
+	tests := []struct {
+		name string
+		args string
+		want data.Data
+	}{
+		{"+ve", "test", &StringData{"test"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewStringData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewStringData() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataValidateBasic(t *testing.T) {
+	longString := ""
+	for i := 1; i <= 300; i++ {
+		longString = longString + "a"
 	}
 	tests := []struct {
 		name string
-		args args
+		args data.StringData
+		want bool
+	}{
+		{"+ve", NewStringData("test"), false},
+		{"-ve", &StringData{longString}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("StringDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("StringDataValidateBasic() = %v, want %v", err, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringData_Compare(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want int
+	}{
+		{"+ve", NewStringData("b"), 0},
+		{"+ve", NewStringData("a"), -1},
+		{"+ve", NewStringData("c"), 1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Compare(NewStringData("b"))
+			if got != tt.want {
+				t.Errorf("StringData_Compare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringData_GenerateHashID(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want ids.HashID
+	}{
+		{"+ve", NewStringData("test"), baseIDs.GenerateHashID([]byte("test")).(*baseIDs.HashID)},
+		{"+ve", NewStringData(""), &baseIDs.HashID{[]byte{}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringData_GenerateHashID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataGet(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want string
+	}{
+		{"+ve", NewStringData("test"), "test"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataGet() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataGetID(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want ids.DataID
+	}{
+		{"+ve", NewStringData("test"), &baseIDs.DataID{
+			TypeID: idsConstants.StringDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID([]byte("test")).(*baseIDs.HashID),
+		}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataGetID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataGetType(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want ids.ID
+	}{
+		{"+ve", NewStringData("test"), idsConstants.StringDataTypeID},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataGetTypeID() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataAsString(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
+		want string
+	}{
+		{"+ve", NewStringData("test"), "test"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataAsString() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_StringDataZeroValue(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.StringData
 		want data.Data
 	}{
-		{"+ve data", args{"data"}, &StringData{"data"}},
-		{"special char data", args{"data%/@1!"}, &StringData{"data%/@1!"}},
+		{"+ve", NewStringData("test"), &StringData{""}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewStringData(tt.args.value), "NewStringData(%v)", tt.args.value)
-		})
-	}
-}
-
-func Test_stringData_Bytes(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
-	}{
-		{"+ve data", fields{"data"}, []byte("data")},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataZeroValue() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, stringData.Bytes(), "Bytes()")
 		})
 	}
 }
 
-func Test_stringData_Compare(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	type args struct {
-		data.ListableData
-	}
+func Test_StringDataBytes(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args data.StringData
+		want []byte
 	}{
-		{"+ve data", fields{"data"}, args{&StringData{"data"}}, 0},
-		{"data with special char", fields{"data"}, args{&StringData{"data_!@#$%^&*("}}, -1},
-		{"empty string", fields{"data"}, args{&StringData{""}}, 1},
+		{name: "+ve", args: NewStringData("test"), want: []byte("test")},
+		{name: "+ve", args: NewStringData("0"), want: []byte("0")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataBytes() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, stringData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }
 
-func Test_stringData_GenerateHashID(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.HashID
-	}{
-		{"+ve data", fields{"data"}, baseIDs.GenerateHashID((&StringData{"data"}).Bytes())},
-		{"data with special char", fields{"data_!@#$%^&*("}, baseIDs.GenerateHashID((&StringData{"data_!@#$%^&*("}).Bytes())},
-		{"empty string", fields{""}, baseIDs.GenerateHashID((&StringData{""}).Bytes())},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.GenerateHashID(), "GenerateHashID()")
-		})
-	}
-}
-
-func Test_stringData_Get(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{"+ve data", fields{"data"}, "data"},
-		{"data with special char", fields{"data_!@#$%^&*("}, "data_!@#$%^&*("},
-		{"empty string", fields{""}, ""},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.AsString(), "Get()")
-		})
-	}
-}
-
-func Test_stringData_GetID(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
-	}{
-		{"+ve data", fields{"data"}, baseIDs.GenerateDataID(&StringData{"data"})},
-		{"data with special char", fields{"data_!@#$%^&*("}, baseIDs.GenerateDataID(&StringData{"data_!@#$%^&*("})},
-		{"empty string", fields{""}, baseIDs.GenerateDataID(&StringData{""})},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.GetID(), "GetID()")
-		})
-	}
-}
-
-func Test_stringData_GetType(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
-	}{
-		{"+ve data", fields{"data"}, idsConstants.StringDataTypeID},
-		{"data with special char", fields{"data_!@#$%^&*("}, idsConstants.StringDataTypeID},
-		{"empty string", fields{""}, idsConstants.StringDataTypeID},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.GetTypeID(), "GetTypeID()")
-		})
-	}
-}
-
-func Test_stringData_AsString(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{"+ve data", fields{"data"}, "data"},
-		{"data with special char", fields{"data_!@#$%^&*("}, "data_!@#$%^&*("},
-		{"empty string", fields{""}, ""},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.AsString(), "String()")
-		})
-	}
-}
-
-func Test_stringData_ZeroValue(t *testing.T) {
-	type fields struct {
-		Value string
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
-	}{
-		{"+ve data", fields{"data"}, &StringData{""}},
-		{"data with special char", fields{"data_!@#$%^&*("}, &StringData{""}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
-			}
-			assert.Equalf(t, tt.want, stringData.ZeroValue(), "ZeroValue()")
-		})
-	}
-}
-
-func TestStringData_ValidateBasic(t *testing.T) {
-	type fields struct {
-		Value string
-	}
+func Test_StringDataFromString(t *testing.T) {
 	tests := []struct {
 		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
+		args    string
+		want    data.Data
+		wantErr bool
 	}{
-		{"validate random string", fields{"abcdefhijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "}, assert.NoError},
-		{"validate empty string", fields{""}, assert.NoError},
-		{"validate string with special characters", fields{"data+data"}, assert.Error},
+		{"+ve", "1", &StringData{"1"}, false},
+		{"+ve", "", PrototypeStringData(), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			stringData := &StringData{
-				Value: tt.fields.Value,
+			got, err := PrototypeStringData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringDataFromString() got = %v, want %v", got, tt.want)
 			}
-			tt.wantErr(t, stringData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
+			if err != nil && !tt.wantErr {
+				t.Errorf("StringDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("StringDataFromString() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

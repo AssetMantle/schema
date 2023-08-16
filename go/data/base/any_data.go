@@ -80,7 +80,7 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 			case PrototypeStringData().GetTypeID().AsString():
 				Data, err = PrototypeStringData().FromString(dataValueString)
 			default:
-				Data, err = nil, errorConstants.IncorrectFormat.Wrapf("type %s identifier is not recognized", dataTypeString)
+				Data, err = nil, errorConstants.IncorrectFormat.Wrapf("data type %s identifier is not recognized", dataTypeString)
 			}
 		}
 		if err != nil {

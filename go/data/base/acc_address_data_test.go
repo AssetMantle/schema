@@ -4,283 +4,237 @@
 package base
 
 import (
-	"fmt"
+	"reflect"
 	"testing"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestNewAccAddressData(t *testing.T) {
-	fromAddress := "cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"
-	_fromAddress := sdkTypes.AccAddress(fromAddress)
+var (
+	address    = "cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"
+	accAddress = sdkTypes.MustAccAddressFromBech32(address)
+)
 
-	fromAddress1 := ""
-	_fromAddress1 := sdkTypes.AccAddress(fromAddress1)
-	type args struct {
-		value sdkTypes.AccAddress
-	}
+func Test_NewAccAddressData(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args sdkTypes.AccAddress
 		want data.Data
 	}{
-		{"+ve", args{_fromAddress}, &AccAddressData{_fromAddress}},
-		{"-ve with empty string", args{_fromAddress1}, &AccAddressData{_fromAddress1}},
-		{"-ve", args{nil}, &AccAddressData{}},
+		{"+ve", accAddress, &AccAddressData{accAddress}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewAccAddressData(tt.args.value), "NewAccAddressData(%v)", tt.args.value)
-		})
-	}
-}
-
-//
-// func Test_accAddressDataFromInterface(t *testing.T) {
-//	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-//	type args struct {
-//		listable traits.Listable
-//	}
-//	tests := []struct {
-//		name    string
-//		args    args
-//		want    *AccAddressData
-//		wantErr assert.ErrorAssertionFunc
-//	}{
-//		{"-ve nil", args{nil}, &AccAddressData{}, assert.Error},
-//		{"-ve empty String", args{&AccAddressData{}}, &AccAddressData{}, assert.NoError},
-//		{"-ve wrong Address", args{&StringData{}}, &AccAddressData{}, assert.Error},
-//		{"+ve", args{&AccAddressData{fromAccAddress}}, &AccAddressData{fromAccAddress}, assert.NoError},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			got, err := accAddressDataFromInterface(tt.args.listable)
-//			if !tt.wantErr(t, err, fmt.Sprintf("accAddressDataFromInterface(%v)", tt.args.listable)) {
-//				return
-//			}
-//			assert.Equalf(t, tt.want, got, "accAddressDataFromInterface(%v)", tt.args.listable)
-//		})
-//	}
-// }
-
-func Test_accAddressData_Compare(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
-	type args struct {
-		data.ListableData
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
-	}{
-		{"-ve empty String", fields{fromAccAddress}, args{&AccAddressData{}}, 1},
-		{"+ve", fields{fromAccAddress}, args{&AccAddressData{fromAccAddress}}, 0},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := NewAccAddressData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewAccAddressData() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }
 
-func Test_accAddressData_GenerateHashID(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressDataValidateBasic(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.AccAddressData
+		want bool
 	}{
-		{"-ve empty String", fields{}, baseIDs.GenerateHashID()},
-		{"+ve", fields{fromAccAddress}, baseIDs.GenerateHashID((&AccAddressData{fromAccAddress}).Bytes())},
+		{"+ve", NewAccAddressData(accAddress), false},
+		{"+ve", &AccAddressData{[]byte{}}, false},
+		{"-ve", &AccAddressData{[]byte("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.ValidateBasic()
+			if tt.want != (got != nil) {
+				t.Errorf("AccAddressDataValidateBasic() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.GenerateHashID(), "GenerateHashID()")
 		})
 	}
 }
 
-func Test_accAddressData_Get(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressData_Compare(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   sdkTypes.AccAddress
+		name string
+		args data.AccAddressData
+		want bool
 	}{
-		{"-ve empty String", fields{}, (&AccAddressData{}).Value},
-		{"+ve", fields{fromAccAddress}, (&AccAddressData{fromAccAddress}).Value},
+		{"+ve", NewAccAddressData(accAddress), true},
+		{"+ve", &AccAddressData{[]byte{}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.Compare(NewAccAddressData(accAddress))
+			if (got == 0) != tt.want {
+				t.Errorf("AccAddressData_Compare() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.Get(), "Get()")
 		})
 	}
 }
 
-func Test_accAddressData_GetID(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressData_GenerateHashID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
+		name string
+		args data.AccAddressData
+		want ids.ID
 	}{
-		{"+ve with nil", fields{}, baseIDs.GenerateDataID(&AccAddressData{})},
-		{"+ve", fields{fromAccAddress}, baseIDs.GenerateDataID(&AccAddressData{fromAccAddress})},
+		{"+ve", NewAccAddressData(accAddress), baseIDs.GenerateHashID(accAddress)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressData_GenerateHashID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.GetID(), "GetID()")
 		})
 	}
 }
 
-func Test_accAddressData_GetType(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressDataGet(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.AccAddressData
+		want sdkTypes.AccAddress
 	}{
-		{"+ve with nil", fields{}, idsConstants.AccAddressDataTypeID},
-		{"+ve", fields{fromAccAddress}, idsConstants.AccAddressDataTypeID},
+		{"+ve", NewAccAddressData(accAddress), accAddress},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataGet() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.GetTypeID(), "GetTypeID()")
 		})
 	}
 }
 
-func Test_accAddressData_String(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressDataGetID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.AccAddressData
+		want ids.DataID
 	}{
-		{"+ve with nil", fields{}, (&AccAddressData{}).String()},
-		{"+ve", fields{fromAccAddress}, (&AccAddressData{fromAccAddress}).String()},
+		{"+ve", NewAccAddressData(accAddress), &baseIDs.DataID{
+			TypeID: idsConstants.AccAddressDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID(accAddress).(*baseIDs.HashID),
+		}},
+		{"+ve", &AccAddressData{[]byte{}}, &baseIDs.DataID{
+			TypeID: idsConstants.AccAddressDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID().(*baseIDs.HashID),
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataGetID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.String(), "String()")
 		})
 	}
 }
 
-func Test_accAddressData_ZeroValue(t *testing.T) {
-	fromAccAddress := sdkTypes.AccAddress("cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c")
-
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressDataGetType(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
+		name string
+		args data.AccAddressData
+		want ids.ID
 	}{
-		{"+ve with nil", fields{}, NewAccAddressData(sdkTypes.AccAddress{})},
-		{"+ve", fields{fromAccAddress}, NewAccAddressData(sdkTypes.AccAddress{})},
+		{"+ve", NewAccAddressData(accAddress), idsConstants.AccAddressDataTypeID},
+		{"+ve", &AccAddressData{[]byte{}}, idsConstants.AccAddressDataTypeID},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataGetTypeID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.ZeroValue(), "ZeroValue()")
 		})
 	}
 }
 
-func Test_accAddressData_Bytes(t *testing.T) {
-	_fromAddress, err := sdkTypes.AccAddressFromBech32("cosmos1u6xn6rv07p2yzzj2rm8st04x54xe5ur0t9nl5j")
-	require.Nil(t, err)
-	type fields struct {
-		Value sdkTypes.AccAddress
-	}
+func Test_AccAddressDataAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args data.AccAddressData
+		want string
 	}{
-		{"+ve with nil", fields{}, (&AccAddressData{}).Bytes()},
-		{"+ve", fields{_fromAddress}, (&AccAddressData{_fromAddress}).Bytes()},
+		{"+ve", NewAccAddressData(accAddress), address},
+		{"+ve", &AccAddressData{[]byte{}}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataAsString() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, accAddressData.Bytes(), "Bytes()")
 		})
 	}
 }
 
-func TestAccAddressData_ValidateBasic(t *testing.T) {
-	type fields struct {
-		Value []byte
+func Test_AccAddressDataZeroValue(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.AccAddressData
+		want data.Data
+	}{
+		{"+ve", NewAccAddressData(accAddress), &AccAddressData{sdkTypes.AccAddress{}}},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataZeroValue() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_AccAddressDataBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.AccAddressData
+		want []byte
+	}{
+		{"+ve", NewAccAddressData(accAddress), accAddress},
+		{"+ve", &AccAddressData{[]byte{}}, []byte{}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_AccAddressDataFromString(t *testing.T) {
 	tests := []struct {
 		name    string
-		fields  fields
-		wantErr assert.ErrorAssertionFunc
+		args    string
+		want    data.Data
+		wantErr bool
 	}{
-		{"validate address bytes", fields{[]byte("xxxxxxxxxxxxx")}, assert.NoError},
-		{"validate zero value", fields{[]byte{}}, assert.NoError},
-		{"validate nil value", fields{nil}, assert.NoError},
-		{"validate empty address", fields{[]byte("")}, assert.NoError},
-		{"validate address bytes grater than 255", fields{[]byte("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")}, assert.Error},
+		{"+ve", address, &AccAddressData{accAddress}, false},
+		{"-ve", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", &AccAddressData{[]byte{}}, true},
+		{"+ve", "", &AccAddressData{[]byte{}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			accAddressData := &AccAddressData{
-				Value: tt.fields.Value,
+			got, err := PrototypeAccAddressData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AccAddressDataFromString() got = %v, want %v", got, tt.want)
 			}
-			tt.wantErr(t, accAddressData.ValidateBasic(), fmt.Sprintf("ValidateBasic()"))
+			if err != nil && !tt.wantErr {
+				t.Errorf("AccAddressDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("AccAddressDataFromString() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

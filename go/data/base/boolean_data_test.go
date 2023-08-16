@@ -4,9 +4,9 @@
 package base
 
 import (
+	"reflect"
+	"strconv"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
@@ -14,260 +14,221 @@ import (
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
-func TestNewBooleanData(t *testing.T) {
-	type args struct {
-		value bool
-	}
+func Test_NewBooleanData(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args bool
 		want data.Data
 	}{
-		{"+ve", args{true}, &BooleanData{true}},
-		{"+ve", args{false}, &BooleanData{false}},
+		{"+ve", true, &BooleanData{true}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewBooleanData(tt.args.value), "NewBooleanData(%v)", tt.args.value)
+			got := NewBooleanData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewBooleanData() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
 
-//
-// func TestBooleanDataFromInterface(t *testing.T) {
-//	type args struct {
-//		dataString data.Data
-//	}
-//	tests := []struct {
-//		name    string
-//		args    args
-//		want    data.Data
-//		wantErr assert.ErrorAssertionFunc
-//	}{
-//		{"-ve", args{NewBooleanData(false)}, &BooleanData{false}, assert.NoError},
-//		{"+ve", args{NewBooleanData(true)}, &BooleanData{true}, assert.NoError},
-//		{"-ve", args{NewStringData("test")}, &BooleanData{false}, assert.Error},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			got, err := booleanDataFromInterface(tt.args.dataString)
-//			if !tt.wantErr(t, err, fmt.Sprintf("booleanDataFromInterface(%v)", tt.args.dataString)) {
-//				return
-//			}
-//			assert.Equalf(t, tt.want, got, "booleanDataFromInterface(%v)", tt.args.dataString)
-//		})
-//	}
-// }
-//
-// func Test_booleanDataFromInterface(t *testing.T) {
-//	type args struct {
-//		listable traits.Listable
-//	}
-//	tests := []struct {
-//		name    string
-//		args    args
-//		want    *BooleanData
-//		wantErr assert.ErrorAssertionFunc
-//	}{
-//		{"+ve with empty string", args{&BooleanData{}}, &BooleanData{}, assert.NoError},
-//		{"+ve", args{&BooleanData{true}}, &BooleanData{true}, assert.NoError},
-//		{"+ve", args{&BooleanData{false}}, &BooleanData{false}, assert.NoError},
-//		{"-ve", args{NewStringData("test")}, &BooleanData{false}, assert.Error},
-//	}
-//	for _, tt := range tests {
-//		t.Run(tt.name, func(t *testing.T) {
-//			got, err := booleanDataFromInterface(tt.args.listable)
-//			if !tt.wantErr(t, err, fmt.Sprintf("booleanDataFromInterface(%v)", tt.args.listable)) {
-//				return
-//			}
-//			assert.Equalf(t, tt.want, got, "booleanDataFromInterface(%v)", tt.args.listable)
-//		})
-//	}
-// }
-
-func Test_booleanData_Compare(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
-	type args struct {
-		data.ListableData
-	}
+func Test_BooleanDataValidateBasic(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args data.BooleanData
+		want bool
 	}{
-		{"+ve", fields{false}, args{&BooleanData{true}}, -1},
-		{"+ve", fields{true}, args{&BooleanData{false}}, 1},
-		{"+ve", fields{false}, args{&BooleanData{false}}, 0},
+		{"+ve", NewBooleanData(true), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.ValidateBasic()
+			if tt.want != (got != nil) {
+				t.Errorf("BooleanDataValidateBasic() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }
 
-func Test_booleanData_GenerateHashID(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanData_Compare(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.BooleanData
+		want bool
 	}{
-		{"+ve with nil", fields{}, baseIDs.GenerateHashID()},
-		{"+ve", fields{true}, baseIDs.GenerateHashID((&BooleanData{true}).Bytes())},
-		{"+ve", fields{false}, baseIDs.GenerateHashID()},
+		{"+ve", NewBooleanData(true), true},
+		{"-ve", NewBooleanData(false), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.Compare(NewBooleanData(true))
+			if (got == 0) != tt.want {
+				t.Errorf("BooleanData_Compare() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.GenerateHashID(), "GenerateHashID()")
 		})
 	}
 }
 
-func Test_booleanData_Get(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanData_GenerateHashID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   bool
+		name string
+		args data.BooleanData
+		want ids.ID
 	}{
-		{"+ve", fields{}, (&BooleanData{}).Value},
-		{"+ve", fields{true}, (&BooleanData{true}).Value},
-		{"+ve", fields{false}, (&BooleanData{false}).Value},
+		{"+ve", NewBooleanData(true), baseIDs.GenerateHashID([]byte{0x1})},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanData_GenerateHashID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.Get(), "Get()")
 		})
 	}
 }
 
-func Test_booleanData_GetID(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanDataGet(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
+		name string
+		args data.BooleanData
+		want bool
 	}{
-		{"+ve", fields{}, baseIDs.GenerateDataID(&BooleanData{})},
-		{"+ve", fields{true}, baseIDs.GenerateDataID(&BooleanData{true})},
-		{"+ve", fields{false}, baseIDs.GenerateDataID(&BooleanData{false})},
+		{"+ve", NewBooleanData(true), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataGet() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.GetID(), "GetID()")
 		})
 	}
 }
 
-func Test_booleanData_GetType(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanDataGetID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.BooleanData
+		want ids.DataID
 	}{
-		{"+ve", fields{}, idsConstants.BooleanDataTypeID},
-		{"+ve", fields{true}, idsConstants.BooleanDataTypeID},
-		{"+ve", fields{false}, idsConstants.BooleanDataTypeID},
+		{"+ve", NewBooleanData(true), &baseIDs.DataID{
+			TypeID: idsConstants.BooleanDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID([]byte{0x1}).(*baseIDs.HashID),
+		}},
+		{"+ve", &BooleanData{false}, &baseIDs.DataID{
+			TypeID: idsConstants.BooleanDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID().(*baseIDs.HashID),
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataGetID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.GetTypeID(), "GetTypeID()")
 		})
 	}
 }
 
-func Test_booleanData_String(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanDataGetType(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.BooleanData
+		want ids.ID
 	}{
-		{"+ve", fields{}, "false"},
-		{"+ve", fields{true}, "true"},
-		{"+ve", fields{false}, "false"},
+		{"+ve", NewBooleanData(true), idsConstants.BooleanDataTypeID},
+		{"+ve", &BooleanData{false}, idsConstants.BooleanDataTypeID},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataGetTypeID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.AsString(), "String()")
 		})
 	}
 }
 
-func Test_booleanData_ZeroValue(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanDataAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
+		name string
+		args data.BooleanData
+		want string
 	}{
-		{"+ve", fields{}, &BooleanData{}},
-		{"+ve", fields{true}, NewBooleanData(false)},
-		{"+ve", fields{false}, NewBooleanData(false)},
+		{"+ve", NewBooleanData(true), strconv.FormatBool(true)},
+		{"+ve", &BooleanData{false}, strconv.FormatBool(false)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataAsString() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.ZeroValue(), "ZeroValue()")
 		})
 	}
 }
 
-func Test_booleanData_Bytes(t *testing.T) {
-	type fields struct {
-		Value bool
-	}
+func Test_BooleanDataZeroValue(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args data.BooleanData
+		want data.Data
 	}{
-		{"+ve", fields{true}, []byte{0x1}},
-		{"+ve", fields{false}, []byte{0x0}},
+		{"+ve", NewBooleanData(true), &BooleanData{false}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			booleanData := &BooleanData{
-				Value: tt.fields.Value,
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataZeroValue() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, booleanData.Bytes(), "Bytes()")
+		})
+	}
+}
+
+func Test_BooleanDataBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.BooleanData
+		want []byte
+	}{
+		{"+ve", NewBooleanData(true), []byte{0x1}},
+		{"+ve", &BooleanData{false}, []byte{0x0}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_BooleanDataFromString(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    string
+		want    data.Data
+		wantErr bool
+	}{
+		{"+ve", "true", &BooleanData{true}, false},
+		{"+ve", "false", &BooleanData{false}, false},
+		{"-ve", "abc", &BooleanData{false}, true},
+		{"+ve", "", &BooleanData{false}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrototypeBooleanData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("BooleanDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("BooleanDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("BooleanDataFromString() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
