@@ -24,7 +24,7 @@ func (mesaProperty *MesaProperty) ValidateBasic() error {
 		return err
 	}
 	if mesaProperty.DataID.TypeID.Compare(mesaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat
+		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", mesaProperty.ID.KeyID.AsString(), mesaProperty.ID.TypeID.AsString(), mesaProperty.DataID.TypeID.AsString())
 	}
 	return nil
 }
@@ -68,9 +68,13 @@ func (mesaProperty *MesaProperty) ToAnyProperty() properties.AnyProperty {
 	}
 }
 
-func (mesaProperty *MesaProperty) Mutate(data data.Data) properties.Property {
+// Mutate NOTE: Need to check if propertyID type is not different from data after mutating
+func (mesaProperty *MesaProperty) Mutate(data data.Data) (properties.Property, error) {
 	mesaProperty.DataID = data.GetID().(*baseIDs.DataID)
-	return mesaProperty
+	if err := mesaProperty.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	return mesaProperty, nil
 }
 func NewEmptyMesaPropertyFromID(propertyID ids.PropertyID) properties.MesaProperty {
 	return &MesaProperty{

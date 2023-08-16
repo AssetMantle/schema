@@ -22,6 +22,6 @@ type Property interface {
 
 	ToAnyProperty() AnyProperty
 
-	Mutate(data.Data) Property
+	Mutate(data.Data) (Property, error)
 	Compare(Property) int
 }

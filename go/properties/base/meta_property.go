@@ -47,7 +47,7 @@ func (metaProperty *MetaProperty) ValidateBasic() error {
 		return err
 	}
 	if metaProperty.Data.GetTypeID().Compare(metaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat.Wrapf("data type id does not match property type id")
+		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", metaProperty.ID.KeyID.AsString(), metaProperty.ID.TypeID.AsString(), metaProperty.Data.GetTypeID().AsString())
 	}
 	return nil
 }
@@ -75,9 +75,14 @@ func (metaProperty *MetaProperty) GetBondWeight() sdkTypes.Int {
 func (metaProperty *MetaProperty) IsMeta() bool {
 	return true
 }
-func (metaProperty *MetaProperty) Mutate(data data.Data) properties.Property {
+
+// Mutate NOTE: Need to check if propertyID type is not different from data after mutating
+func (metaProperty *MetaProperty) Mutate(data data.Data) (properties.Property, error) {
 	metaProperty.Data = data.ToAnyData().(*base.AnyData)
-	return metaProperty
+	if err := metaProperty.ValidateBasic(); err != nil {
+		return nil, err
+	}
+	return metaProperty, nil
 }
 func (metaProperty *MetaProperty) Compare(property properties.Property) int {
 	// NOTE: compare property can be meta or mesa, so listable must only be cast to Property Interface

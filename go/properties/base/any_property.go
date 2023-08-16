@@ -55,6 +55,6 @@ func (m *AnyProperty) Compare(property properties.Property) int {
 func (m *AnyProperty) ValidateBasic() error {
 	return m.Impl.(getter).get().ValidateBasic()
 }
-func (m *AnyProperty) Mutate(data data.Data) properties.Property {
+func (m *AnyProperty) Mutate(data data.Data) (properties.Property, error) {
 	return m.Impl.(getter).get().Mutate(data)
 }

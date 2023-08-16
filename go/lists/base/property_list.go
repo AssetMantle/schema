@@ -32,8 +32,9 @@ func (propertyList *PropertyList) ValidateBasic() error {
 	return nil
 }
 func (propertyList *PropertyList) GetProperty(propertyID ids.PropertyID) properties.AnyProperty {
-	if i, found := propertyList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
-		return propertyList.Get()[i]
+	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	if i, found := updatedList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
+		return updatedList.Get()[i]
 	}
 
 	return nil
@@ -47,6 +48,8 @@ func (propertyList *PropertyList) Get() []properties.AnyProperty {
 
 	return anyProperties
 }
+
+// NOTE: No need to sort since it's an internal function, function calling it is already sorting it
 func (propertyList *PropertyList) search(property properties.Property) (index int, found bool) {
 	index = sort.Search(
 		len(propertyList.AnyProperties),
