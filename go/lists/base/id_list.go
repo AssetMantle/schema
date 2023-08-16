@@ -56,11 +56,16 @@ func (idList *IDList) Search(id ids.ID) (index int, found bool) {
 }
 func (idList *IDList) Add(ids ...ids.ID) lists.IDList {
 	updatedList := idList.sort().(*IDList)
-	for _, listable := range ids {
-		if index, found := updatedList.Search(listable); !found {
-			updatedList.AnyIDs = append(updatedList.AnyIDs, listable.ToAnyID().(*baseIDs.AnyID))
+	for _, id := range ids {
+		// ignore ids of different type
+		if len(updatedList.AnyIDs) > 0 && id.GetTypeID().Compare(updatedList.AnyIDs[0].GetTypeID()) != 0 {
+			continue
+		}
+
+		if index, found := updatedList.Search(id); !found {
+			updatedList.AnyIDs = append(updatedList.AnyIDs, id.ToAnyID().(*baseIDs.AnyID))
 			copy(updatedList.AnyIDs[index+1:], updatedList.AnyIDs[index:])
-			updatedList.AnyIDs[index] = listable.ToAnyID().(*baseIDs.AnyID)
+			updatedList.AnyIDs[index] = id.ToAnyID().(*baseIDs.AnyID)
 		}
 	}
 	return updatedList
