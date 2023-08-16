@@ -7,6 +7,7 @@ type ListData interface {
 	Data
 	Get() []AnyListableData
 	Search(ListableData) (int, bool)
+	// Add ignores data with type not matching list data type
 	Add(...ListableData) ListData
 	Remove(...ListableData) ListData
 }

@@ -100,6 +100,11 @@ func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
 	updatedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	for _, datum := range listableData {
+		// ignore datum of different type
+		if len(updatedListData.Value) != 0 && datum.GetTypeID().Compare(updatedListData.Value[0].GetTypeID()) != 0 {
+			continue
+		}
+
 		if index, found := updatedListData.Search(datum); !found {
 			updatedListData.Value = append(updatedListData.Value, datum.ToAnyListableData().(*AnyListableData))
 			copy(updatedListData.Value[index+1:], updatedListData.Value[index:])
