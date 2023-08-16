@@ -23,7 +23,7 @@ func ValidatedID[V *baseIDs.PropertyID | *baseIDs.DataID](value any) V {
 	return value.(V)
 }
 
-func createTestInputForMesaProperty() (ids.StringID, ids.PropertyID, data.Data, properties.Property) {
+func createTestInputForMesaProperty() (ids.StringID, ids.PropertyID, data.Data, properties.MesaProperty) {
 	testKey := baseIDs.NewStringID("ID")
 	testData := baseData.NewStringData("Data")
 	testPropertyID := baseIDs.NewPropertyID(testKey, testData.GetTypeID())
