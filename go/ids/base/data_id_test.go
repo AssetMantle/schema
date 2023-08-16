@@ -4,177 +4,132 @@
 package base
 
 import (
-	"reflect"
-	"testing"
-
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
-	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"github.com/AssetMantle/schema/go/ids/constants"
+	"github.com/AssetMantle/schema/go/ids/utilities"
+	"reflect"
+	"strings"
+	"testing"
 )
 
-func Test_dataIDFromInterface(t *testing.T) {
-	type args struct {
-		i interface{}
-	}
+func Test_DataIDValidateBasic(t *testing.T) {
 	tests := []struct {
-		name      string
-		args      args
-		want      *DataID
-		wantError bool
+		name string
+		args ids.DataID
+		want error
 	}{
-		{"+ve", args{&DataID{NewStringID("B").(*StringID), GenerateHashID([]byte("B")).(*HashID)}}, &DataID{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}, false},
-		{"-ve", args{&DataID{}}, &DataID{}, false},
-		{"-ve", args{nil}, &DataID{}, true},
+		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, nil},
+		{"-ve", &DataID{&StringID{"S"}, &HashID{[]byte("jhavsjh")}}, errorConstants.IncorrectFormat.Wrapf("invalid hashID length")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer func() {
-				r := recover()
-				if (r != nil) != tt.wantError {
-					t.Errorf("MetadataFromInterface() error = %v, wantError %v", r, tt.wantError)
+			got := tt.args.ValidateBasic()
+			if tt.want != nil {
+				if !reflect.DeepEqual(got.Error(), tt.want.Error()) {
+					t.Errorf("DataIDValidateBasic() got = %v, want %v", got, tt.want)
 				}
-			}()
-			got := dataIDFromInterface(tt.args.i)
+			}
+		})
+	}
+}
+
+func Test_DataIDType(t *testing.T) {
+	tests := []struct {
+		name string
+		args ids.DataID
+		want ids.StringID
+	}{
+		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, NewStringID(constants.DataIDType)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.GetTypeID()
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("dataIDFromInterface() got = %v, want %v", got, tt.want)
+				t.Errorf("DataIDType() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_dataID_Bytes(t *testing.T) {
-	type fields struct {
-		Type   ids.StringID
-		HashID ids.HashID
-	}
+func Test_DataIDFromString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args string
+		want ids.ID
+		err  error
 	}{
-		{"+ve", fields{NewStringID("B"), GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), GenerateHashID().Bytes()...)},
-		{"+ve", fields{NewStringID("B"), GenerateHashID()}, append(append([]byte{}, NewStringID("B").Bytes()...), GenerateHashID().Bytes()...)},
+		{"+ve", strings.Join([]string{"S", testValidBase64URLString}, utilities.IDSeparator), &DataID{&StringID{"S"}, &HashID{testBytes}}, nil},
+		{"+ve", ".", PrototypeDataID(), nil},
+		{"+ve", "test", PrototypeDataID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dataID := &DataID{
-				TypeID: tt.fields.Type.(*StringID),
-				HashID: tt.fields.HashID.(*HashID),
-			}
-			if got := dataID.Bytes(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Bytes() = %v, want %v", got, tt.want)
+			got, err := PrototypeDataID().FromString(tt.args)
+			if err != nil {
+				if !reflect.DeepEqual(err.Error(), tt.err.Error()) {
+					t.Errorf("DataIDFromString() got error = %v, want error %v", err.Error(), tt.err.Error())
+				}
+			} else if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DataIDFromString() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_dataID_Compare(t *testing.T) {
-	type fields struct {
-		Type   ids.StringID
-		HashID ids.HashID
-	}
-	type args struct {
-		id ids.ID
-	}
+func Test_DataIDAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args ids.DataID
+		want string
 	}{
-		{"+ve", fields{NewStringID("B"), GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}}, 0},
-		{"+ve", fields{NewStringID("B"), GenerateHashID()}, args{&DataID{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}}, -1},
+		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, strings.Join([]string{"S", testValidBase64URLString}, utilities.IDSeparator)},
+		{"+ve", &DataID{&StringID{}, &HashID{}}, "."},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dataID := &DataID{
-				TypeID: tt.fields.Type.(*StringID),
-				HashID: tt.fields.HashID.(*HashID),
-			}
-			if got := dataID.Compare(tt.args.id); got != tt.want {
-				t.Errorf("Compare() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_dataID_GetHashID(t *testing.T) {
-	type fields struct {
-		Type   *StringID
-		HashID *HashID
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   ids.HashID
-	}{
-		{"+ve", fields{}, (&DataID{}).HashID},
-		{"+ve", fields{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}, GenerateHashID()},
-		{"+ve", fields{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}, GenerateHashID()},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			dataID := &DataID{
-				TypeID: tt.fields.Type,
-				HashID: tt.fields.HashID,
-			}
-			if got := dataID.GetHashID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetHashID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_dataID_String(t *testing.T) {
-	type fields struct {
-		Type   *StringID
-		HashID *HashID
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   string
-	}{
-		{"+ve", fields{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), GenerateHashID().AsString())},
-		{"+ve", fields{NewStringID("B").(*StringID), GenerateHashID().(*HashID)}, stringUtilities.JoinIDStrings(NewStringID("B").AsString(), GenerateHashID().AsString())},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			dataID := &DataID{
-				TypeID: tt.fields.Type,
-				HashID: tt.fields.HashID,
-			}
-			if got := dataID.AsString(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestReadDataID(t *testing.T) {
-	type args struct {
-		dataIDString string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    ids.DataID
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-		{"+ve", args{stringUtilities.JoinIDStrings(NewStringID("B").AsString(), GenerateHashID().AsString())}, &DataID{}, false},
-		{"+ve with empty string", args{""}, PrototypeDataID(), false},
-		{"+ve with nil", args{}, PrototypeDataID(), false},
-		{"-ve", args{stringUtilities.JoinIDStrings(NewStringID("j").AsString(), "0")}, &DataID{}, true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := PrototypeDataID().FromString(tt.args.dataIDString)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ReadDataID() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := tt.args.AsString()
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ReadDataID() got = %v, want %v", got, tt.want)
+				t.Errorf("DataIDAsString() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DataIDBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		args ids.DataID
+		want []byte
+	}{
+		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, append([]byte("S"), testBytes...)},
+		{"+ve", &DataID{&StringID{}, &HashID{}}, nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DataIDByte() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_DataIDCompare(t *testing.T) {
+	dataID := &DataID{&StringID{"S"}, &HashID{testBytes}}
+	tests := []struct {
+		name string
+		args ids.DataID
+		want bool
+	}{
+		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, true},
+		{"-ve", &DataID{&StringID{}, &HashID{}}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Compare(dataID)
+			if !reflect.DeepEqual(got == 0, tt.want) {
+				t.Errorf("DataIDCompare() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
