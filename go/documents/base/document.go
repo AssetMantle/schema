@@ -20,7 +20,7 @@ func (document *Document) ValidateBasic() error {
 		return err
 	}
 
-	if err := document.GetImmutables().GetImmutablePropertyList().Add(baseLists.AnyPropertiesToProperties(document.GetMutables().GetMutablePropertyList().Get()...)...).ValidateBasic(); err != nil {
+	if err := baseLists.NewPropertyList(baseLists.AnyPropertiesToProperties(append(document.GetImmutables().GetImmutablePropertyList().Get(), document.GetMutables().GetMutablePropertyList().Get()...)...)...).ValidateBasic(); err != nil {
 		return err
 	}
 
