@@ -381,7 +381,7 @@ func Test_MesaPropertyMutate(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve", testMesaProperty, baseData.NewStringData("Data2"), NewMesaProperty(testKey, baseData.NewStringData("Data2")), false},
-		{"-ve", testMesaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), NewMesaProperty(testKey, baseData.NewNumberData(sdkTypes.NewInt(10))), true},
+		{"-ve", testMesaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), nil, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

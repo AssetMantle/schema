@@ -324,7 +324,7 @@ func Test_MetaPropertyMutate(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve", testMetaProperty, baseData.NewStringData("Data2"), NewMetaProperty(testKey, baseData.NewStringData("Data2")), false},
-		{"-ve", testMetaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), NewMetaProperty(testKey, baseData.NewNumberData(sdkTypes.NewInt(10))), true},
+		{"-ve", testMetaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), nil, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
