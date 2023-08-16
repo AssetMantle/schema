@@ -1,6 +1,8 @@
 package base
 
 import (
+	"github.com/AssetMantle/schema/go/properties/constants"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -43,6 +45,30 @@ func Test_new_Classification(t *testing.T) {
 			}()
 			if got := NewClassification(tt.fields.immutables, tt.fields.mutables); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewClassification() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_classifiaction_GetSupply(t *testing.T) {
+	classificationID, immutables, _, testDocument := createTestInput()
+	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constants.BondAmountProperty.GetKey(), baseData.NewNumberData(sdkTypes.NewInt(999))))))
+	type fields struct {
+		Document documents.Document
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   sdkTypes.Int
+	}{
+		{"+ve", fields{testDocument}, sdkTypes.ZeroInt()},
+		{"+ve with bondAmount", fields{testDocumentWithSupply}, sdkTypes.NewInt(999)},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			classification := NewClassificationFromDocument(tt.fields.Document)
+			if got := classification.GetBondAmount(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetSupply() = %v, want %v", got, tt.want)
 			}
 		})
 	}

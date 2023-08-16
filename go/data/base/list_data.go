@@ -67,6 +67,7 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 
 	dataStringList := utilities.SplitListString(dataString)
 	dataList := make([]data.ListableData, len(dataStringList))
+	var expectedTypeID ids.StringID
 
 	for i, datumString := range dataStringList {
 		if datum, err := PrototypeAnyData().FromString(datumString); err != nil {
@@ -75,6 +76,11 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 			return PrototypeListData(), errorConstants.IncorrectFormat.Wrapf("data type %s is not listable", datum.GetTypeID().AsString())
 		} else {
 			dataList[i] = listableData
+		}
+		if i == 0 {
+			expectedTypeID = dataList[i].GetTypeID()
+		} else if dataList[i].GetTypeID().Compare(expectedTypeID) != 0 {
+			return PrototypeListData(), errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", dataList[i].GetTypeID().AsString(), expectedTypeID.AsString())
 		}
 	}
 

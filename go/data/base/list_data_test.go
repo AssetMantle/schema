@@ -5,7 +5,9 @@ package base
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/AssetMantle/schema/go/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -16,8 +18,8 @@ import (
 )
 
 var (
-	testListData       = NewListData(NewStringData("Data"), NewHeightData(base.NewHeight(10)))
-	sortedTestListData = NewListData(NewHeightData(base.NewHeight(10)), NewStringData("Data"))
+	testListData       = NewListData(NewStringData("Data2"), NewStringData("Data1"))
+	sortedTestListData = NewListData(NewStringData("Data1"), NewStringData("Data2"))
 )
 
 func Test_ListDataValidateBasic(t *testing.T) {
@@ -28,9 +30,14 @@ func Test_ListDataValidateBasic(t *testing.T) {
 	}{
 		{"+ve", NewListData(NewStringData("Data")), false},
 		{"-ve", NewListData(&HeightData{&base.Height{-10}}), true},
+		{"-ve", &ListData{[]*AnyListableData{(&StringData{"Data"}).ToAnyListableData().(*AnyListableData), (&HeightData{&base.Height{10}}).ToAnyListableData().(*AnyListableData)}}, true},
+		{"-ve", &ListData{[]*AnyListableData{(&IDData{(&baseIDs.StringID{"ID1"}).ToAnyID().(*baseIDs.AnyID)}).ToAnyListableData().(*AnyListableData), (&IDData{(&baseIDs.HashID{testBytes}).ToAnyID().(*baseIDs.AnyID)}).ToAnyListableData().(*AnyListableData)}}, true},
 	}
 	for _, tt := range tests {
 		err := tt.args.ValidateBasic()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		if err == nil && tt.want {
 			t.Errorf("ListDataValidateBasic() got = %v, want = %v", err, tt.want)
 		}
@@ -66,8 +73,8 @@ func TestNewListData(t *testing.T) {
 		args []data.ListableData
 		want data.ListData
 	}{
-		{"+ve for some id", []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
-		{"+ve for empty String", []data.ListableData{NewStringData(""), NewHeightData(base.NewHeight(-1))}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewHeightData(base.NewHeight(-1)).ToAnyListableData().(*AnyListableData)}}},
+		{"+ve for some id", []data.ListableData{NewStringData("Data1"), NewStringData("Data2")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData), NewStringData("Data2").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve for empty String", []data.ListableData{NewStringData(""), NewStringData("Data1")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewStringData("Data1").ToAnyListableData().(*AnyListableData)}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -87,10 +94,10 @@ func Test_ListDataSearch(t *testing.T) {
 		want1  int
 		want2  bool
 	}{
-		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}...), NewStringData("Data"), 1, true},
-		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}...), NewHeightData(base.NewHeight(10)), 0, true},
-		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...), NewStringData(""), 0, true},
-		{"+ve", NewListData([]data.ListableData{NewStringData("Data"), NewStringData("")}...), NewStringData("test"), 2, false},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data1"), NewStringData("Data2")}...), NewStringData("Data1"), 0, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data1"), NewStringData("Data2")}...), NewStringData("Data2"), 1, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data1"), NewStringData("")}...), NewStringData(""), 0, true},
+		{"+ve", NewListData([]data.ListableData{NewStringData("Data1"), NewStringData("")}...), NewStringData("test"), 2, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -104,22 +111,23 @@ func Test_ListDataSearch(t *testing.T) {
 
 func Test_ListDataAdd(t *testing.T) {
 	tests := []struct {
-		name      string
-		args      []data.ListableData
-		want      data.ListData
-		wantError bool
+		name string
+		args []data.ListableData
+		want data.ListData
 	}{
-		{"+ve", []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10)), NewStringData("Data")}, &ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve", []data.ListableData{NewStringData("Data"), NewStringData(""), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, false},
-		{"+ve", []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}, false},
-		{"-ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData)}}, true},
-		{"-ve", []data.ListableData{NewStringData("Data"), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}, true},
+		{"+ve", []data.ListableData{NewStringData("Data2"), NewHeightData(base.NewHeight(10)), NewStringData("Data1")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData), NewStringData("Data2").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", []data.ListableData{NewStringData("Data"), NewStringData(""), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
+		{"-ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"-ve", []data.ListableData{NewStringData("Data"), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"-ve", []data.ListableData{NewStringData("Data"), NewNumberData(sdkTypes.NewInt(1))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"-ve", []data.ListableData{NewIDData(baseIDs.NewStringID("ID1")), NewIDData(baseIDs.GenerateHashID(testBytes))}, &ListData{[]*AnyListableData{NewIDData(baseIDs.NewStringID("ID1")).ToAnyListableData().(*AnyListableData)}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			listData := &ListData{}
-			if got := listData.Add(tt.args...); !reflect.DeepEqual(got, tt.want) && !tt.wantError {
+			if got := listData.Add(tt.args...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ListDataAdd got = %v, want = %v", got, tt.want)
 			}
 		})
@@ -133,7 +141,7 @@ func Test_ListDataBytes(t *testing.T) {
 		want []byte
 	}{
 		{"+ve", NewListData(NewStringData("Data")), NewStringData("Data").Bytes()}, // for a single data no loop iteration is required, so directly it's byte should match
-		{"+ve", testListData, bytes.Join([][]byte{NewHeightData(base.NewHeight(10)).Bytes(), NewStringData("Data").Bytes()}, dataConstants.ListBytesSeparator)},
+		{"+ve", testListData, bytes.Join([][]byte{NewStringData("Data1").Bytes(), NewStringData("Data2").Bytes()}, dataConstants.ListBytesSeparator)},
 		{"+ve", NewListData(NewStringData("")), []byte(nil)},
 	}
 	for _, tt := range tests {
@@ -191,7 +199,7 @@ func Test_listData_GetID(t *testing.T) {
 		args data.ListData
 		want ids.DataID
 	}{
-		{"+ve", testListData, baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewHeightData(base.NewHeight(10)).ToAnyListableData().(*AnyListableData), NewStringData("Data").ToAnyListableData().(*AnyListableData)}})},
+		{"+ve", testListData, baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData), NewStringData("Data2").ToAnyListableData().(*AnyListableData)}})},
 		{"+ve", NewListData(NewStringData("")), baseIDs.GenerateDataID(&ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}})},
 	}
 	for _, tt := range tests {
@@ -233,8 +241,8 @@ func Test_listData_Remove(t *testing.T) {
 		{"+ve", NewListData(NewStringData("")), []data.ListableData{}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
 		{"+ve", NewListData(NewStringData("")), []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{}}},
 		{"+ve", NewListData(NewStringData("data")), []data.ListableData{NewStringData("data")}, &ListData{[]*AnyListableData{}}},
-		{"+ve", testListData, []data.ListableData{NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
-		{"+ve", testListData, []data.ListableData{NewStringData("Data"), NewHeightData(base.NewHeight(10))}, &ListData{[]*AnyListableData{}}},
+		{"+ve", testListData, []data.ListableData{NewStringData("Data2")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", testListData, []data.ListableData{NewStringData("Data1"), NewStringData("Data2")}, &ListData{[]*AnyListableData{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -252,9 +260,10 @@ func Test_listData_AsString(t *testing.T) {
 		args data.ListData
 		want string
 	}{
-		{"+ve", testListData, "10,Data"},
-		{"+ve", NewListData(NewStringData(""), NewHeightData(base.NewHeight(10))), ",10"},
+		{"+ve", testListData, "Data1,,Data2"},
+		{"+ve", NewListData(NewHeightData(base.NewHeight(20)), NewHeightData(base.NewHeight(11))), "11,,20"},
 		{"+ve", NewListData(NewStringData("")), ""},
+		{"+ve", NewListData(NewHeightData(base.NewHeight(-1))), "-1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -285,30 +294,6 @@ func Test_listData_ZeroValue(t *testing.T) {
 	}
 }
 
-func Test_ListDataValidateWithType(t *testing.T) {
-	tests := []struct {
-		name         string
-		args         data.ListData
-		expectedType ids.StringID
-		wantError    bool
-	}{
-		{"-ve", testListData, baseIDs.NewStringID("S"), true},
-		{"-ve", testListData, baseIDs.NewStringID("H"), true},
-		{"+ve", NewListData(NewStringData("Data1"), NewStringData("Data2")), baseIDs.NewStringID("S"), false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.ValidateWithType(tt.expectedType)
-			if got != nil && !tt.wantError {
-				t.Errorf("ListDataValidateWithType() got = %v, want = %v", got, tt.wantError)
-			}
-			if got == nil && tt.wantError {
-				t.Errorf("ListDataValidateWithType() got = %v, want = %v", got, tt.wantError)
-			}
-		})
-	}
-}
-
 func Test_ListDataFromString(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -317,9 +302,9 @@ func Test_ListDataFromString(t *testing.T) {
 		wantError bool
 	}{
 		{"+ve", "", &ListData{[]*AnyListableData{}}, false},
-		{"+ve", "S|Data,H|10", sortedTestListData, false},
+		{"+ve", "S|Data1,,S|Data2", sortedTestListData, false},
 		{"-ve", "L|S|test", sortedTestListData, true},
-		{"-ve", "K|test,H|10", testListData, true},
+		{"-ve", "K|test,,H|10", testListData, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

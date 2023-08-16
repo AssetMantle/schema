@@ -70,7 +70,7 @@ func Test_AnyIDFromString(t *testing.T) {
 		{"+ve", arg{constants.SplitIDType, strings.Join([]string{testValidBase64String, testValidBase64String}, utilities.IDSeparator)}, (&SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{testBytes}}}).ToAnyID(), nil},
 		{"+ve", arg{constants.StringIDType, testValidBase64String}, (&StringID{testValidBase64String}).ToAnyID(), nil},
 		{"+ve", arg{"", ""}, &AnyID{}, nil},
-		{"-ve", arg{"unknown", ""}, nil, errorConstants.IncorrectFormat.Wrapf("type identifier is not recognised")},
+		{"-ve", arg{"unknown", ""}, nil, errorConstants.IncorrectFormat.Wrapf("unknown type identifier is not recognised")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -78,7 +78,7 @@ func Test_AnyIDFromString(t *testing.T) {
 			got, err := PrototypeAnyID().FromString(v)
 			if err != nil {
 				if !reflect.DeepEqual(err.Error(), tt.wantErr.Error()) {
-					t.Errorf("AnyIDFromString() got error = %v, want error %v", err.Error(), tt.wantErr.Error())
+					t.Errorf("AnyIDFromString() got error = %v, want error = %v", err.Error(), tt.wantErr.Error())
 				}
 			}
 			if !reflect.DeepEqual(got, tt.want) {

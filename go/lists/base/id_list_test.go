@@ -17,9 +17,10 @@ import (
 var (
 	testValidBase64String = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
 	//testValidBase64URLString = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
-	testBytes, _      = base64.StdEncoding.DecodeString(testValidBase64String)
-	testIDList        = NewIDList(baseIDs.NewStringID("ID"), &baseIDs.HashID{testBytes})
-	invalidTestIDList = NewIDList(baseIDs.NewStringID("ID"), &baseIDs.HashID{[]byte("a")})
+	testBytes, _       = base64.StdEncoding.DecodeString(testValidBase64String)
+	testIDList         = NewIDList(baseIDs.NewStringID("ID1"), baseIDs.NewStringID("ID2"))
+	invalidTestIDList1 = &IDList{[]*baseIDs.AnyID{(&baseIDs.StringID{"ID1"}).ToAnyID().(*baseIDs.AnyID), (&baseIDs.HashID{testBytes}).ToAnyID().(*baseIDs.AnyID)}}
+	invalidTestIDList2 = &IDList{[]*baseIDs.AnyID{(&baseIDs.HashID{testBytes}).ToAnyID().(*baseIDs.AnyID), (&baseIDs.HashID{[]byte("a")}).ToAnyID().(*baseIDs.AnyID)}}
 )
 
 func Test_idList_Add(t *testing.T) {
@@ -37,6 +38,7 @@ func Test_idList_Add(t *testing.T) {
 	}{
 		{"+ve for nil", fields{[]*baseIDs.AnyID{}}, args{[]ids.ID{baseIDs.NewStringID("ID")}}, &IDList{[]*baseIDs.AnyID{baseIDs.NewStringID("ID").ToAnyID().(*baseIDs.AnyID)}}},                                                                                                     // TODO: panic for nil
 		{"+ve", fields{[]*baseIDs.AnyID{baseIDs.NewStringID("ID").ToAnyID().(*baseIDs.AnyID)}}, args{[]ids.ID{baseIDs.NewStringID("ID1")}}, &IDList{[]*baseIDs.AnyID{baseIDs.NewStringID("ID").ToAnyID().(*baseIDs.AnyID), baseIDs.NewStringID("ID1").ToAnyID().(*baseIDs.AnyID)}}}, // TODO: report
+		{"+ve", fields{[]*baseIDs.AnyID{baseIDs.NewStringID("ID1").ToAnyID().(*baseIDs.AnyID)}}, args{[]ids.ID{baseIDs.GenerateHashID(testBytes).ToAnyID().(*baseIDs.AnyID)}}, &IDList{[]*baseIDs.AnyID{baseIDs.NewStringID("ID1").ToAnyID().(*baseIDs.AnyID)}}},                    // TODO: report
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -143,7 +145,8 @@ func Test_IDListValidateBasic(t *testing.T) {
 		want bool
 	}{
 		{"+ve", testIDList, false},
-		{"-ve", invalidTestIDList, true},
+		{"-ve", invalidTestIDList1, true},
+		{"-ve", invalidTestIDList2, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
