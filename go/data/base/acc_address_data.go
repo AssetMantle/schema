@@ -48,7 +48,7 @@ func (accAddressData *AccAddressData) FromString(dataString string) (data.Data, 
 	}
 
 	accAddressData.Value = accAddress
-	if accAddressData.ValidateBasic() != nil {
+	if err = accAddressData.ValidateBasic(); err != nil {
 		return PrototypeAccAddressData(), err
 	}
 

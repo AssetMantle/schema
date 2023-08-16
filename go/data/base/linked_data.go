@@ -47,7 +47,11 @@ func (linkedData *LinkedData) ValidateBasic() error {
 		}
 
 		if URL, err := url.Parse(linkedData.GetServiceEndpoint()); err != nil || URL.Scheme == "" || URL.Host == "" {
-			return errorConstants.MetaDataError.Wrapf("invalid service endpoint: %s : %s", linkedData.GetServiceEndpoint(), err)
+			if err != nil {
+				return errorConstants.MetaDataError.Wrapf("invalid service endpoint: %s : %s", linkedData.GetServiceEndpoint(), err.Error())
+			} else {
+				return errorConstants.MetaDataError.Wrapf("invalid service endpoint: %s : scheme or host is missing", linkedData.GetServiceEndpoint())
+			}
 		}
 	}
 
@@ -95,7 +99,7 @@ func (linkedData *LinkedData) ZeroValue() data.Data {
 }
 func (linkedData *LinkedData) GenerateHashID() ids.HashID {
 	if linkedData.Compare(linkedData.ZeroValue().(data.ListableData)) == 0 {
-		return linkedData.GenerateHashID()
+		return baseIDs.GenerateHashID()
 	}
 
 	return baseIDs.GenerateHashID(linkedData.Bytes())

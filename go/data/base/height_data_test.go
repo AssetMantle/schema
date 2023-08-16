@@ -4,249 +4,246 @@
 package base
 
 import (
+	"encoding/binary"
+	"github.com/AssetMantle/schema/go/types"
+	"github.com/AssetMantle/schema/go/types/base"
+	"math"
 	"reflect"
-	"strconv"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
 	idsConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
-	"github.com/AssetMantle/schema/go/types"
-	baseTypes "github.com/AssetMantle/schema/go/types/base"
 )
 
-type fields struct {
-	Value *baseTypes.Height
-}
-
-func TestNewHeightData(t *testing.T) {
-	type args struct {
-		value types.Height
-	}
+func Test_NewHeightData(t *testing.T) {
 	tests := []struct {
-		name    string
-		args    args
-		want    data.Data
-		wantErr bool
+		name string
+		args types.Height
+		want data.Data
 	}{
-		{"panic with nil", args{nil}, &HeightData{nil}, true},
-		{"Test for +ve int", args{baseTypes.NewHeight(100).(*baseTypes.Height)}, &HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}, false},
-		{"Test for +ve int", args{baseTypes.NewHeight(-100)}, &HeightData{baseTypes.NewHeight(-100).(*baseTypes.Height)}, false},
+		{name: "+ve", args: base.NewHeight(10), want: &HeightData{&base.Height{10}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
-			if got := NewHeightData(tt.args.value); !reflect.DeepEqual(got, tt.want) {
+			got := NewHeightData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewHeightData() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_Compare(t *testing.T) {
-
-	type args struct {
-		data.ListableData
-	}
+func Test_HeightDataValidateBasic(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args data.HeightData
+		want bool
 	}{
-
-		{"Test for Equal case", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, args{&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}}, 0},
-		{"Test for LT case", fields{baseTypes.NewHeight(0).(*baseTypes.Height)}, args{&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}}, -1},
-		{"Test for GT case", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, args{&HeightData{baseTypes.NewHeight(0).(*baseTypes.Height)}}, 1},
+		{"+ve", NewHeightData(base.NewHeight(10)), false},
+		{"+ve", NewHeightData(base.NewHeight(-10)), false},
+		{"-ve", &HeightData{&base.Height{-10}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("HeightDataValidateBasic() = %v, want %v", err, tt.want)
 			}
-			if got := heightData.Compare(tt.args.ListableData); got != tt.want {
-				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			if err != nil && !tt.want {
+				t.Errorf("HeightDataValidateBasic() = %v, want %v", err, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_GenerateHashID(t *testing.T) {
-
+func Test_HeightData_Compare(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.HashID
+		name string
+		args data.HeightData
+		want int
 	}{
-
-		{"Test for zero value", fields{baseTypes.NewHeight(-1).(*baseTypes.Height)}, baseIDs.GenerateHashID()},
-		{"Test for -ve value", fields{baseTypes.NewHeight(-100).(*baseTypes.Height)}, baseIDs.GenerateHashID()},
-		{"Test for +ve value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, baseIDs.GenerateHashID((&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}).Bytes())},
+		{"+ve", NewHeightData(base.NewHeight(10)), 0},
+		{"+ve", NewHeightData(base.NewHeight(11)), 1},
+		{"+ve", NewHeightData(base.NewHeight(9)), -1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.GenerateHashID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GenerateHashID() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-func Test_heightData_Get(t *testing.T) {
-
-	tests := []struct {
-		name   string
-		fields fields
-		want   types.Height
-	}{
-
-		{"Test for zero value", fields{baseTypes.NewHeight(0).(*baseTypes.Height)}, (&HeightData{baseTypes.NewHeight(0).(*baseTypes.Height)}).Value},
-		{"Test for +ve value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, (&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}).Value},
-		{"Test for -ve value", fields{baseTypes.NewHeight(-100).(*baseTypes.Height)}, (&HeightData{baseTypes.NewHeight(-100).(*baseTypes.Height)}).Value},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.Get(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Get() = %v, want %v", got, tt.want)
+			got := tt.args.Compare(NewHeightData(base.NewHeight(10)))
+			if got != tt.want {
+				t.Errorf("HeightData_Compare() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_GetID(t *testing.T) {
-
+func Test_HeightData_GenerateHashID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
+		name string
+		args data.HeightData
+		want ids.ID
 	}{
-
-		{"Test for zero value", fields{baseTypes.NewHeight(0).(*baseTypes.Height)}, baseIDs.GenerateDataID(&HeightData{baseTypes.NewHeight(0).(*baseTypes.Height)})},
-		{"Test for +ve value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, baseIDs.GenerateDataID(&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)})},
-		{"Test for -ve value", fields{baseTypes.NewHeight(-100).(*baseTypes.Height)}, baseIDs.GenerateDataID(&HeightData{baseTypes.NewHeight(-100).(*baseTypes.Height)})},
+		{"+ve", NewHeightData(base.NewHeight(10)), baseIDs.GenerateHashID(NewHeightData(base.NewHeight(10)).Bytes())},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.GetID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetID() = %v, want %v", got, tt.want)
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightData_GenerateHashID() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_GetType(t *testing.T) {
-
+func Test_HeightDataGet(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.HeightData
+		want types.Height
 	}{
-
-		{"Test for an integer value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, idsConstants.HeightDataTypeID},
+		{"+ve", NewHeightData(base.NewHeight(10)), base.NewHeight(10)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.GetTypeID(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetTypeID() = %v, want %v", got, tt.want)
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataGet() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_AsString(t *testing.T) {
-
+func Test_HeightDataGetID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.HeightData
+		want ids.DataID
 	}{
-
-		{"Test for zero value", fields{baseTypes.NewHeight(0).(*baseTypes.Height)}, strconv.FormatInt((&HeightData{baseTypes.NewHeight(0).(*baseTypes.Height)}).Value.Get(), 10)},
-		{"Test for +ve value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, strconv.FormatInt((&HeightData{baseTypes.NewHeight(100).(*baseTypes.Height)}).Value.Get(), 10)},
-		{"Test for -ve value", fields{baseTypes.NewHeight(-100).(*baseTypes.Height)}, strconv.FormatInt((&HeightData{baseTypes.NewHeight(-100).(*baseTypes.Height)}).Value.Get(), 10)},
+		{"+ve", NewHeightData(base.NewHeight(10)), &baseIDs.DataID{
+			TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID(NewHeightData(base.NewHeight(10)).Bytes()).(*baseIDs.HashID),
+		}},
+		{"+ve", &HeightData{&base.Height{-1}}, &baseIDs.DataID{
+			TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
+			HashID: baseIDs.GenerateHashID().(*baseIDs.HashID),
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.AsString(); got != tt.want {
-				t.Errorf("String() = %v, want %v", got, tt.want)
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataGetID() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_ZeroValue(t *testing.T) {
-
+func Test_HeightDataGetType(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
+		name string
+		args data.HeightData
+		want ids.ID
 	}{
-
-		{"Test for zero value", fields{baseTypes.NewHeight(0).(*baseTypes.Height)}, &HeightData{baseTypes.NewHeight(-1).(*baseTypes.Height)}},
-		{"Test for +ve Int value", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, &HeightData{baseTypes.NewHeight(-1).(*baseTypes.Height)}},
-		{"Test for -ve Int value", fields{baseTypes.NewHeight(-100).(*baseTypes.Height)}, &HeightData{baseTypes.NewHeight(-1).(*baseTypes.Height)}},
+		{"+ve", NewHeightData(base.NewHeight(10)), idsConstants.HeightDataTypeID},
+		{"+ve", &HeightData{&base.Height{-1}}, idsConstants.HeightDataTypeID},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
-			}
-			if got := heightData.ZeroValue(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ZeroValue() = %v, want %v", got, tt.want)
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataGetTypeID() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_heightData_Bytes(t *testing.T) {
+func Test_HeightDataAsString(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.HeightData
+		want string
+	}{
+		{"+ve", NewHeightData(base.NewHeight(10)), "10"},
+		{"+ve", &HeightData{&base.Height{-1}}, "-1"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataAsString() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
+func Test_HeightDataZeroValue(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.HeightData
+		want data.Data
+	}{
+		{"+ve", NewHeightData(base.NewHeight(10)), &HeightData{&base.Height{-1}}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataZeroValue() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_HeightDataBytes(t *testing.T) {
+	want1 := make([]byte, 8)
+	binary.LittleEndian.PutUint64(want1, uint64(10))
+	want2 := make([]byte, 8)
+	binary.LittleEndian.PutUint64(want2, uint64(math.MaxUint64))
+
+	tests := []struct {
+		name string
+		args data.HeightData
+		want []byte
+	}{
+		{name: "+ve", args: NewHeightData(base.NewHeight(10)), want: want1},
+		{name: "+ve", args: NewHeightData(base.NewHeight(-1)), want: want2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_HeightDataFromString(t *testing.T) {
 	tests := []struct {
 		name    string
-		fields  fields
-		want    []byte
+		args    string
+		want    data.Data
 		wantErr bool
 	}{
-		{"+ve with ZeroHeight", fields{baseTypes.NewHeight(-1).(*baseTypes.Height)}, baseTypes.NewHeight(-1).Bytes(), false},
-		{"panic with nil", fields{nil}, []byte{}, true},
-		{"+ve", fields{baseTypes.NewHeight(100).(*baseTypes.Height)}, baseTypes.NewHeight(100).(*baseTypes.Height).Bytes(), false},
-		{"+ve with max int", fields{baseTypes.NewHeight(int64(^uint(0) >> 1)).(*baseTypes.Height)}, baseTypes.NewHeight(int64(^uint(0) >> 1)).Bytes(), false},
+		{"+ve", "1", NewHeightData(base.NewHeight(1)), false},
+		{"-ve", "1.0", PrototypeHeightData(), true},
+		{"-ve", "18446744073709551615", PrototypeHeightData(), true},
+		{"-ve", "abc", PrototypeHeightData(), true},
+		{"+ve", "", PrototypeHeightData(), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			heightData := &HeightData{
-				Value: tt.fields.Value,
+			got, err := PrototypeHeightData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("HeightDataFromString() got = %v, want %v", got, tt.want)
 			}
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
-			assert.Equalf(t, tt.want, heightData.Bytes(), "Bytes()")
+			if err != nil && !tt.wantErr {
+				t.Errorf("HeightDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("HeightDataFromString() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

@@ -45,7 +45,7 @@ func (heightData *HeightData) FromString(dataString string) (data.Data, error) {
 	}
 
 	heightData.Value = baseTypes.NewHeight(Height).(*baseTypes.Height)
-	if heightData.ValidateBasic() != nil {
+	if err = heightData.ValidateBasic(); err != nil {
 		return PrototypeHeightData(), err
 	}
 

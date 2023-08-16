@@ -4,206 +4,226 @@
 package base
 
 import (
+	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 )
 
-func TestNewIDData(t *testing.T) {
-	type args struct {
-		value ids.ID
-	}
+func Test_NewIDData(t *testing.T) {
 	tests := []struct {
 		name string
-		args args
+		args ids.ID
 		want data.Data
 	}{
-		{"+ve", args{baseIDs.NewStringID("Data")}, &IDData{baseIDs.NewStringID("Data").ToAnyID().(*baseIDs.AnyID)}},
-		{"+ve empty string", args{baseIDs.NewStringID("")}, &IDData{baseIDs.NewStringID("").ToAnyID().(*baseIDs.AnyID)}},
+		{name: "+ve", args: baseIDs.NewStringID("test"), want: &IDData{(&baseIDs.StringID{"test"}).ToAnyID().(*baseIDs.AnyID)}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewIDData(tt.args.value), "NewIDData(%v)", tt.args.value)
+			got := NewIDData(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewIDData() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
 
-func Test_idData_Bytes(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataValidateBasic(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   []byte
+		name string
+		args data.IDData
+		want bool
 	}{
-		{"+ve", fields{baseIDs.NewStringID("")}, []byte{}},
-		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.NewStringID("Data").Bytes()},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), false},
+		{"-ve", NewIDData(baseIDs.NewStringID("test///")), true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			err := tt.args.ValidateBasic()
+			if err == nil && tt.want {
+				t.Errorf("IDDataValidateBasic() = %v, want %v", err, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.Bytes(), "Bytes()")
+			if err != nil && !tt.want {
+				t.Errorf("IDDataValidateBasic() = %v, want %v", err, tt.want)
+			}
 		})
 	}
 }
 
-func Test_idData_Compare(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
-	type args struct {
-		data.ListableData
-	}
+func Test_IDData_Compare(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   int
+		name string
+		args data.IDData
+		want bool
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, args{&IDData{baseIDs.NewStringID("Data").ToAnyID().(*baseIDs.AnyID)}}, 0},
-		{"+ve", fields{baseIDs.NewStringID("Data")}, args{&IDData{baseIDs.NewStringID("0").ToAnyID().(*baseIDs.AnyID)}}, 1},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), true},
+		{"+ve", NewIDData(baseIDs.NewStringID("test2")), false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.Compare(NewIDData(baseIDs.NewStringID("test")))
+			if (got == 0) != tt.want {
+				t.Errorf("IDData_Compare() = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.Compare(tt.args.ListableData), "Compare(%v)", tt.args.ListableData)
 		})
 	}
 }
 
-func Test_idData_GenerateHashID(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDData_GenerateHashID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.HashID
+		name string
+		args data.IDData
+		want ids.ID
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.GenerateHashID((&IDData{baseIDs.NewStringID("Data").ToAnyID().(*baseIDs.AnyID)}).Bytes())},
-		{"+ve with empty String", fields{baseIDs.NewStringID("")}, baseIDs.GenerateHashID((&IDData{baseIDs.NewStringID("").ToAnyID().(*baseIDs.AnyID)}).Bytes())},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), baseIDs.GenerateHashID(NewIDData(baseIDs.NewStringID("test")).Bytes())},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.GenerateHashID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDData_GenerateHashID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.GenerateHashID(), "GenerateHashID()")
 		})
 	}
 }
 
-func Test_idData_Get(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataGet(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.ID
+		name string
+		args data.IDData
+		want ids.AnyID
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.NewStringID("Data")},
-		{"+ve", fields{baseIDs.NewStringID("")}, baseIDs.NewStringID("")},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), (&baseIDs.StringID{"test"}).ToAnyID()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.Get()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataGet() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.Get().Get(), "Get()")
 		})
 	}
 }
 
-func Test_idData_GetID(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataGetID(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.DataID
+		name string
+		args data.IDData
+		want ids.DataID
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.GenerateDataID(&IDData{baseIDs.NewStringID("Data").ToAnyID().(*baseIDs.AnyID)})},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), &baseIDs.DataID{
+			TypeID: &baseIDs.StringID{"SI"},
+			HashID: baseIDs.GenerateHashID(NewIDData(baseIDs.NewStringID("test")).Bytes()).(*baseIDs.HashID),
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.GetID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataGetID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.GetID(), "GetID()")
 		})
 	}
 }
 
-func Test_idData_GetType(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataGetType(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   ids.StringID
+		name string
+		args data.IDData
+		want ids.ID
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, baseIDs.NewStringID("SI")},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), &baseIDs.StringID{"SI"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.GetTypeID()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataGetTypeID() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.GetTypeID(), "GetTypeID()")
 		})
 	}
 }
 
-func Test_idData_AsString(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataAsString(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   string
+		name string
+		args data.IDData
+		want string
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, "Data"},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), "SI|test"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.AsString()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataAsString() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.AsString(), "String()")
 		})
 	}
 }
 
-func Test_idData_ZeroValue(t *testing.T) {
-	type fields struct {
-		Value ids.ID
-	}
+func Test_IDDataZeroValue(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields fields
-		want   data.Data
+		name string
+		args data.IDData
+		want data.Data
 	}{
-		{"+ve", fields{baseIDs.NewStringID("Data")}, NewIDData(baseIDs.NewStringID(""))},
+		{"+ve", NewIDData(baseIDs.NewStringID("test")), &IDData{&baseIDs.AnyID{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			idData := IDData{
-				Value: tt.fields.Value.ToAnyID().(*baseIDs.AnyID),
+			got := tt.args.ZeroValue()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataZeroValue() got = %v, want %v", got, tt.want)
 			}
-			assert.Equalf(t, tt.want, idData.ZeroValue(), "ZeroValue()")
+		})
+	}
+}
+
+func Test_IDDataBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		args data.IDData
+		want []byte
+	}{
+		{name: "+ve", args: NewIDData(baseIDs.NewStringID("test")), want: []byte("test")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.args.Bytes()
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataBytes() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_IDDataFromString(t *testing.T) {
+	tests := []struct {
+		name    string
+		args    string
+		want    data.Data
+		wantErr bool
+	}{
+		{"+ve", "SI|id", &IDData{baseIDs.NewStringID("id").ToAnyID().(*baseIDs.AnyID)}, false},
+		{"-ve", "K|id", PrototypeIDData(), true},
+		{"-ve", "abc", PrototypeIDData(), true},
+		{"+ve", "", PrototypeIDData(), false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrototypeIDData().FromString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("IDDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("IDDataFromString() got = %v, want %v", got, tt.want)
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("IDDataFromString() got = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
