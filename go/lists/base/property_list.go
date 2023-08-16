@@ -88,7 +88,12 @@ func (propertyList *PropertyList) FromMetaPropertiesString(metaPropertiesString 
 		}
 	}
 
-	return NewPropertyList(Properties...), nil
+	updatedPropertyList := NewPropertyList(Properties...)
+	if err := updatedPropertyList.ValidateBasic(); err != nil {
+		return nil, err
+	}
+
+	return updatedPropertyList, nil
 }
 func (propertyList *PropertyList) Add(properties ...properties.Property) lists.PropertyList {
 	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
