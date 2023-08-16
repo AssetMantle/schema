@@ -5,6 +5,7 @@ import (
 
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/documents"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/constants"
@@ -18,6 +19,37 @@ type order struct {
 
 var _ documents.Order = (*order)(nil)
 
+func (order order) ValidateBasic() error {
+	if err := order.Document.ValidateBasic(); err != nil {
+		return err
+	}
+
+	if property := order.GetProperty(constants.MakerIDProperty.GetID()); property == nil || !property.IsMeta() {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a revealed %s", constants.MakerIDProperty.GetID())
+	}
+
+	if property := order.GetProperty(constants.MakerAssetIDProperty.GetID()); property == nil || !property.IsMeta() {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a revealed %s", constants.MakerAssetIDProperty.GetID())
+	}
+
+	if property := order.GetProperty(constants.MakerSplitProperty.GetID()); property == nil || !property.IsMeta() {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a revealed %s", constants.MakerSplitProperty.GetID())
+	}
+
+	if property := order.GetProperty(constants.ExpiryHeightProperty.GetID()); property == nil || !property.IsMeta() {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a revealed %s", constants.ExpiryHeightProperty.GetID())
+	}
+
+	if property := order.GetProperty(constants.TakerAssetIDProperty.GetID()); property == nil {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a %s", constants.TakerAssetIDProperty.GetID())
+	}
+
+	if property := order.GetProperty(constants.TakerSplitProperty.GetID()); property == nil {
+		return errorConstants.IncorrectFormat.Wrapf("order must have a %s", constants.TakerSplitProperty.GetID())
+	}
+
+	return nil
+}
 func (order order) GetMakerID() ids.IdentityID {
 	if property := order.GetProperty(constants.MakerIDProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.IDData).Get().Get().(ids.IdentityID)
