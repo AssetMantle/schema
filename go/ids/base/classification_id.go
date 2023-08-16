@@ -43,7 +43,7 @@ func (classificationID *ClassificationID) Bytes() []byte {
 }
 func (classificationID *ClassificationID) IsClassificationID() {}
 func (classificationID *ClassificationID) Compare(id ids.ID) int {
-	return bytes.Compare(classificationID.Bytes(), id.Bytes())
+	return bytes.Compare(classificationID.Bytes(), id.ToAnyID().Get().(*ClassificationID).Bytes())
 }
 func (classificationID *ClassificationID) ToAnyID() ids.AnyID {
 	return &AnyID{

@@ -43,7 +43,7 @@ func (orderID *OrderID) Bytes() []byte {
 }
 func (orderID *OrderID) IsOrderID() {}
 func (orderID *OrderID) Compare(id ids.ID) int {
-	return bytes.Compare(orderID.Bytes(), id.Bytes())
+	return bytes.Compare(orderID.Bytes(), id.ToAnyID().Get().(*OrderID).Bytes())
 }
 func (orderID *OrderID) ToAnyID() ids.AnyID {
 	return &AnyID{

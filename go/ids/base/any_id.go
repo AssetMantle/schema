@@ -56,14 +56,14 @@ func (m *AnyID_StringID) get() ids.ID {
 
 var _ ids.AnyID = (*AnyID)(nil)
 
-func (m *AnyID) GetTypeID() ids.StringID {
-	if m.Impl != nil {
-		return m.Impl.(idGetter).get().GetTypeID()
+func (anyID *AnyID) GetTypeID() ids.StringID {
+	if anyID.Impl != nil {
+		return anyID.Impl.(idGetter).get().GetTypeID()
 	}
 
 	return NewStringID(constants.AnyIDType)
 }
-func (m *AnyID) FromString(idString string) (ids.ID, error) {
+func (anyID *AnyID) FromString(idString string) (ids.ID, error) {
 	idTypeString, idValueString := splitIDTypeAndValueStrings(idString)
 
 	if idTypeString != "" {
@@ -108,23 +108,23 @@ func (m *AnyID) FromString(idString string) (ids.ID, error) {
 
 	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
 }
-func (m *AnyID) AsString() string {
-	return joinIDTypeAndValueStrings(m.Impl.(idGetter).get().GetTypeID().AsString(), m.Impl.(idGetter).get().AsString())
+func (anyID *AnyID) AsString() string {
+	return joinIDTypeAndValueStrings(anyID.Impl.(idGetter).get().GetTypeID().AsString(), anyID.Impl.(idGetter).get().AsString())
 }
-func (m *AnyID) Get() ids.ID {
-	return m.Impl.(idGetter).get()
+func (anyID *AnyID) Get() ids.ID {
+	return anyID.Impl.(idGetter).get()
 }
-func (m *AnyID) Compare(id ids.ID) int {
-	return m.Impl.(idGetter).get().Compare(id)
+func (anyID *AnyID) Compare(id ids.ID) int {
+	return anyID.Impl.(idGetter).get().Compare(id)
 }
-func (m *AnyID) Bytes() []byte {
-	return m.Impl.(idGetter).get().Bytes()
+func (anyID *AnyID) Bytes() []byte {
+	return anyID.Impl.(idGetter).get().Bytes()
 }
-func (m *AnyID) ToAnyID() ids.AnyID {
-	return m
+func (anyID *AnyID) ToAnyID() ids.AnyID {
+	return anyID
 }
-func (m *AnyID) ValidateBasic() error {
-	return m.Impl.(idGetter).get().ValidateBasic()
+func (anyID *AnyID) ValidateBasic() error {
+	return anyID.Impl.(idGetter).get().ValidateBasic()
 }
 
 func PrototypeAnyID() ids.AnyID {

@@ -89,7 +89,7 @@ func (splitID *SplitID) SplitIDString() string {
 	return stringUtilities.JoinIDStrings(splitID.AssetID.AsString(), splitID.OwnerID.AsString())
 }
 func (splitID *SplitID) Compare(id ids.ID) int {
-	return bytes.Compare(splitID.Bytes(), id.Bytes())
+	return bytes.Compare(splitID.Bytes(), id.ToAnyID().Get().(*SplitID).Bytes())
 }
 func (splitID *SplitID) ToAnyID() ids.AnyID {
 	return &AnyID{

@@ -67,7 +67,7 @@ func (propertyID *PropertyID) Bytes() []byte {
 	return Bytes
 }
 func (propertyID *PropertyID) Compare(id ids.ID) int {
-	return bytes.Compare(propertyID.Bytes(), id.Bytes())
+	return bytes.Compare(propertyID.Bytes(), id.ToAnyID().Get().(*PropertyID).Bytes())
 }
 func (propertyID *PropertyID) ToAnyID() ids.AnyID {
 	return &AnyID{

@@ -69,7 +69,7 @@ func (dataID *DataID) Bytes() []byte {
 	return Bytes
 }
 func (dataID *DataID) Compare(id ids.ID) int {
-	return bytes.Compare(dataID.Bytes(), id.Bytes())
+	return bytes.Compare(dataID.Bytes(), id.ToAnyID().Get().(*DataID).Bytes())
 }
 func (dataID *DataID) ToAnyID() ids.AnyID {
 	return &AnyID{

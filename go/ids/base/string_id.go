@@ -47,7 +47,7 @@ func (stringID *StringID) Bytes() []byte {
 	return []byte(stringID.IDString)
 }
 func (stringID *StringID) Compare(id ids.ID) int {
-	return strings.Compare(stringID.AsString(), id.AsString())
+	return strings.Compare(stringID.AsString(), id.ToAnyID().Get().(*StringID).AsString())
 }
 func (stringID *StringID) ToAnyID() ids.AnyID {
 	return &AnyID{

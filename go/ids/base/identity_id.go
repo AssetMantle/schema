@@ -46,7 +46,7 @@ func (identityID *IdentityID) Bytes() []byte {
 	return identityID.HashID.Bytes()
 }
 func (identityID *IdentityID) Compare(id ids.ID) int {
-	return bytes.Compare(identityID.Bytes(), id.Bytes())
+	return bytes.Compare(identityID.Bytes(), id.ToAnyID().Get().(*IdentityID).Bytes())
 }
 func (identityID *IdentityID) ToAnyID() ids.AnyID {
 	return &AnyID{
