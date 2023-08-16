@@ -4,12 +4,22 @@
 package base
 
 import (
+	"encoding/base64"
+	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
+)
+
+var (
+	testValidBase64String = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
+	//testValidBase64URLString = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
+	testBytes, _      = base64.StdEncoding.DecodeString(testValidBase64String)
+	testIDList        = NewIDList(baseIDs.NewStringID("ID"), &baseIDs.HashID{testBytes})
+	invalidTestIDList = NewIDList(baseIDs.NewStringID("ID"), &baseIDs.HashID{[]byte("a")})
 )
 
 func Test_idList_Add(t *testing.T) {
@@ -121,6 +131,31 @@ func Test_idList_Search(t *testing.T) {
 			}
 			if gotFound != tt.wantFound {
 				t.Errorf("search() gotFound = %v, want %v", gotFound, tt.wantFound)
+			}
+		})
+	}
+}
+
+func Test_IDListValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		args lists.IDList
+		want bool
+	}{
+		{"+ve", testIDList, false},
+		{"-ve", invalidTestIDList, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if err == nil && tt.want {
+				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
 			}
 		})
 	}

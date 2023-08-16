@@ -4,6 +4,7 @@
 package base
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -15,6 +16,13 @@ import (
 	"github.com/AssetMantle/schema/go/lists"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
+)
+
+var (
+	idData                   = (&baseIDs.HashID{[]byte("a")}).ToAnyID().(*baseIDs.AnyID)
+	testPropertyList         = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.NewInt(1)))}...)}
+	invalidTestPropertyList1 = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("a"))}...)}
+	invalidTestPropertyList2 = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), &baseData.IDData{idData}), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("a"))}...)}
 )
 
 type fields struct {
@@ -228,6 +236,32 @@ func Test_propertyList_ScrubData(t *testing.T) {
 			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
 			if got := propertyList.ScrubData(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ScrubData() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_PropertyListValidateBasic(t *testing.T) {
+	tests := []struct {
+		name string
+		args lists.PropertyList
+		want bool
+	}{
+		{"+ve", testPropertyList, false},
+		{"-ve", invalidTestPropertyList1, true},
+		{"-ve", invalidTestPropertyList2, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.args.ValidateBasic()
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if err == nil && tt.want {
+				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
+			}
+			if err != nil && !tt.want {
+				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
 			}
 		})
 	}
