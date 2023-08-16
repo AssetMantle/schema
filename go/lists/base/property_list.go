@@ -174,7 +174,7 @@ func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []proper
 
 func NewPropertyList(properties ...properties.Property) lists.PropertyList {
 	sort.Slice(properties, func(i, j int) bool {
-		return properties[i].Compare(properties[j]) < 0
+		return properties[i].Compare(properties[j]) <= 0
 	})
 
 	return &PropertyList{propertiesToAnyProperties(properties...)}

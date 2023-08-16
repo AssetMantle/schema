@@ -75,17 +75,14 @@ func (metaProperty *MetaProperty) GetBondWeight() sdkTypes.Int {
 func (metaProperty *MetaProperty) IsMeta() bool {
 	return true
 }
-func (metaProperty *MetaProperty) IsMesa() bool {
-	return false
-}
 
 // Mutate NOTE: Need to check if propertyID type is not different from data after mutating
-func (metaProperty *MetaProperty) Mutate(data data.Data) properties.Property {
+func (metaProperty *MetaProperty) Mutate(data data.Data) (properties.Property, error) {
 	metaProperty.Data = data.ToAnyData().(*base.AnyData)
 	if err := metaProperty.ValidateBasic(); err != nil {
-		panic(err)
+		return nil, err
 	}
-	return metaProperty
+	return metaProperty, nil
 }
 func (metaProperty *MetaProperty) Compare(property properties.Property) int {
 	// NOTE: compare property can be meta or mesa, so listable must only be cast to Property Interface

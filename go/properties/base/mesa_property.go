@@ -69,12 +69,12 @@ func (mesaProperty *MesaProperty) ToAnyProperty() properties.AnyProperty {
 }
 
 // Mutate NOTE: Need to check if propertyID type is not different from data after mutating
-func (mesaProperty *MesaProperty) Mutate(data data.Data) properties.Property {
+func (mesaProperty *MesaProperty) Mutate(data data.Data) (properties.Property, error) {
 	mesaProperty.DataID = data.GetID().(*baseIDs.DataID)
 	if err := mesaProperty.ValidateBasic(); err != nil {
-		panic(err)
+		return nil, err
 	}
-	return mesaProperty
+	return mesaProperty, nil
 }
 func NewEmptyMesaPropertyFromID(propertyID ids.PropertyID) properties.MesaProperty {
 	return &MesaProperty{

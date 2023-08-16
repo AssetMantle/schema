@@ -18,11 +18,10 @@ type Property interface {
 	GetBondWeight() sdkTypes.Int
 
 	IsMeta() bool
-	IsMesa() bool
 	ValidateBasic() error
 
 	ToAnyProperty() AnyProperty
 
-	Mutate(data.Data) Property
+	Mutate(data.Data) (Property, error)
 	Compare(Property) int
 }
