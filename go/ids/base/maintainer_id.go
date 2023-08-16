@@ -43,7 +43,7 @@ func (maintainerID *MaintainerID) Bytes() []byte {
 }
 func (maintainerID *MaintainerID) IsMaintainerID() {}
 func (maintainerID *MaintainerID) Compare(id ids.ID) int {
-	return bytes.Compare(maintainerID.Bytes(), id.Bytes())
+	return bytes.Compare(maintainerID.Bytes(), id.ToAnyID().Get().(*MaintainerID).Bytes())
 }
 func (maintainerID *MaintainerID) ToAnyID() ids.AnyID {
 	return &AnyID{

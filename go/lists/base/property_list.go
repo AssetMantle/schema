@@ -14,14 +14,19 @@ import (
 var _ lists.PropertyList = (*PropertyList)(nil)
 
 func (propertyList *PropertyList) ValidateBasic() error {
+	propertyIDMap := map[string]bool{}
+
 	for _, property := range propertyList.AnyProperties {
+
+		if _, found := propertyIDMap[property.GetID().AsString()]; found {
+			return constants.IncorrectFormat.Wrapf("duplicate property ID: %s", property.GetID().AsString())
+		} else {
+			propertyIDMap[property.GetID().AsString()] = true
+		}
+
 		if err := property.ValidateBasic(); err != nil {
 			return err
 		}
-	}
-
-	if propertyList.areDuplicates() {
-		return constants.IncorrectFormat.Wrapf("duplicate properties found in list")
 	}
 
 	return nil
@@ -58,19 +63,6 @@ func (propertyList *PropertyList) search(property properties.Property) (index in
 	}
 
 	return index, false
-}
-func (propertyList *PropertyList) areDuplicates() bool {
-	propertyIDMap := map[string]bool{}
-
-	for _, property := range propertyList.AnyProperties {
-		if _, ok := propertyIDMap[property.GetID().AsString()]; ok {
-			return true
-		}
-
-		propertyIDMap[property.GetID().AsString()] = true
-	}
-
-	return false
 }
 func (propertyList *PropertyList) GetPropertyIDList() lists.IDList {
 	propertyIDList := NewIDList()

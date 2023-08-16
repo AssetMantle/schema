@@ -27,13 +27,13 @@ func (height *Height) Bytes() []byte {
 	return Bytes
 }
 func (height *Height) Compare(compareHeight types.Height) int {
-	if height.Get() > compareHeight.Get() {
+	if difference := height.Get() - compareHeight.Get(); difference == 0 {
+		return 0
+	} else if difference > 0 {
 		return 1
-	} else if height.Get() < compareHeight.Get() {
-		return -1
 	}
 
-	return 0
+	return -1
 }
 func (height *Height) Get() int64 { return height.Value }
 

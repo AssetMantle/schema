@@ -10,6 +10,7 @@ import (
 type IDList interface {
 	GetList() []ids.AnyID
 	Search(ids.ID) (index int, found bool)
+	// Add ignores ids of different type
 	Add(...ids.ID) IDList
 	Remove(...ids.ID) IDList
 	ValidateBasic() error

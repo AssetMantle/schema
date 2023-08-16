@@ -1,7 +1,6 @@
 package base
 
 import (
-	"bytes"
 	"strings"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -80,7 +79,12 @@ func (numberData *NumberData) ToAnyListableData() data.AnyListableData {
 	}
 }
 func (numberData *NumberData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(numberData.Bytes(), listableData.Bytes())
+	if difference := numberData.Get().Sub(listableData.ToAnyListableData().Get().(*NumberData).Get()); difference.IsZero() {
+		return 0
+	} else if difference.IsPositive() {
+		return 1
+	}
+	return -1
 }
 func (numberData *NumberData) Get() sdkTypes.Int {
 	if value, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {

@@ -6,7 +6,7 @@ package base
 import (
 	"bytes"
 	"strings"
-	
+
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
@@ -45,7 +45,7 @@ func (assetID *AssetID) Bytes() []byte {
 }
 func (assetID *AssetID) IsAssetID() {}
 func (assetID *AssetID) Compare(id ids.ID) int {
-	return bytes.Compare(assetID.Bytes(), id.Bytes())
+	return bytes.Compare(assetID.Bytes(), id.ToAnyID().Get().(*AssetID).Bytes())
 }
 func (assetID *AssetID) ToAnyID() ids.AnyID {
 	return &AnyID{

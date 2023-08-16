@@ -7,6 +7,7 @@ import (
 	"github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	baseLists "github.com/AssetMantle/schema/go/lists/base"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/qualified"
 	"github.com/AssetMantle/schema/go/qualified/base"
@@ -18,12 +19,11 @@ func (document *Document) ValidateBasic() error {
 	if err := document.ClassificationID.ValidateBasic(); err != nil {
 		return err
 	}
-	if err := document.Immutables.ValidateBasic(); err != nil {
+
+	if err := baseLists.NewPropertyList(baseLists.AnyPropertiesToProperties(append(document.GetImmutables().GetImmutablePropertyList().Get(), document.GetMutables().GetMutablePropertyList().Get()...)...)...).ValidateBasic(); err != nil {
 		return err
 	}
-	if err := document.Mutables.ValidateBasic(); err != nil {
-		return err
-	}
+
 	return nil
 }
 func (document *Document) Get() documents.Document {

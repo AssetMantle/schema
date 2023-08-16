@@ -20,19 +20,18 @@ import (
 
 var _ data.ListData = (*ListData)(nil)
 
-func (listData *ListData) ValidateWithType(expectedTypeID ids.StringID) error {
-	for _, anyListableDatum := range listData.Value {
-		if anyListableDatum.GetTypeID().Compare(expectedTypeID) != 0 {
-			return errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", anyListableDatum.GetTypeID().AsString(), expectedTypeID.AsString())
-		}
-	}
-
-	return listData.ValidateBasic()
-}
 func (listData *ListData) ValidateBasic() error {
-	for _, anyListableData := range listData.Value {
-		if err := anyListableData.ValidateBasic(); err != nil {
-			return err
+	if len(listData.Get()) > 0 {
+		expectedTypeID := listData.Get()[0].GetTypeID()
+
+		for _, anyListableData := range listData.Value {
+			if err := anyListableData.ValidateBasic(); err != nil {
+				return errorConstants.IncorrectFormat.Wrapf("data %s invalid: %s", anyListableData.AsString(), err)
+			}
+
+			if anyListableData.GetTypeID().Compare(expectedTypeID) != 0 {
+				return errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", anyListableData.GetTypeID().AsString(), expectedTypeID.AsString())
+			}
 		}
 	}
 
@@ -101,6 +100,11 @@ func (listData *ListData) Add(listableData ...data.ListableData) data.ListData {
 	updatedListData := NewListData(anyListableDataToListableData(listData.Get()...)...).(*ListData)
 
 	for _, datum := range listableData {
+		// ignore datum of different type
+		if len(updatedListData.Value) != 0 && datum.GetTypeID().Compare(updatedListData.Value[0].GetTypeID()) != 0 {
+			continue
+		}
+
 		if index, found := updatedListData.Search(datum); !found {
 			updatedListData.Value = append(updatedListData.Value, datum.ToAnyListableData().(*AnyListableData))
 			copy(updatedListData.Value[index+1:], updatedListData.Value[index:])

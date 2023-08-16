@@ -24,7 +24,7 @@ func (linkedData *LinkedData) ToAnyListableData() data.AnyListableData {
 		}}
 }
 func (linkedData *LinkedData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(linkedData.Bytes(), listableData.Bytes())
+	return bytes.Compare(linkedData.Bytes(), listableData.ToAnyListableData().Get().(*LinkedData).Bytes())
 }
 func (linkedData *LinkedData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(linkedData)
@@ -58,7 +58,7 @@ func (linkedData *LinkedData) ValidateBasic() error {
 	return nil
 }
 func (linkedData *LinkedData) AsString() string {
-	return utilities.JoinListStrings(linkedData.GetResourceID().AsString(), linkedData.GetExtensionID().AsString(), linkedData.GetServiceEndpoint())
+	return utilities.JoinCompositeDataStrings(linkedData.GetResourceID().AsString(), linkedData.GetExtensionID().AsString(), linkedData.GetServiceEndpoint())
 }
 func (*LinkedData) FromString(dataString string) (data.Data, error) {
 	dataString = strings.TrimSpace(dataString)
@@ -66,7 +66,7 @@ func (*LinkedData) FromString(dataString string) (data.Data, error) {
 		return PrototypeLinkedData(), nil
 	}
 
-	dataStringList := utilities.SplitNListString(dataString, 3)
+	dataStringList := utilities.SplitCompositeDataString(dataString, 3)
 	if len(dataStringList) != 3 {
 		return PrototypeLinkedData(), errorConstants.IncorrectFormat.Wrapf("linked data is either missing resource ID, extension ID, or service endpoint: %s", dataString)
 	}

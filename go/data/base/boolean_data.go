@@ -4,7 +4,6 @@
 package base
 
 import (
-	"bytes"
 	"strconv"
 	"strings"
 
@@ -28,13 +27,13 @@ func (booleanData *BooleanData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.BooleanDataWeight
 }
 func (booleanData *BooleanData) Compare(listableData data.ListableData) int {
-	if value := bytes.Compare(booleanData.Bytes(), listableData.Bytes()); value == 0 {
+	compareBooleanData := listableData.ToAnyListableData().Get().(*BooleanData)
+	if booleanData.Get() == compareBooleanData.Get() {
 		return 0
-	} else if value > 0 {
+	} else if booleanData.Get() && !compareBooleanData.Get() {
 		return 1
-	} else {
-		return -1
 	}
+	return -1
 }
 func (booleanData *BooleanData) AsString() string {
 	return strconv.FormatBool(booleanData.Value)

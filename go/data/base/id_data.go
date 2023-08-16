@@ -4,7 +4,6 @@
 package base
 
 import (
-	"bytes"
 	"strings"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -48,7 +47,7 @@ func (idData *IDData) FromString(dataString string) (data.Data, error) {
 	return idData, nil
 }
 func (idData *IDData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(idData.Bytes(), listableData.Bytes())
+	return idData.Get().Compare(listableData.ToAnyListableData().Get().(*IDData).Get())
 }
 func (idData *IDData) Bytes() []byte {
 	return idData.Value.Bytes()

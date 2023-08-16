@@ -4,7 +4,6 @@
 package base
 
 import (
-	"bytes"
 	"strings"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -36,7 +35,13 @@ func (stringData *StringData) GetBondWeight() sdkTypes.Int {
 	return dataConstants.StringDataWeight
 }
 func (stringData *StringData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(stringData.Bytes(), listableData.Bytes())
+	compareStringData := listableData.ToAnyListableData().Get().(*StringData)
+	if stringData.Get() == compareStringData.Get() {
+		return 0
+	} else if stringData.Get() > compareStringData.Get() {
+		return 1
+	}
+	return -1
 }
 func (stringData *StringData) Bytes() []byte {
 	return []byte(stringData.Value)
