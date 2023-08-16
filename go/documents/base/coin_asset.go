@@ -19,10 +19,10 @@ var coinAssetClassificationID = baseIDs.NewClassificationID(baseQualified.NewImm
 
 func (asset asset) GetDenom() string {
 	if property := asset.Document.GetProperty(constantProperties.DenomProperty.GetID()); property != nil && property.IsMeta() {
-		return property.Get().(properties.MetaProperty).GetData().Get().(data.IDData).Get().Get().(ids.StringID).Get()
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.StringData).Get()
 	}
 
-	return constantProperties.DenomProperty.GetData().Get().(data.IDData).Get().Get().(ids.StringID).Get()
+	return constantProperties.DenomProperty.GetData().Get().(data.StringData).Get()
 }
 func (asset asset) GetCoinAssetID() ids.AssetID {
 	return baseIDs.NewAssetID(coinAssetClassificationID, asset.Document.GetImmutables())
@@ -33,5 +33,5 @@ func PrototypeCoinAsset() documents.CoinAsset {
 }
 
 func NewCoinAsset(denom string) documents.CoinAsset {
-	return NewAsset(coinAssetClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.DenomProperty.GetKey(), baseData.NewIDData(baseIDs.NewStringID(denom))))), baseQualified.NewMutables(baseLists.NewPropertyList())).(asset)
+	return NewAsset(coinAssetClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.DenomProperty.GetKey(), baseData.NewStringData(denom)))), baseQualified.NewMutables(baseLists.NewPropertyList())).(asset)
 }
