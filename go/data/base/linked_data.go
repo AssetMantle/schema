@@ -17,21 +17,6 @@ import (
 
 var _ data.LinkedData = (*LinkedData)(nil)
 
-func (linkedData *LinkedData) ToAnyListableData() data.AnyListableData {
-	return &AnyListableData{
-		Impl: &AnyListableData_LinkedData{
-			LinkedData: linkedData,
-		}}
-}
-func (linkedData *LinkedData) Compare(listableData data.ListableData) int {
-	return bytes.Compare(linkedData.Bytes(), listableData.ToAnyListableData().Get().(*LinkedData).Bytes())
-}
-func (linkedData *LinkedData) GetID() ids.DataID {
-	return baseIDs.GenerateDataID(linkedData)
-}
-func (linkedData *LinkedData) GetBondWeight() sdkTypes.Int {
-	return dataConstants.LinkedDataWeight
-}
 func (linkedData *LinkedData) ValidateBasic() error {
 	if err := linkedData.GetResourceID().ValidateBasic(); err != nil {
 		return err
@@ -56,6 +41,21 @@ func (linkedData *LinkedData) ValidateBasic() error {
 	}
 
 	return nil
+}
+func (linkedData *LinkedData) ToAnyListableData() data.AnyListableData {
+	return &AnyListableData{
+		Impl: &AnyListableData_LinkedData{
+			LinkedData: linkedData,
+		}}
+}
+func (linkedData *LinkedData) Compare(listableData data.ListableData) int {
+	return bytes.Compare(linkedData.Bytes(), listableData.ToAnyListableData().Get().(*LinkedData).Bytes())
+}
+func (linkedData *LinkedData) GetID() ids.DataID {
+	return baseIDs.GenerateDataID(linkedData)
+}
+func (linkedData *LinkedData) GetBondWeight() sdkTypes.Int {
+	return dataConstants.LinkedDataWeight
 }
 func (linkedData *LinkedData) AsString() string {
 	return utilities.JoinCompositeDataStrings(linkedData.GetResourceID().AsString(), linkedData.GetExtensionID().AsString(), linkedData.GetServiceEndpoint())

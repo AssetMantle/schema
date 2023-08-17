@@ -3,10 +3,10 @@ package base
 import (
 	"sort"
 
-	dataUtilities "github.com/AssetMantle/schema/go/data/utilities"
 	"github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/lists"
+	"github.com/AssetMantle/schema/go/lists/utilities"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/base"
 )
@@ -76,7 +76,7 @@ func (propertyList *PropertyList) GetPropertyIDList() lists.IDList {
 func (propertyList *PropertyList) FromMetaPropertiesString(metaPropertiesString string) (lists.PropertyList, error) {
 	var Properties []properties.Property
 
-	metaProperties := dataUtilities.SplitListString(metaPropertiesString)
+	metaProperties := utilities.SplitPropertyListString(metaPropertiesString)
 	for _, metaPropertyString := range metaProperties {
 		if metaPropertyString != "" {
 			metaProperty, err := base.PrototypeMetaProperty().FromString(metaPropertyString)
