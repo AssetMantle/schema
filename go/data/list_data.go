@@ -5,6 +5,7 @@ package data
 
 type ListData interface {
 	Data
+	ValidateWithoutLengthCheck() error
 	Get() []AnyListableData
 	Search(ListableData) (int, bool)
 	// Add ignores data with type not matching list data type

@@ -21,6 +21,13 @@ import (
 var _ data.ListData = (*ListData)(nil)
 
 func (listData *ListData) ValidateBasic() error {
+	if len(listData.Get()) > dataConstants.MaxListLength {
+		return errorConstants.IncorrectFormat.Wrapf("list length %d exceeds max length %d", len(listData.Get()), dataConstants.MaxListLength)
+	}
+
+	return listData.ValidateWithoutLengthCheck()
+}
+func (listData *ListData) ValidateWithoutLengthCheck() error {
 	if len(listData.Get()) > 0 {
 		expectedTypeID := listData.Get()[0].GetTypeID()
 
@@ -57,7 +64,7 @@ func (listData *ListData) AsString() string {
 		dataStrings[i] = anyListableData.AsString()
 	}
 
-	return utilities.JoinListStrings(dataStrings...)
+	return utilities.JoinListDataStrings(dataStrings...)
 }
 func (listData *ListData) FromString(dataString string) (data.Data, error) {
 	dataString = strings.TrimSpace(dataString)
@@ -65,7 +72,7 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 		return PrototypeListData(), nil
 	}
 
-	dataStringList := utilities.SplitListString(dataString)
+	dataStringList := utilities.SplitListDataString(dataString)
 	dataList := make([]data.ListableData, len(dataStringList))
 	var expectedTypeID ids.StringID
 
