@@ -29,9 +29,9 @@ func (identity identity) GetNameIdentityID() ids.IdentityID {
 }
 
 func PrototypeNameIdentity() documents.NameIdentity {
-	return NewNameIdentity("", baseData.PrototypeListData())
+	return NewNameIdentity(baseIDs.PrototypeStringID(), baseData.PrototypeListData())
 }
 
-func NewNameIdentity(name string, authentication data.ListData) documents.NameIdentity {
-	return NewIdentity(nameIdentityClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.NameProperty.GetKey(), baseData.NewIDData(baseIDs.NewStringID(name))))), baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.AuthenticationProperty.GetKey(), authentication)))).(identity)
+func NewNameIdentity(name ids.StringID, authentication data.ListData) documents.NameIdentity {
+	return NewIdentity(nameIdentityClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.NameProperty.GetKey(), baseData.NewIDData(name)))), baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constantProperties.AuthenticationProperty.GetKey(), authentication)))).(identity)
 }
