@@ -6,12 +6,12 @@ import (
 	"github.com/AssetMantle/schema/go/data/constants"
 )
 
-func JoinListStrings(listStrings ...string) string {
-	return strings.Join(listStrings, constants.ListStringSeparator)
+func JoinListDataStrings(listDataStrings ...string) string {
+	return strings.Join(listDataStrings, constants.ListDataStringSeparator)
 }
 
-func SplitListString(listString string) []string {
-	return strings.Split(listString, constants.ListStringSeparator)
+func SplitListDataString(listDataString string) []string {
+	return strings.Split(listDataString, constants.ListDataStringSeparator)
 }
 
 func SplitCompositeDataString(listString string, parts int) []string {

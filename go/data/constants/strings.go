@@ -1,6 +1,6 @@
 package constants
 
-const ListStringSeparator = ",,"
+const ListDataStringSeparator = ",,"
 const CompositeDataStringSeparator = ","
 
 var ListBytesSeparator = []byte{'\\', '#'}
