@@ -5,6 +5,7 @@ package base
 
 import (
 	"fmt"
+	baseTypes "github.com/AssetMantle/schema/go/types/base"
 	"reflect"
 	"testing"
 
@@ -174,26 +175,31 @@ func Test_propertyList_GetPropertyIDList(t *testing.T) {
 
 func Test_propertyList_Mutate(t *testing.T) {
 
-	type args struct {
-		properties []properties.Property
-	}
+	propertyList1 := &PropertyList{propertiesToAnyProperties([]properties.Property{
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
+	}...)}
+	propertyListMutated := &PropertyList{propertiesToAnyProperties([]properties.Property{
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("DataUpdated")),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
+	}...)}
 	tests := []struct {
 		name   string
-		fields fields
-		args   args
+		fields lists.PropertyList
+		args   []properties.Property
 		want   lists.PropertyList
 	}{
-		{"+ve", fields{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}}, args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(2)))}}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(2)))}...)},
-		// {"+ve", fields{NewList(propertiesToListables([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)...)}, args{[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), NewStringData("test"))}}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), NewStringData("test"))}...)}, //TODO: Should handle error if different property data is tried to mutate
+		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("DataUpdated"))}, propertyListMutated},
+		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewStringData("DataUpdated"))}, propertyList1},
+		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewNumberData(sdkTypes.OneInt()))}, propertyList1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			propertyList := PropertyList{propertiesToAnyProperties(tt.fields.List...)}
-			if got := propertyList.Mutate(tt.args.properties...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Mutate() = %v, want %v", got, tt.want)
-			} else if !reflect.DeepEqual(propertyList, PropertyList{propertiesToAnyProperties(tt.fields.List...)}) { // check if the original list is mutated
-				t.Errorf("Mutate() = %v, want %v", propertyList, NewPropertyList(tt.fields.List...))
+			got := tt.fields.Mutate(tt.args...)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("propertyList_Mutate() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -262,6 +268,56 @@ func Test_PropertyListValidateBasic(t *testing.T) {
 			}
 			if err != nil && !tt.want {
 				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
+			}
+		})
+	}
+}
+
+func Test_propertyList_FromMetaPropertiesString(t *testing.T) {
+
+	propertyList1 := &PropertyList{propertiesToAnyProperties([]properties.Property{
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
+	}...)}
+	propertyList2 := &PropertyList{propertiesToAnyProperties([]properties.Property{
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID4"), baseData.NewListData(baseData.NewStringData("a"))),
+	}...)}
+	propertyList3 := &PropertyList{propertiesToAnyProperties([]properties.Property{
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
+		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID4"), baseData.NewListData(baseData.NewStringData("a"), baseData.NewStringData("b"))),
+	}...)}
+	tests := []struct {
+		name    string
+		args    string
+		want    lists.PropertyList
+		wantErr bool
+	}{
+		{"-ve", "ID1:S|Data1,,ID2:N|1,,ID3:H10", nil, true},
+		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10", propertyList1, false},
+		{"-ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID3:H|12", nil, true},
+		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID4:L|S|a", propertyList2, false},
+		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID4:L|S|a,,S|b", propertyList3, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrototypePropertyList().FromMetaPropertiesString(tt.args)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FromMetaPropertiesString() got = %v, want %v", got, tt.want)
+			}
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+			if err == nil && tt.wantErr {
+				t.Errorf("FromMetaPropertiesString() Error got = %v, want %v", err, tt.wantErr)
+			}
+			if err != nil && !tt.wantErr {
+				t.Errorf("FromMetaPropertiesString() Error got = %v, want %v", err, tt.wantErr)
 			}
 		})
 	}
