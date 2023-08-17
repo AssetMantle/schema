@@ -43,6 +43,7 @@ var (
 	TakerIDProperty                    = base.NewMetaProperty(baseIDs.NewStringID("takerID"), baseData.NewIDData(baseIDs.PrototypeIdentityID()))
 	TakerAssetIDProperty               = base.NewMetaProperty(baseIDs.NewStringID("takerAssetID"), baseData.NewIDData(baseIDs.PrototypeAssetID()))
 	TakerSplitProperty                 = base.NewMetaProperty(baseIDs.NewStringID("takerSplit"), baseData.NewNumberData(sdkTypes.ZeroInt()))
+	TransferEnabledProperty            = base.NewMetaProperty(baseIDs.NewStringID("transferEnabled"), baseData.NewBooleanData(false))
 	SupplyProperty                     = base.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.OneInt()))
 	WrapAllowedCoinsProperty           = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
 	UnwrapAllowedCoinsProperty         = base.NewMetaProperty(baseIDs.NewStringID("unwrapAllowedCoins"), baseData.NewListData())
