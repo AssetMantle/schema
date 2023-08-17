@@ -123,6 +123,7 @@ func Test_ListDataAdd(t *testing.T) {
 		{"-ve", []data.ListableData{NewStringData("Data"), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
 		{"-ve", []data.ListableData{NewStringData("Data"), NewNumberData(sdkTypes.NewInt(1))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
 		{"-ve", []data.ListableData{NewIDData(baseIDs.NewStringID("ID1")), NewIDData(baseIDs.GenerateHashID(testBytes))}, &ListData{[]*AnyListableData{NewIDData(baseIDs.NewStringID("ID1")).ToAnyListableData().(*AnyListableData)}}},
+		{"+ve", []data.ListableData{NewStringData("Data4"), NewStringData("Data3"), NewStringData("Data2"), NewHeightData(base.NewHeight(10)), NewStringData("Data1")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData), NewStringData("Data2").ToAnyListableData().(*AnyListableData), NewStringData("Data3").ToAnyListableData().(*AnyListableData), NewStringData("Data4").ToAnyListableData().(*AnyListableData)}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
