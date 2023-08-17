@@ -61,7 +61,7 @@ func (listData *ListData) AsString() string {
 	dataStrings := make([]string, len(sortedListData.Value))
 
 	for i, anyListableData := range sortedListData.Value {
-		dataStrings[i] = anyListableData.AsString()
+		dataStrings[i] = anyListableData.ToAnyData().AsString()
 	}
 
 	return utilities.JoinListDataStrings(dataStrings...)
