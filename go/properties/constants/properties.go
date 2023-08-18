@@ -19,6 +19,7 @@ var (
 	BurnEnabledProperty                = base.NewMetaProperty(baseIDs.NewStringID("burnEnabled"), baseData.NewBooleanData(false))
 	BurnHeightProperty                 = base.NewMetaProperty(baseIDs.NewStringID("burnHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
 	DenomProperty                      = base.NewMetaProperty(baseIDs.NewStringID("denom"), baseData.NewStringData(""))
+	DefineEnabledProperty              = base.NewMetaProperty(baseIDs.NewStringID("defineEnabled"), baseData.NewBooleanData(false))
 	DeputizeAllowedProperty            = base.NewMetaProperty(baseIDs.NewStringID("deputizeAllowed"), baseData.NewBooleanData(false))
 	CreationHeightProperty             = base.NewMetaProperty(baseIDs.NewStringID("creationHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1)).ZeroValue())
 	ExchangeRateProperty               = base.NewMetaProperty(baseIDs.NewStringID("exchangeRate"), baseData.NewDecData(sdkTypes.SmallestDec()).ZeroValue())
