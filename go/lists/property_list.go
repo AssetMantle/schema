@@ -6,6 +6,8 @@ import (
 )
 
 type PropertyList interface {
+	// GetProperty returns the property with the given PropertyID
+	// returns nil if not found
 	GetProperty(ids.PropertyID) properties.AnyProperty
 	Get() []properties.AnyProperty
 	GetPropertyIDList() IDList
