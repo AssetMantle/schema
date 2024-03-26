@@ -10,6 +10,7 @@ import (
 )
 
 type Asset interface {
+	ValidateAsset() error
 	GetBurnHeight() types.Height
 	GetLockHeight() types.Height
 	GetSupply() sdkTypes.Int

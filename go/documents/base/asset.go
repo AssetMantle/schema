@@ -1,6 +1,7 @@
 package base
 
 import (
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/go/data"
@@ -18,6 +19,25 @@ type asset struct {
 
 var _ documents.Asset = (*asset)(nil)
 
+func (asset asset) ValidateAsset() error {
+	if err := asset.ValidateBasic(); err != nil {
+		return err
+	}
+
+	if err := asset.GetBurnHeight().ValidateBasic(); err != nil {
+		return err
+	}
+
+	if err := asset.GetLockHeight().ValidateBasic(); err != nil {
+		return err
+	}
+
+	if asset.GetSupply().IsNegative() || asset.GetSupply().IsZero() {
+		return errorConstants.InvalidParameter.Wrapf("supply %s is negative", asset.GetSupply().String())
+	}
+
+	return nil
+}
 func (asset asset) GetBurnHeight() types.Height {
 	if property := asset.GetProperty(constants.BurnHeightProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
