@@ -10,6 +10,7 @@ import (
 const projectRoute = "/AssetMantle"
 
 var (
+	MockError           = base.NewError(projectRoute, 100, "mock error")
 	EntityAlreadyExists = base.NewError(projectRoute, 102, "entity already exists")
 	EntityNotFound      = base.NewError(projectRoute, 103, "entity not found")
 	IncorrectFormat     = base.NewError(projectRoute, 104, "incorrect format")
