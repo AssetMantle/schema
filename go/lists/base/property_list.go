@@ -169,12 +169,30 @@ func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []proper
 	return returnProperties
 }
 
-func NewPropertyList(properties ...properties.Property) lists.PropertyList {
-	sort.Slice(properties, func(i, j int) bool {
-		return properties[i].Compare(properties[j]) <= 0
+func NewPropertyList(addProperties ...properties.Property) lists.PropertyList {
+	var Properties []properties.Property
+
+	// reject nil and duplicate properties
+	for _, property := range addProperties {
+		if property != nil {
+			repeat := false
+			for _, existingProperty := range Properties {
+				if property.GetID().Compare(existingProperty.GetID()) == 0 {
+					repeat = true
+					continue
+				}
+			}
+			if !repeat {
+				Properties = append(Properties, property)
+			}
+		}
+	}
+
+	sort.Slice(Properties, func(i, j int) bool {
+		return Properties[i].Compare(Properties[j]) <= 0
 	})
 
-	return &PropertyList{propertiesToAnyProperties(properties...)}
+	return &PropertyList{propertiesToAnyProperties(Properties...)}
 }
 
 func PrototypePropertyList() lists.PropertyList {
