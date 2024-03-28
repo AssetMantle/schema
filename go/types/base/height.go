@@ -6,6 +6,7 @@ package base
 import (
 	"context"
 	"encoding/binary"
+	"github.com/AssetMantle/schema/go/types/constants"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
@@ -16,8 +17,8 @@ import (
 var _ types.Height = (*Height)(nil)
 
 func (height *Height) ValidateBasic() error {
-	if height.Value < -1 {
-		return errorConstants.IncorrectFormat.Wrapf("height value %d is less than -1", height.Value)
+	if height.Value < constants.InfiniteHeight {
+		return errorConstants.IncorrectFormat.Wrapf("height value %d is out of bound", height.Value)
 	}
 	return nil
 }
@@ -29,7 +30,7 @@ func (height *Height) Bytes() []byte {
 func (height *Height) Compare(compareHeight types.Height) int {
 	if difference := height.Get() - compareHeight.Get(); difference == 0 {
 		return 0
-	} else if difference > 0 {
+	} else if difference > 0 || height.Get() == constants.InfiniteHeight {
 		return 1
 	}
 
@@ -39,7 +40,7 @@ func (height *Height) Get() int64 { return height.Value }
 
 func NewHeight(value int64) types.Height {
 	if value < 0 {
-		value = -1
+		value = constants.InfiniteHeight
 	}
 
 	return &Height{Value: value}
