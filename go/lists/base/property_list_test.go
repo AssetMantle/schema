@@ -4,11 +4,13 @@
 package base
 
 import (
-	"fmt"
 	baseData "github.com/AssetMantle/schema/go/data/base"
+	"github.com/AssetMantle/schema/go/errors"
+	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
+	"github.com/AssetMantle/schema/go/lists/constants"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	baseTypes "github.com/AssetMantle/schema/go/types/base"
@@ -17,6 +19,7 @@ import (
 	"reflect"
 	"sort"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -41,11 +44,6 @@ var (
 	randomProperties            = randomPropertiesGenerator(maxProperties)
 	veryLargeNumber             = 5000
 	veryLargeNumberOfProperties = randomPropertiesGenerator(veryLargeNumber)
-
-	idData                   = (&baseIDs.HashID{IDBytes: []byte("a")}).ToAnyID().(*baseIDs.AnyID)
-	testPropertyList         = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewNumberData(sdkTypes.NewInt(1)))}...)}
-	invalidTestPropertyList1 = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("ImmutableData")), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("a"))}...)}
-	invalidTestPropertyList2 = &PropertyList{propertiesToAnyProperties([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), &baseData.IDData{idData}), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("a"))}...)}
 )
 
 func Test_propertyList_Add(t *testing.T) {
@@ -263,82 +261,6 @@ func Test_propertyList_ScrubData(t *testing.T) {
 	}
 }
 
-func Test_PropertyListValidateBasic(t *testing.T) {
-	tests := []struct {
-		name string
-		args lists.PropertyList
-		want bool
-	}{
-		{"+ve", testPropertyList, false},
-		{"-ve", invalidTestPropertyList1, true},
-		{"-ve", invalidTestPropertyList2, true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.args.ValidateBasic()
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-			if err == nil && tt.want {
-				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
-			}
-			if err != nil && !tt.want {
-				t.Errorf("PropertyListValidateBasic() = %v, want %v", err, tt.want)
-			}
-		})
-	}
-}
-
-func Test_propertyList_FromMetaPropertiesString(t *testing.T) {
-
-	propertyList1 := &PropertyList{propertiesToAnyProperties([]properties.Property{
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
-	}...)}
-	propertyList2 := &PropertyList{propertiesToAnyProperties([]properties.Property{
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID4"), baseData.NewListData(baseData.NewStringData("a"))),
-	}...)}
-	propertyList3 := &PropertyList{propertiesToAnyProperties([]properties.Property{
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID4"), baseData.NewListData(baseData.NewStringData("a"), baseData.NewStringData("b"))),
-	}...)}
-	tests := []struct {
-		name    string
-		args    string
-		want    lists.PropertyList
-		wantErr bool
-	}{
-		{"-ve", "ID1:S|Data1,,ID2:N|1,,ID3:H10", nil, true},
-		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10", propertyList1, false},
-		{"-ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID3:H|12", nil, true},
-		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID4:L|S|a", propertyList2, false},
-		{"+ve", "ID1:S|Data1,,ID2:N|1,,ID3:H|10,,ID4:L|S|a,,S|b", propertyList3, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := PrototypePropertyList().FromMetaPropertiesString(tt.args)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FromMetaPropertiesString() got = %v, want %v", got, tt.want)
-			}
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-			if err == nil && tt.wantErr {
-				t.Errorf("FromMetaPropertiesString() Error got = %v, want %v", err, tt.wantErr)
-			}
-			if err != nil && !tt.wantErr {
-				t.Errorf("FromMetaPropertiesString() Error got = %v, want %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
 func TestNewPropertyList(t *testing.T) {
 	tests := []struct {
 		name          string
@@ -486,15 +408,202 @@ func TestPropertyList_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name    string
 		added   lists.PropertyList
-		wantErr error
+		wantErr errors.Error
 	}{
-		// TODO: Add test cases.
+		{
+			"one valid property",
+			NewPropertyList(randomProperties[randomIndex]),
+			nil,
+		},
+		{
+			"two valid properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			nil,
+		},
+		{
+			"many valid properties",
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			nil,
+		},
+		{
+			"valid properties with duplicate",
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex], randomProperties[randomIndex]}},
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"valid properties with nil",
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[0], nil, randomProperties[1]}},
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"empty property list",
+			NewPropertyList(),
+			nil,
+		},
+		{
+			"invalid property",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a"))),
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"invalid property with valid property",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a")), randomProperties[0]),
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"validate a large number of properties",
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			propertyList := tt.added
-			if err := propertyList.ValidateBasic(); !reflect.DeepEqual(err, tt.wantErr) {
-				t.Errorf("ValidateBasic() = %v, want %v", err, tt.wantErr)
+			err := propertyList.ValidateBasic()
+			if err == nil && tt.wantErr != nil || err != nil && tt.wantErr == nil || err != nil && tt.wantErr != nil && !tt.wantErr.Is(err) {
+				t.Errorf("\n got: \n %v \n want: \n %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestPropertyList_GetProperty(t *testing.T) {
+	tests := []struct {
+		name       string
+		added      lists.PropertyList
+		propertyID ids.PropertyID
+		want       properties.AnyProperty
+	}{
+		{
+			"one property",
+			NewPropertyList(randomProperties[randomIndex]),
+			randomProperties[randomIndex].GetID(),
+			randomProperties[randomIndex],
+		},
+		{
+			"two properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			randomProperties[1].GetID(),
+			randomProperties[1],
+		},
+		{
+			"many properties",
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			randomProperties[randomIndex].GetID(),
+			randomProperties[randomIndex],
+		},
+		{
+			"id not in list",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			randomProperties[3].GetID(),
+			nil,
+		},
+		{
+			"empty list",
+			NewPropertyList(),
+			randomProperties[randomIndex].GetID(),
+			nil,
+		},
+		{
+			"very large number of properties",
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			veryLargeNumberOfProperties[randomIndex].GetID(),
+			veryLargeNumberOfProperties[randomIndex],
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			propertyList := tt.added
+			if got := propertyList.GetProperty(tt.propertyID); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetProperty() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TODO see placement of this method
+func MetaPropertyAsString(anyProperty properties.Property) string {
+	metaProperty := anyProperty.(*baseProperties.AnyProperty).Get().(properties.MetaProperty)
+	return strings.ReplaceAll(metaProperty.GetID().AsString(), ".S", "") + ":" + metaProperty.GetData().AsString()
+}
+
+func MetaPropertiesAsString(properties ...properties.Property) string {
+	metaProperties := make([]string, len(properties))
+	for i, property := range properties {
+		metaProperties[i] = MetaPropertyAsString(property.(*baseProperties.AnyProperty))
+	}
+	return strings.Join(metaProperties, constants.PropertyListStringSeparator)
+}
+
+func TestPropertyList_FromMetaPropertiesString(t *testing.T) {
+	tests := []struct {
+		name                 string
+		added                lists.PropertyList
+		metaPropertiesString string
+		want                 lists.PropertyList
+		wantErr              errors.Error
+	}{
+		{
+			"one property",
+			NewPropertyList(randomProperties[randomIndex]),
+			MetaPropertyAsString(randomProperties[randomIndex]),
+			NewPropertyList(randomProperties[randomIndex]),
+			nil,
+		},
+		{
+			"two properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			MetaPropertiesAsString(randomProperties[0], randomProperties[1]),
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			nil,
+		},
+		{
+			"many properties",
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			MetaPropertiesAsString(anyPropertiesToProperties(randomProperties...)...),
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			nil,
+		},
+		{
+			"repeated properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			MetaPropertiesAsString(randomProperties[0], randomProperties[1], randomProperties[0]),
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			nil,
+		},
+		{
+			"invalid property",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a"))),
+			MetaPropertyAsString(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a")).ToAnyProperty()),
+			nil,
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"invalid property with valid property",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a")), randomProperties[0]),
+			MetaPropertiesAsString(baseProperties.NewMetaProperty(baseIDs.NewStringID("(invalid)"), baseData.NewStringData("a")).ToAnyProperty(), randomProperties[0]),
+			nil,
+			errorConstants.IncorrectFormat,
+		},
+		{
+			"very large number of properties",
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			MetaPropertiesAsString(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			propertyList := tt.added
+			got, err := propertyList.FromMetaPropertiesString(tt.metaPropertiesString)
+
+			if err == nil && tt.wantErr != nil || err != nil && tt.wantErr == nil || err != nil && tt.wantErr != nil && !tt.wantErr.Is(err) {
+				t.Errorf("\n got: \n %v \n want: \n %v", err, tt.wantErr)
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("\n got: \n %v \n want: \n %v", got, tt.want)
 			}
 		})
 	}
