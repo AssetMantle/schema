@@ -17,9 +17,12 @@ func (propertyList *PropertyList) ValidateBasic() error {
 	propertyIDMap := map[string]bool{}
 
 	for _, property := range propertyList.AnyProperties {
+		if property == nil {
+			return constants.IncorrectFormat.Wrapf("nil property")
+		}
 
 		if _, found := propertyIDMap[property.GetID().AsString()]; found {
-			return constants.IncorrectFormat.Wrapf("duplicate property ID: %s", property.GetID().AsString())
+			return constants.IncorrectFormat.Wrapf("duplicate property with ID: %s", property.GetID().AsString())
 		} else {
 			propertyIDMap[property.GetID().AsString()] = true
 		}
@@ -32,7 +35,7 @@ func (propertyList *PropertyList) ValidateBasic() error {
 	return nil
 }
 func (propertyList *PropertyList) GetProperty(propertyID ids.PropertyID) properties.AnyProperty {
-	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	updatedList := NewPropertyList(AnyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 	if i, found := updatedList.search(base.NewEmptyMesaPropertyFromID(propertyID)); found {
 		return updatedList.Get()[i]
 	}
@@ -89,29 +92,28 @@ func (propertyList *PropertyList) FromMetaPropertiesString(metaPropertiesString 
 	}
 
 	updatedPropertyList := NewPropertyList(Properties...)
-	if err := updatedPropertyList.ValidateBasic(); err != nil {
-		return nil, err
-	}
 
 	return updatedPropertyList, nil
 }
 func (propertyList *PropertyList) Add(properties ...properties.Property) lists.PropertyList {
-	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	updatedList := NewPropertyList(AnyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for _, property := range properties {
-		if index, found := updatedList.search(property); !found {
-			updatedList.AnyProperties = append(updatedList.AnyProperties, property.ToAnyProperty().(*base.AnyProperty))
-			copy(updatedList.AnyProperties[index+1:], updatedList.AnyProperties[index:])
-			updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
-		} else {
-			updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
+		if property != nil {
+			if index, found := updatedList.search(property); !found {
+				updatedList.AnyProperties = append(updatedList.AnyProperties, property.ToAnyProperty().(*base.AnyProperty))
+				copy(updatedList.AnyProperties[index+1:], updatedList.AnyProperties[index:])
+				updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
+			} else {
+				updatedList.AnyProperties[index] = property.ToAnyProperty().(*base.AnyProperty)
+			}
 		}
 	}
 
 	return updatedList
 }
 func (propertyList *PropertyList) Remove(properties ...properties.Property) lists.PropertyList {
-	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	updatedList := NewPropertyList(AnyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for _, listable := range properties {
 		if index, found := updatedList.search(listable); found {
@@ -122,7 +124,7 @@ func (propertyList *PropertyList) Remove(properties ...properties.Property) list
 	return updatedList
 }
 func (propertyList *PropertyList) Mutate(properties ...properties.Property) lists.PropertyList {
-	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	updatedList := NewPropertyList(AnyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for _, listable := range properties {
 		if index, found := updatedList.search(listable); found {
@@ -133,7 +135,7 @@ func (propertyList *PropertyList) Mutate(properties ...properties.Property) list
 	return updatedList
 }
 func (propertyList *PropertyList) ScrubData() lists.PropertyList {
-	updatedList := NewPropertyList(anyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
+	updatedList := NewPropertyList(AnyPropertiesToProperties(propertyList.Get()...)...).(*PropertyList)
 
 	for index, property := range updatedList.AnyProperties {
 		if property.IsMeta() {
@@ -143,27 +145,35 @@ func (propertyList *PropertyList) ScrubData() lists.PropertyList {
 
 	return updatedList
 }
-func anyPropertiesToProperties(anyProperties ...properties.AnyProperty) []properties.Property {
-	returnProperties := make([]properties.Property, len(anyProperties))
+func anyPropertiesToProperties(anyProperties ...*base.AnyProperty) []properties.Property {
+	returnProperties := make([]properties.Property, 0)
 
-	for i, anyProperty := range anyProperties {
-		returnProperties[i] = anyProperty
+	for _, anyProperty := range anyProperties {
+		if anyProperty != nil {
+			returnProperties = append(returnProperties, anyProperty)
+		}
 	}
 
 	return returnProperties
 }
 func propertiesToAnyProperties(properties ...properties.Property) []*base.AnyProperty {
-	anyProperties := make([]*base.AnyProperty, len(properties))
-	for i, property := range properties {
-		anyProperties[i] = property.ToAnyProperty().(*base.AnyProperty)
+	anyProperties := make([]*base.AnyProperty, 0)
+
+	for _, property := range properties {
+		if property != nil {
+			anyProperties = append(anyProperties, property.ToAnyProperty().(*base.AnyProperty))
+		}
 	}
+
 	return anyProperties
 }
 func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []properties.Property {
-	returnProperties := make([]properties.Property, len(anyProperties))
+	returnProperties := make([]properties.Property, 0)
 
-	for i, anyProperty := range anyProperties {
-		returnProperties[i] = anyProperty
+	for _, anyProperty := range anyProperties {
+		if anyProperty != nil {
+			returnProperties = append(returnProperties, anyProperty.Get())
+		}
 	}
 
 	return returnProperties
@@ -193,8 +203,4 @@ func NewPropertyList(addProperties ...properties.Property) lists.PropertyList {
 	})
 
 	return &PropertyList{propertiesToAnyProperties(Properties...)}
-}
-
-func PrototypePropertyList() lists.PropertyList {
-	return &PropertyList{}
 }
