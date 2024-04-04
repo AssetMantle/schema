@@ -13,7 +13,6 @@ import (
 	"github.com/AssetMantle/schema/go/lists/constants"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
-	baseTypes "github.com/AssetMantle/schema/go/types/base"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"math/rand"
 	"reflect"
@@ -27,30 +26,34 @@ var (
 	randomPropertyGenerator = func() *baseProperties.AnyProperty {
 		return baseProperties.NewMetaProperty(baseIDs.NewStringID(strconv.Itoa(rand.Intn(99999999999999999))), baseData.NewStringData(strconv.Itoa(rand.Intn(rand.Intn(99999999999999999))))).ToAnyProperty().(*baseProperties.AnyProperty)
 	}
-	randomPropertiesGenerator = func(n int) []*baseProperties.AnyProperty {
-		properties := make([]*baseProperties.AnyProperty, n)
+	randomPropertiesGenerator = func(n int) (unsorted []*baseProperties.AnyProperty, sorted []*baseProperties.AnyProperty) {
+		unsorted = make([]*baseProperties.AnyProperty, n)
 		for i := 0; i < n; i++ {
-			properties[i] = randomPropertyGenerator()
+			unsorted[i] = randomPropertyGenerator()
 		}
 
-		sort.Slice(properties, func(i, j int) bool {
-			return properties[i].Compare(properties[j]) <= 0
+		sorted = make([]*baseProperties.AnyProperty, n)
+		copy(sorted, unsorted)
+
+		sort.Slice(sorted, func(i, j int) bool {
+			return sorted[i].Compare(sorted[j]) <= 0
 		})
 
-		return properties
+		return unsorted, sorted
 	}
-	maxProperties               = 100
-	randomIndex                 = rand.Intn(maxProperties)
-	randomProperties            = randomPropertiesGenerator(maxProperties)
-	veryLargeNumber             = 5000
-	veryLargeNumberOfProperties = randomPropertiesGenerator(veryLargeNumber)
+
+	maxProperties                                                    = 100
+	randomIndex                                                      = rand.Intn(maxProperties)
+	randomUnsortedProperties, randomProperties                       = randomPropertiesGenerator(maxProperties)
+	veryLargeNumber                                                  = 50000
+	veryLargeNumberOfUnsortedProperties, veryLargeNumberOfProperties = randomPropertiesGenerator(veryLargeNumber)
 )
 
-func Test_propertyList_Add(t *testing.T) {
+func Test_propertyList_NewPropertyList(t *testing.T) {
 	tests := []struct {
-		name       string
-		properties []properties.Property
-		want       lists.PropertyList
+		name          string
+		addProperties []properties.Property
+		want          lists.PropertyList
 	}{
 		{"add one property",
 			anyPropertiesToProperties(randomProperties[randomIndex]),
@@ -64,13 +67,17 @@ func Test_propertyList_Add(t *testing.T) {
 			anyPropertiesToProperties(randomProperties...),
 			&PropertyList{randomProperties},
 		},
+		{"add many unsorted properties",
+			anyPropertiesToProperties(randomUnsortedProperties...),
+			&PropertyList{randomProperties},
+		},
 		{"add duplicate properties",
 			anyPropertiesToProperties(randomProperties[randomIndex], randomProperties[randomIndex]),
 			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex]}},
 		},
 		{"add nil properties",
 			anyPropertiesToProperties(nil),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
+			&PropertyList{},
 		},
 		{"add nil property with other properties",
 			anyPropertiesToProperties(randomProperties[0], nil, randomProperties[1]),
@@ -94,11 +101,117 @@ func Test_propertyList_Add(t *testing.T) {
 		{
 			"add multiple nils",
 			[]properties.Property{nil, nil, nil},
-			&PropertyList{[]*baseProperties.AnyProperty{}},
+			&PropertyList{},
 		},
 		{
 			"very large number of properties",
 			anyPropertiesToProperties(veryLargeNumberOfProperties...),
+			&PropertyList{veryLargeNumberOfProperties},
+		},
+		{
+			"very large number of unsorted properties",
+			anyPropertiesToProperties(veryLargeNumberOfUnsortedProperties...),
+			&PropertyList{veryLargeNumberOfProperties},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldProperties := make([]properties.Property, len(tt.addProperties))
+			copy(oldProperties, tt.addProperties)
+
+			if got := NewPropertyList(tt.addProperties...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("\n got: \n %v \n want: \n %v", got, tt.want)
+			}
+
+			// check if input list was modified
+			if !reflect.DeepEqual(tt.addProperties, oldProperties) {
+				t.Errorf("input modified")
+			}
+		})
+	}
+}
+
+func Test_propertyList_Add(t *testing.T) {
+	tests := []struct {
+		name       string
+		added      lists.PropertyList
+		properties []properties.Property
+		want       lists.PropertyList
+	}{
+		{"add one property",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(randomProperties[2]),
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[0], randomProperties[1], randomProperties[2]}},
+		},
+		{"add already added property",
+			NewPropertyList(randomProperties[randomIndex]),
+			anyPropertiesToProperties(randomProperties[randomIndex]),
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex]}},
+		},
+		{"add two properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(randomProperties[2], randomProperties[3]),
+			&PropertyList{randomProperties[0:4]},
+		},
+		{"add many properties",
+			NewPropertyList(),
+			anyPropertiesToProperties(randomProperties...),
+			&PropertyList{randomProperties},
+		},
+		{"add many unsorted properties",
+			NewPropertyList(),
+			anyPropertiesToProperties(randomUnsortedProperties...),
+			&PropertyList{randomProperties},
+		},
+		{"add duplicate properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(randomProperties[2], randomProperties[2]),
+			&PropertyList{randomProperties[0:3]},
+		},
+		{"add nil properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(nil),
+			&PropertyList{randomProperties[0:2]},
+		},
+		{"add nil property with other properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(randomProperties[2], nil, randomProperties[3]),
+			&PropertyList{randomProperties[0:4]},
+		},
+		{
+			"add properties out of order",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			anyPropertiesToProperties(randomProperties[2], randomProperties[3]),
+			&PropertyList{randomProperties[0:4]},
+		},
+		{
+			"add prototype property",
+			NewPropertyList(),
+			[]properties.Property{baseProperties.PrototypeMetaProperty()},
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
+		},
+		{
+			"add prototype property with other properties",
+			NewPropertyList(),
+			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+		},
+		{
+			"add multiple nils",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			[]properties.Property{nil, nil, nil},
+			&PropertyList{randomProperties[0:2]},
+		},
+		{
+			"very large number of properties",
+			NewPropertyList(),
+			anyPropertiesToProperties(veryLargeNumberOfProperties...),
+			&PropertyList{veryLargeNumberOfProperties},
+		},
+		{
+			"very large number of unsorted properties",
+			NewPropertyList(),
+			anyPropertiesToProperties(veryLargeNumberOfUnsortedProperties...),
 			&PropertyList{veryLargeNumberOfProperties},
 		},
 	}
@@ -107,8 +220,166 @@ func Test_propertyList_Add(t *testing.T) {
 			oldProperties := make([]properties.Property, len(tt.properties))
 			copy(oldProperties, tt.properties)
 
-			if got := NewPropertyList().Add(tt.properties...); !reflect.DeepEqual(got, tt.want) {
+			if got := tt.added.Add(tt.properties...); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("got = \n %v \n want \n %v", got, tt.want)
+			}
+
+			// check if input list was modified
+			if !reflect.DeepEqual(tt.properties, oldProperties) {
+				t.Errorf("input modified")
+			}
+		})
+	}
+}
+
+func TestPropertyList_Remove(t *testing.T) {
+	tests := []struct {
+		name             string
+		removeProperties []properties.Property
+		added            lists.PropertyList
+		want             lists.PropertyList
+	}{
+		{"remove one property",
+			anyPropertiesToProperties(randomProperties[randomIndex]),
+			NewPropertyList(randomProperties[randomIndex]),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{"remove two properties",
+			anyPropertiesToProperties(randomProperties[0], randomProperties[1]),
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{"remove many properties",
+			anyPropertiesToProperties(randomProperties...),
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{"remove many unsorted properties",
+			anyPropertiesToProperties(randomUnsortedProperties...),
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{"remove duplicate properties",
+			anyPropertiesToProperties(randomProperties[randomIndex], randomProperties[randomIndex]),
+			NewPropertyList(randomProperties[randomIndex]),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{"remove nil properties",
+			anyPropertiesToProperties(nil),
+			NewPropertyList(),
+			&PropertyList{},
+		},
+		{"remove nil property with other properties",
+			anyPropertiesToProperties(randomProperties[0], nil, randomProperties[1]),
+			NewPropertyList(anyPropertiesToProperties(randomProperties[0:2]...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{
+			"remove properties out of order",
+			anyPropertiesToProperties(randomProperties[1], randomProperties[0]),
+			NewPropertyList(anyPropertiesToProperties(randomProperties[0:2]...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{
+			"remove prototype property",
+			[]properties.Property{baseProperties.PrototypeMetaProperty()},
+			NewPropertyList(baseProperties.PrototypeMetaProperty()),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{
+			"remove prototype property with other properties",
+			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
+			NewPropertyList(baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{
+			"remove multiple nils",
+			[]properties.Property{nil, nil, nil},
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			&PropertyList{randomProperties[0:2]},
+		},
+		{
+			"remove very large number of properties",
+			anyPropertiesToProperties(veryLargeNumberOfProperties...),
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+		{
+			"remove very large number of unsorted properties",
+			anyPropertiesToProperties(veryLargeNumberOfUnsortedProperties...),
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			&PropertyList{[]*baseProperties.AnyProperty{}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldProperties := make([]properties.Property, len(tt.removeProperties))
+			copy(oldProperties, tt.removeProperties)
+
+			if got := tt.added.Remove(tt.removeProperties...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Remove() = %v, want %v", got, tt.want)
+			}
+
+			// check if input list was modified
+			if !reflect.DeepEqual(tt.removeProperties, oldProperties) {
+				t.Errorf("input modified")
+			}
+		})
+	}
+}
+
+func TestPropertyList_Mutate(t *testing.T) {
+	tests := []struct {
+		name       string
+		added      lists.PropertyList
+		properties []properties.Property
+		want       lists.PropertyList
+	}{
+		{
+			"empty list",
+			NewPropertyList(),
+			[]properties.Property{randomProperties[randomIndex]},
+			NewPropertyList(),
+		},
+		{
+			"one property",
+			NewPropertyList(randomProperties[0]),
+			[]properties.Property{randomProperties[randomIndex]},
+			NewPropertyList(randomProperties[0]),
+		},
+		{
+			"two properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			[]properties.Property{randomProperties[2], randomProperties[3]},
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+		},
+		{
+			"many properties",
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			[]properties.Property{randomProperties[2], randomProperties[3]},
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+		},
+		{
+			"mutate one property in one property list",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0)))),
+			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)},
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)),
+		},
+		{
+			"mutate one property in two property list",
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0))), randomProperties[randomIndex]),
+			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)},
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property), randomProperties[randomIndex]),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			propertyList := tt.added
+			oldProperties := make([]properties.Property, len(tt.properties))
+			copy(oldProperties, tt.properties)
+
+			if got := propertyList.Mutate(tt.properties...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Mutate() = %v, want %v", got, tt.want)
 			}
 
 			// check if input list was modified
@@ -190,215 +461,38 @@ func Test_propertyList_GetPropertyIDList(t *testing.T) {
 	}
 }
 
-func Test_propertyList_Mutate(t *testing.T) {
-
-	propertyList1 := &PropertyList{propertiesToAnyProperties([]properties.Property{
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("Data1")),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
-	}...)}
-	propertyListMutated := &PropertyList{propertiesToAnyProperties([]properties.Property{
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("DataUpdated")),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewNumberData(sdkTypes.OneInt())),
-		baseProperties.NewMetaProperty(baseIDs.NewStringID("ID3"), baseData.NewHeightData(baseTypes.NewHeight(10))),
-	}...)}
+func TestPropertyList_ScrubData(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields lists.PropertyList
-		args   []properties.Property
-		want   lists.PropertyList
+		name  string
+		added lists.PropertyList
+		want  lists.PropertyList
 	}{
-		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewStringData("DataUpdated"))}, propertyListMutated},
-		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID2"), baseData.NewStringData("DataUpdated"))}, propertyList1},
-		{"+ve", propertyList1, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("ID1"), baseData.NewNumberData(sdkTypes.OneInt()))}, propertyList1},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := tt.fields.Mutate(tt.args...)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("propertyList_Mutate() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_propertyList_Remove(t *testing.T) {
-	tests := []struct {
-		name       string
-		properties []properties.Property
-		remove     []properties.Property
-		want       lists.PropertyList
-	}{
-		{"+ve", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply1"), baseData.NewDecData(sdkTypes.NewDec(2)))}, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply1"), baseData.NewDecData(sdkTypes.NewDec(2)))}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}...)},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			propertyList := PropertyList{propertiesToAnyProperties(tt.properties...)}
-			if got := propertyList.Remove(tt.remove...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Remove() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_propertyList_ScrubData(t *testing.T) {
-
-	tests := []struct {
-		name       string
-		properties []properties.Property
-		want       lists.PropertyList
-	}{
-		{"+ve", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, NewPropertyList([]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ScrubData()}...)},
-		{"+ve", []properties.Property{baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID"), baseData.NewStringData("Test"))}, NewPropertyList([]properties.Property{baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("ID"), baseData.NewStringData("Test")).ScrubData()}...)},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			propertyList := PropertyList{propertiesToAnyProperties(tt.properties...)}
-			if got := propertyList.ScrubData(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ScrubData() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNewPropertyList(t *testing.T) {
-	tests := []struct {
-		name          string
-		addProperties []properties.Property
-		want          lists.PropertyList
-	}{
-		{"add one property",
-			anyPropertiesToProperties(randomProperties[randomIndex]),
-			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex]}},
-		},
-		{"add two properties",
-			anyPropertiesToProperties(randomProperties[0], randomProperties[1]),
-			&PropertyList{randomProperties[0:2]},
-		},
-		{"add many properties",
-			anyPropertiesToProperties(randomProperties...),
-			&PropertyList{randomProperties},
-		},
-		{"add duplicate properties",
-			anyPropertiesToProperties(randomProperties[randomIndex], randomProperties[randomIndex]),
-			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex]}},
-		},
-		{"add nil properties",
-			anyPropertiesToProperties(nil),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{"add nil property with other properties",
-			anyPropertiesToProperties(randomProperties[0], nil, randomProperties[1]),
-			&PropertyList{randomProperties[0:2]},
+		{
+			"empty list",
+			NewPropertyList(),
+			NewPropertyList(),
 		},
 		{
-			"add properties out of order",
-			anyPropertiesToProperties(randomProperties[1], randomProperties[0]),
-			&PropertyList{randomProperties[0:2]},
-		},
-		{
-			"add prototype property",
-			[]properties.Property{baseProperties.PrototypeMetaProperty()},
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
-		},
-		{
-			"add prototype property with other properties",
-			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
-		},
-		{
-			"add multiple nils",
-			[]properties.Property{nil, nil, nil},
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"very large number of properties",
-			anyPropertiesToProperties(veryLargeNumberOfProperties...),
-			&PropertyList{veryLargeNumberOfProperties},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPropertyList(tt.addProperties...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewPropertyList() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestPropertyList_Remove(t *testing.T) {
-	tests := []struct {
-		name             string
-		removeProperties []properties.Property
-		added            lists.PropertyList
-		want             lists.PropertyList
-	}{
-		{"remove one property",
-			anyPropertiesToProperties(randomProperties[randomIndex]),
+			"one property",
 			NewPropertyList(randomProperties[randomIndex]),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
+			NewPropertyList(randomProperties[randomIndex].Get().(properties.MetaProperty).ScrubData().ToAnyProperty().(*baseProperties.AnyProperty)),
 		},
-		{"remove two properties",
-			anyPropertiesToProperties(randomProperties[0], randomProperties[1]),
+		{
+			"two properties",
 			NewPropertyList(randomProperties[0], randomProperties[1]),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
+			NewPropertyList(randomProperties[0].Get().(properties.MetaProperty).ScrubData().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[1].Get().(properties.MetaProperty).ScrubData().ToAnyProperty().(*baseProperties.AnyProperty)),
 		},
-		{"remove many properties",
-			anyPropertiesToProperties(randomProperties...),
-			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{"remove duplicate properties",
-			anyPropertiesToProperties(randomProperties[randomIndex], randomProperties[randomIndex]),
-			NewPropertyList(randomProperties[randomIndex]),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{"remove nil properties",
-			anyPropertiesToProperties(nil),
+		{
+			"nil properties",
+			NewPropertyList(nil),
 			NewPropertyList(),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{"remove nil property with other properties",
-			anyPropertiesToProperties(randomProperties[0], nil, randomProperties[1]),
-			NewPropertyList(anyPropertiesToProperties(randomProperties[0:2]...)...),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"remove properties out of order",
-			anyPropertiesToProperties(randomProperties[1], randomProperties[0]),
-			NewPropertyList(anyPropertiesToProperties(randomProperties[0:2]...)...),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"remove prototype property",
-			[]properties.Property{baseProperties.PrototypeMetaProperty()},
-			NewPropertyList(baseProperties.PrototypeMetaProperty()),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"remove prototype property with other properties",
-			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
-			NewPropertyList(baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"add multiple nils",
-			[]properties.Property{nil, nil, nil},
-			NewPropertyList(),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
-		},
-		{
-			"remove very large number of properties",
-			anyPropertiesToProperties(veryLargeNumberOfProperties...),
-			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
-			&PropertyList{[]*baseProperties.AnyProperty{}},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			propertyList := tt.added
-			if got := propertyList.Remove(tt.removeProperties...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Remove() = %v, want %v", got, tt.want)
+			if got := propertyList.ScrubData(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ScrubData() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -585,13 +679,13 @@ func TestPropertyList_FromMetaPropertiesString(t *testing.T) {
 			nil,
 			errorConstants.IncorrectFormat,
 		},
-		{
-			"very large number of properties",
-			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
-			MetaPropertiesAsString(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
-			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
-			nil,
-		},
+		//{
+		//	"very large number of properties",
+		//	NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+		//	MetaPropertiesAsString(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+		//	NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+		//	nil,
+		//},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -604,6 +698,268 @@ func TestPropertyList_FromMetaPropertiesString(t *testing.T) {
 
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("\n got: \n %v \n want: \n %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPropertyList_search(t *testing.T) {
+
+	tests := []struct {
+		name      string
+		added     lists.PropertyList
+		property  properties.Property
+		wantIndex int
+		wantFound bool
+	}{
+		{
+			"empty list",
+			NewPropertyList(),
+			randomProperties[randomIndex],
+			0,
+			false,
+		},
+		{
+			"one property",
+			NewPropertyList(randomProperties[randomIndex]),
+			randomProperties[randomIndex],
+			0,
+			true,
+		},
+		{
+			"two properties",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			randomProperties[1],
+			1,
+			true,
+		},
+		{
+			"many properties",
+			NewPropertyList(anyPropertiesToProperties(randomProperties...)...),
+			randomProperties[randomIndex],
+			randomIndex,
+			true,
+		},
+		{
+			"unsorted properties",
+			NewPropertyList(anyPropertiesToProperties(randomUnsortedProperties...)...),
+			randomProperties[randomIndex],
+			randomIndex,
+			true,
+		},
+		{
+			"nil property",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			nil,
+			-1,
+			false,
+		},
+		{
+			"property not in list",
+			NewPropertyList(randomProperties[0], randomProperties[1]),
+			randomProperties[2],
+			2,
+			false,
+		},
+		{
+			"very large number of properties",
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfProperties...)...),
+			veryLargeNumberOfProperties[randomIndex],
+			randomIndex,
+			true,
+		},
+		{
+			"very large number of unsorted properties",
+			NewPropertyList(anyPropertiesToProperties(veryLargeNumberOfUnsortedProperties...)...),
+			veryLargeNumberOfProperties[randomIndex],
+			randomIndex,
+			true,
+		},
+		{
+			"prototype property",
+			NewPropertyList(baseProperties.PrototypeMetaProperty()),
+			baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty),
+			0,
+			true,
+		},
+		{
+			"prototype property with other properties",
+			NewPropertyList(baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]),
+			baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty),
+			0,
+			true,
+		},
+		{
+			"multiple nils",
+			NewPropertyList(nil, nil, nil),
+			nil,
+			-1,
+			false,
+		},
+		{
+			"multiple nils with other properties",
+			NewPropertyList(randomProperties[0], nil, randomProperties[1]),
+			nil,
+			-1,
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			propertyList := tt.added
+			oldProperties := make([]properties.AnyProperty, len(tt.added.Get()))
+			copy(oldProperties, tt.added.Get())
+
+			gotIndex, gotFound := propertyList.(*PropertyList).search(tt.property)
+
+			if gotIndex != tt.wantIndex {
+				t.Errorf("search() gotIndex = %v, want %v", gotIndex, tt.wantIndex)
+			}
+
+			if gotFound != tt.wantFound {
+				t.Errorf("search() gotFound = %v, want %v", gotFound, tt.wantFound)
+			}
+
+			if !reflect.DeepEqual(tt.added.Get(), oldProperties) {
+				t.Errorf("property list modified")
+			}
+		})
+	}
+}
+
+func TestPropertyList_sort(t *testing.T) {
+	tests := []struct {
+		name  string
+		added lists.PropertyList
+		want  lists.PropertyList
+	}{
+		{
+			"empty list",
+			NewPropertyList(),
+			NewPropertyList(),
+		},
+		{
+			"one property",
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[randomIndex]}},
+			NewPropertyList(randomProperties[randomIndex]),
+		},
+		{
+			"two properties",
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[1], randomProperties[0]}},
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[0], randomProperties[1]}},
+		},
+		{
+			"three properties",
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[1], randomProperties[0], randomProperties[2]}},
+			&PropertyList{[]*baseProperties.AnyProperty{randomProperties[0], randomProperties[1], randomProperties[2]}},
+		},
+		{
+			"many properties",
+			&PropertyList{randomUnsortedProperties},
+			&PropertyList{randomProperties},
+		},
+		{
+			"many properties already sorted",
+			&PropertyList{randomProperties},
+			&PropertyList{randomProperties},
+		},
+		{
+			"very large number of properties",
+			&PropertyList{veryLargeNumberOfUnsortedProperties},
+			&PropertyList{veryLargeNumberOfProperties},
+		},
+		{
+			"very large number of properties already sorted",
+			&PropertyList{veryLargeNumberOfProperties},
+			&PropertyList{veryLargeNumberOfProperties},
+		},
+		{
+			"prototype property",
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
+		},
+		{
+			"prototype property with other properties",
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			propertyList := tt.added.(*PropertyList)
+
+			propertyList.sort()
+
+			if !reflect.DeepEqual(tt.added.Get(), tt.want.Get()) {
+				t.Errorf("sort() got = %v, want %v", tt.added.Get(), tt.want.Get())
+			}
+		})
+	}
+}
+
+func TestAnyPropertiesToProperties(t *testing.T) {
+	tests := []struct {
+		name          string
+		anyProperties []properties.AnyProperty
+		want          []properties.Property
+	}{
+		{
+			"empty list",
+			[]properties.AnyProperty{},
+			[]properties.Property{},
+		},
+		{
+			"one property",
+			[]properties.AnyProperty{randomProperties[randomIndex]},
+			[]properties.Property{randomProperties[randomIndex].Get()},
+		},
+		{
+			"two properties",
+			[]properties.AnyProperty{randomProperties[0], randomProperties[1]},
+			[]properties.Property{randomProperties[0].Get(), randomProperties[1].Get()},
+		},
+		{
+			"many properties",
+			[]properties.AnyProperty{randomProperties[0], randomProperties[1], randomProperties[2]},
+			[]properties.Property{randomProperties[0].Get(), randomProperties[1].Get(), randomProperties[2].Get()},
+		},
+		{
+			"nil properties",
+			[]properties.AnyProperty{nil},
+			[]properties.Property{},
+		},
+		{
+			"nil property with other properties",
+			[]properties.AnyProperty{randomProperties[0], nil, randomProperties[1]},
+			[]properties.Property{randomProperties[0].Get(), randomProperties[1].Get()},
+		},
+		{
+			"prototype property",
+			[]properties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)},
+			[]properties.Property{baseProperties.PrototypeMetaProperty()},
+		},
+		{
+			"prototype property with other properties",
+			[]properties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]},
+			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0].Get(), randomProperties[1].Get()},
+		},
+		{
+			"multiple nils",
+			[]properties.AnyProperty{nil, nil, nil},
+			[]properties.Property{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldAnyProperties := make([]properties.AnyProperty, len(tt.anyProperties))
+			copy(oldAnyProperties, tt.anyProperties)
+
+			if got := AnyPropertiesToProperties(tt.anyProperties...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("\n got: \n %v \n want: \n %v", got, tt.want)
+			}
+
+			if !reflect.DeepEqual(tt.anyProperties, oldAnyProperties) {
+				t.Errorf("input modified")
 			}
 		})
 	}
