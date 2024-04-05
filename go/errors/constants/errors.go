@@ -14,7 +14,7 @@ var (
 	EntityAlreadyExists = base.NewError(projectRoute, 102, "entity already exists")
 	EntityNotFound      = base.NewError(projectRoute, 103, "entity not found")
 	IncorrectFormat     = base.NewError(projectRoute, 104, "incorrect format")
-	IncorrectMessage    = base.NewError(projectRoute, 105, "incorrect message")
+	InvalidMessage      = base.NewError(projectRoute, 105, "invalid message")
 	InsufficientBalance = base.NewError(projectRoute, 106, "insufficient balance")
 	InvalidParameter    = base.NewError(projectRoute, 107, "invalid parameter")
 	InvalidRequest      = base.NewError(projectRoute, 108, "invalid request")
