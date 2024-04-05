@@ -52,8 +52,6 @@ func (propertyList *PropertyList) Get() []properties.AnyProperty {
 
 	return anyProperties
 }
-
-// NOTE: No need to sort since it's an internal function, function calling it is already sorting it
 func (propertyList *PropertyList) search(property properties.Property) (index int, found bool) {
 	if property == nil {
 		return -1, false
@@ -178,6 +176,9 @@ func propertiesToAnyProperties(properties ...properties.Property) []*base.AnyPro
 
 	return anyProperties
 }
+
+// AnyPropertiesToProperties converts a slice of AnyProperties to a slice of Properties.
+// It filters out nil elements from the input slice and returns a new slice containing only non-nil Properties.
 func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []properties.Property {
 	returnProperties := make([]properties.Property, 0)
 
@@ -190,6 +191,7 @@ func AnyPropertiesToProperties(anyProperties ...properties.AnyProperty) []proper
 	return returnProperties
 }
 
+// NewPropertyList creates a new instance of PropertyList and adds the provided properties to it. It returns the created PropertyList.
 func NewPropertyList(addProperties ...properties.Property) lists.PropertyList {
 	return (&PropertyList{}).Add(addProperties...)
 }
