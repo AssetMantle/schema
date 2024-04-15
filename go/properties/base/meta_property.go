@@ -110,7 +110,7 @@ func NewMetaProperty(key ids.StringID, data data.Data) properties.MetaProperty {
 
 func PrototypeMetaProperty() properties.MetaProperty {
 	return &MetaProperty{
-		ID:   baseIDs.PrototypePropertyID().(*baseIDs.PropertyID),
+		ID:   baseIDs.NewPropertyID(baseIDs.PrototypeStringID(), base.PrototypeAnyData().GetTypeID()).(*baseIDs.PropertyID),
 		Data: base.PrototypeAnyData().(*base.AnyData),
 	}
 }

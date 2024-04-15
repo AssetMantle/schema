@@ -87,3 +87,7 @@ func NewMesaProperty(key ids.StringID, data data.Data) properties.MesaProperty {
 		DataID: data.GetID().(*baseIDs.DataID),
 	}
 }
+
+func PrototypeMesaProperty() properties.MesaProperty {
+	return PrototypeMetaProperty().ScrubData()
+}
