@@ -1,15 +1,13 @@
 package base
 
 import (
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/go/data"
-	"github.com/AssetMantle/schema/go/data/constants"
+	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 type dataGetter interface {
@@ -47,6 +45,10 @@ func (x *AnyData_LinkedData) get() data.Data {
 var _ data.AnyData = (*AnyData)(nil)
 
 func (x *AnyData) ValidateBasic() error {
+	if x.Impl == nil {
+		return nil
+	}
+
 	return x.Impl.(dataGetter).get().ValidateBasic()
 }
 func (x *AnyData) IsAnyData() {}
@@ -100,6 +102,13 @@ func (x *AnyData) Get() data.Data {
 	return x.Impl.(dataGetter).get()
 }
 func (x *AnyData) GetID() ids.DataID {
+	if x.Impl == nil {
+		return &baseIDs.DataID{
+			TypeID: x.GetTypeID().(*baseIDs.StringID),
+			HashID: baseIDs.PrototypeHashID().(*baseIDs.HashID),
+		}
+	}
+
 	return x.Impl.(dataGetter).get().GetID()
 }
 func (x *AnyData) Bytes() []byte {
@@ -110,7 +119,7 @@ func (x *AnyData) GetTypeID() ids.StringID {
 		return x.Impl.(dataGetter).get().GetTypeID()
 	}
 
-	return constants.AnyDataTypeID
+	return dataConstants.AnyDataTypeID
 }
 func (x *AnyData) ZeroValue() data.Data {
 	return x.Impl.(dataGetter).get().ZeroValue()
