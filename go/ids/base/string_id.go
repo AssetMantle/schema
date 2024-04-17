@@ -17,9 +17,14 @@ func (stringID *StringID) Get() string {
 	return stringID.IDString
 }
 func (stringID *StringID) ValidateBasic() error {
+	if stringID == nil {
+		return fmt.Errorf("string ID is empty")
+	}
+
 	if !utilities.IsValidStringID(stringID.AsString()) {
 		return fmt.Errorf("invalid stringID %s", stringID.AsString())
 	}
+
 	return nil
 }
 func (stringID *StringID) IsStringID() {}

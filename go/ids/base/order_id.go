@@ -12,6 +12,10 @@ import (
 var _ ids.OrderID = (*OrderID)(nil)
 
 func (orderID *OrderID) ValidateBasic() error {
+	if orderID == nil {
+		return fmt.Errorf("order ID is empty")
+	}
+
 	return orderID.HashID.ValidateBasic()
 }
 func (orderID *OrderID) GetTypeID() ids.StringID {
@@ -49,15 +53,6 @@ func (orderID *OrderID) ToAnyID() ids.AnyID {
 		Impl: &AnyID_OrderID{
 			OrderID: orderID,
 		},
-	}
-}
-
-func orderIDFromInterface(i interface{}) *OrderID {
-	switch value := i.(type) {
-	case *OrderID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *OrderID, got %T", i))
 	}
 }
 

@@ -12,6 +12,10 @@ import (
 var _ ids.MaintainerID = (*MaintainerID)(nil)
 
 func (maintainerID *MaintainerID) ValidateBasic() error {
+	if maintainerID == nil {
+		return fmt.Errorf("maintainer ID is empty")
+	}
+
 	return maintainerID.HashID.ValidateBasic()
 }
 func (maintainerID *MaintainerID) GetTypeID() ids.StringID {
@@ -52,14 +56,6 @@ func (maintainerID *MaintainerID) ToAnyID() ids.AnyID {
 	}
 }
 
-func maintainerIDFromInterface(i interface{}) *MaintainerID {
-	switch value := i.(type) {
-	case *MaintainerID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *MaintainerID, got %T", i))
-	}
-}
 func NewMaintainerID(maintainerClassificationID ids.ClassificationID, immutables qualified.Immutables) ids.MaintainerID {
 	return &MaintainerID{
 		HashID: GenerateHashID(maintainerClassificationID.Bytes(), immutables.GenerateHashID().Bytes()).(*HashID),

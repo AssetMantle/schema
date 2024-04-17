@@ -5,6 +5,7 @@ package base
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/AssetMantle/schema/go/ids"
@@ -15,6 +16,10 @@ import (
 var _ ids.AssetID = (*AssetID)(nil)
 
 func (assetID *AssetID) ValidateBasic() error {
+	if assetID == nil {
+		return fmt.Errorf("asset ID is empty")
+	}
+
 	return assetID.HashID.ValidateBasic()
 }
 func (assetID *AssetID) GetTypeID() ids.StringID {

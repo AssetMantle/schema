@@ -12,6 +12,10 @@ import (
 var _ ids.IdentityID = (*IdentityID)(nil)
 
 func (identityID *IdentityID) ValidateBasic() error {
+	if identityID == nil {
+		return fmt.Errorf("identity ID is empty")
+	}
+
 	return identityID.HashID.ValidateBasic()
 }
 func (identityID *IdentityID) IsIdentityID() {}
@@ -52,15 +56,6 @@ func (identityID *IdentityID) ToAnyID() ids.AnyID {
 		Impl: &AnyID_IdentityID{
 			IdentityID: identityID,
 		},
-	}
-}
-
-func identityIDFromInterface(i interface{}) *IdentityID {
-	switch value := i.(type) {
-	case *IdentityID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *IdentityID, got %T", i))
 	}
 }
 

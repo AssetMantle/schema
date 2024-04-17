@@ -16,6 +16,10 @@ import (
 var _ ids.DataID = (*DataID)(nil)
 
 func (dataID *DataID) ValidateBasic() error {
+	if dataID == nil {
+		return fmt.Errorf("data ID is empty")
+	}
+
 	if err := dataID.TypeID.ValidateBasic(); err != nil {
 		return err
 	}

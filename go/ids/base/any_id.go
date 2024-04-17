@@ -123,6 +123,10 @@ func (anyID *AnyID) ToAnyID() ids.AnyID {
 	return anyID
 }
 func (anyID *AnyID) ValidateBasic() error {
+	if anyID == nil || anyID.Impl == nil {
+		return fmt.Errorf("id is empty")
+	}
+
 	return anyID.Impl.(idGetter).get().ValidateBasic()
 }
 

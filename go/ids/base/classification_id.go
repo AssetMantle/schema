@@ -12,6 +12,10 @@ import (
 var _ ids.ClassificationID = (*ClassificationID)(nil)
 
 func (classificationID *ClassificationID) ValidateBasic() error {
+	if classificationID == nil {
+		return fmt.Errorf("classification ID is empty")
+	}
+
 	return classificationID.HashID.ValidateBasic()
 }
 func (classificationID *ClassificationID) GetTypeID() ids.StringID {

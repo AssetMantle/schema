@@ -15,12 +15,18 @@ import (
 var _ ids.PropertyID = (*PropertyID)(nil)
 
 func (propertyID *PropertyID) ValidateBasic() error {
+	if propertyID == nil {
+		return fmt.Errorf("property ID is empty")
+	}
+
 	if err := propertyID.KeyID.ValidateBasic(); err != nil {
 		return err
 	}
+
 	if err := propertyID.TypeID.ValidateBasic(); err != nil {
 		return err
 	}
+
 	return nil
 }
 func (propertyID *PropertyID) GetTypeID() ids.StringID {

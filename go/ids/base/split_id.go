@@ -2,6 +2,7 @@ package base
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 
 	"github.com/AssetMantle/schema/go/ids"
@@ -12,12 +13,18 @@ import (
 var _ ids.SplitID = (*SplitID)(nil)
 
 func (splitID *SplitID) ValidateBasic() error {
+	if splitID == nil {
+		return fmt.Errorf("split ID is empty")
+	}
+
 	if err := splitID.AssetID.ValidateBasic(); err != nil {
 		return err
 	}
+
 	if err := splitID.OwnerID.ValidateBasic(); err != nil {
 		return err
 	}
+
 	return nil
 }
 func (splitID *SplitID) GetTypeID() ids.StringID {
