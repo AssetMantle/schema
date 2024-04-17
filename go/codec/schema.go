@@ -10,7 +10,6 @@ import (
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
 	baseDocuments "github.com/AssetMantle/schema/go/documents/base"
-	"github.com/AssetMantle/schema/go/errors"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
@@ -24,14 +23,11 @@ import (
 )
 
 func RegisterLegacyAminoCodec(legacyAmino *codec.LegacyAmino) {
-
 	data.RegisterLegacyAminoCodec(legacyAmino)
 	baseData.RegisterLegacyAminoCodec(legacyAmino)
 
 	documents.RegisterLegacyAminoCodec(legacyAmino)
 	baseDocuments.RegisterLegacyAminoCodec(legacyAmino)
-
-	errors.RegisterLegacyAminoCodec(legacyAmino)
 
 	ids.RegisterLegacyAminoCodec(legacyAmino)
 	baseIDs.RegisterLegacyAminoCodec(legacyAmino)
