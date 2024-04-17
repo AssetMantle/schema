@@ -1,22 +1,20 @@
 package base
 
 import (
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 var _ data.NumberData = (*NumberData)(nil)
 
 func (numberData *NumberData) ValidateBasic() error {
 	if _, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
-		return errorConstants.IncorrectFormat.Wrapf("number data value %s is not a valid integer", numberData.Value)
+		return fmt.Errorf("number data value %s is not a valid integer", numberData.Value)
 	}
 
 	return nil
@@ -38,7 +36,7 @@ func (numberData *NumberData) FromString(dataString string) (data.Data, error) {
 
 	value, ok := sdkTypes.NewIntFromString(dataString)
 	if !ok {
-		return PrototypeNumberData(), errorConstants.IncorrectFormat.Wrapf("number data value %s is not a valid integer", dataString)
+		return PrototypeNumberData(), fmt.Errorf("number data value %s is not a valid integer", dataString)
 	}
 
 	numberData.Value = value.String()

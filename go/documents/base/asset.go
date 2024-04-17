@@ -1,9 +1,7 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/documents"
 	"github.com/AssetMantle/schema/go/ids"
@@ -11,6 +9,7 @@ import (
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type asset struct {
@@ -33,7 +32,7 @@ func (asset asset) ValidateAsset() error {
 	}
 
 	if asset.GetSupply().IsNegative() || asset.GetSupply().IsZero() {
-		return errorConstants.InvalidParameter.Wrapf("supply %s is negative", asset.GetSupply().String())
+		return fmt.Errorf("supply %s is negative", asset.GetSupply().String())
 	}
 
 	return nil

@@ -1,14 +1,13 @@
 package base
 
 import (
-	"sort"
-
-	"github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/lists"
 	"github.com/AssetMantle/schema/go/lists/utilities"
 	"github.com/AssetMantle/schema/go/properties"
 	"github.com/AssetMantle/schema/go/properties/base"
+	"sort"
 )
 
 var _ lists.PropertyList = (*PropertyList)(nil)
@@ -16,13 +15,13 @@ var _ lists.PropertyList = (*PropertyList)(nil)
 func (propertyList *PropertyList) ValidateBasic() error {
 	propertyIDMap := map[string]bool{}
 
-	for _, property := range propertyList.AnyProperties {
+	for i, property := range propertyList.AnyProperties {
 		if property == nil {
-			return constants.IncorrectFormat.Wrapf("nil property")
+			return fmt.Errorf("nil property in list at index %d", i)
 		}
 
 		if _, found := propertyIDMap[property.GetID().AsString()]; found {
-			return constants.IncorrectFormat.Wrapf("duplicate property with ID: %s", property.GetID().AsString())
+			return fmt.Errorf("duplicate property with ID: %s", property.GetID().AsString())
 		} else {
 			propertyIDMap[property.GetID().AsString()] = true
 		}

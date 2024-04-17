@@ -1,10 +1,10 @@
 package base
 
 import (
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
@@ -29,19 +29,19 @@ func (maintainer maintainer) ValidateBasic() error {
 	}
 
 	if property := maintainer.GetProperty(constantProperties.IdentityIDProperty.GetID()); property == nil || !property.IsMeta() {
-		return errorConstants.IncorrectFormat.Wrapf("maintainer must have a revealed %s", constantProperties.IdentityIDProperty.GetID())
+		return fmt.Errorf("maintainer must have a revealed %s", constantProperties.IdentityIDProperty.GetID())
 	}
 
 	if property := maintainer.GetProperty(constantProperties.MaintainedClassificationIDProperty.GetID()); property == nil || !property.IsMeta() {
-		return errorConstants.IncorrectFormat.Wrapf("maintainer must have a revealed %s", constantProperties.MaintainedClassificationIDProperty.GetID())
+		return fmt.Errorf("maintainer must have a revealed %s", constantProperties.MaintainedClassificationIDProperty.GetID())
 	}
 
 	if property := maintainer.GetProperty(constantProperties.MaintainedPropertiesProperty.GetID()); property == nil || !property.IsMeta() {
-		return errorConstants.IncorrectFormat.Wrapf("maintainer must have a revealed %s", constantProperties.MaintainedPropertiesProperty.GetID())
+		return fmt.Errorf("maintainer must have a revealed %s", constantProperties.MaintainedPropertiesProperty.GetID())
 	}
 
 	if property := maintainer.GetProperty(constantProperties.PermissionsProperty.GetID()); property == nil || !property.IsMeta() {
-		return errorConstants.IncorrectFormat.Wrapf("maintainer must have a revealed %s", constantProperties.PermissionsProperty.GetID())
+		return fmt.Errorf("maintainer must have a revealed %s", constantProperties.PermissionsProperty.GetID())
 	}
 
 	return nil

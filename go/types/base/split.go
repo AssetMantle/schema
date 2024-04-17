@@ -1,9 +1,9 @@
 package base
 
 import (
+	"fmt"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/types"
 )
 
@@ -11,7 +11,7 @@ var _ types.Split = (*Split)(nil)
 
 func (split *Split) ValidateBasic() error {
 	if _, ok := sdkTypes.NewIntFromString(split.Value); !ok {
-		return constants.IncorrectFormat.Wrapf("invalid split value %s", split.Value)
+		return fmt.Errorf("invalid split value %s", split.Value)
 	}
 	return nil
 }

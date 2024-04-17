@@ -6,19 +6,17 @@ package base
 import (
 	"context"
 	"encoding/binary"
-	"github.com/AssetMantle/schema/go/types/constants"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/types"
+	"github.com/AssetMantle/schema/go/types/constants"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.Height = (*Height)(nil)
 
 func (height *Height) ValidateBasic() error {
 	if height.Value < constants.InfiniteHeight {
-		return errorConstants.IncorrectFormat.Wrapf("height value %d is out of bound", height.Value)
+		return fmt.Errorf("height value %d is out of bound", height.Value)
 	}
 	return nil
 }

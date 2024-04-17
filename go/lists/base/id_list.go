@@ -4,12 +4,11 @@
 package base
 
 import (
-	"sort"
-
-	"github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/lists"
+	"sort"
 )
 
 var _ lists.IDList = (*IDList)(nil)
@@ -24,7 +23,7 @@ func (idList *IDList) ValidateBasic() error {
 			}
 
 			if id.GetTypeID().Compare(expectedIDType) != 0 {
-				return constants.IncorrectFormat.Wrapf("id list contains unexpected id type %s", id.GetTypeID().AsString())
+				return fmt.Errorf("id list contains unexpected id type %s", id.GetTypeID().AsString())
 			}
 		}
 	}

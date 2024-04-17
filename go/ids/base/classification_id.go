@@ -2,12 +2,11 @@ package base
 
 import (
 	"bytes"
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	"strings"
 )
 
 var _ ids.ClassificationID = (*ClassificationID)(nil)
@@ -58,7 +57,7 @@ func classificationIDFromInterface(i interface{}) *ClassificationID {
 	case *ClassificationID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("Expected ClassificationID, got %T", i))
+		panic(fmt.Errorf("expected classificationID, got %T", i))
 	}
 }
 

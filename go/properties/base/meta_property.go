@@ -4,16 +4,14 @@
 package base
 
 import (
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/data/base"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 var _ properties.MetaProperty = (*MetaProperty)(nil)
@@ -37,7 +35,7 @@ func (metaProperty *MetaProperty) FromString(metaPropertyString string) (propert
 		return metaProperty, nil
 	}
 
-	return nil, errorConstants.IncorrectFormat.Wrapf("propertyID missing from metaPropertyString %s", metaPropertyString)
+	return nil, fmt.Errorf("invalid metaProperty string: %s", metaPropertyString)
 }
 func (metaProperty *MetaProperty) ValidateBasic() error {
 	if err := metaProperty.ID.ValidateBasic(); err != nil {
@@ -47,7 +45,7 @@ func (metaProperty *MetaProperty) ValidateBasic() error {
 		return err
 	}
 	if metaProperty.Data.GetTypeID().Compare(metaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", metaProperty.ID.KeyID.AsString(), metaProperty.ID.TypeID.AsString(), metaProperty.Data.GetTypeID().AsString())
+		return fmt.Errorf("property %s typeID %s does not match data type %s", metaProperty.ID.KeyID.AsString(), metaProperty.ID.TypeID.AsString(), metaProperty.Data.GetTypeID().AsString())
 	}
 	return nil
 }

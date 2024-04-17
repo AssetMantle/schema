@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/base64"
-	"sort"
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
+	"sort"
+	"strings"
 )
 
 // type hashID struct {
@@ -21,7 +20,7 @@ var _ ids.HashID = (*HashID)(nil)
 func (hashID *HashID) IsHashID() {}
 func (hashID *HashID) ValidateBasic() error {
 	if len(hashID.IDBytes) != 0 && len(hashID.IDBytes) != 32 && hashID.IDBytes != nil {
-		return errorConstants.IncorrectFormat.Wrapf("invalid hashID length")
+		return fmt.Errorf("invalid hashID length")
 	}
 	return nil
 }
@@ -69,7 +68,7 @@ func hashIDFromInterface(i interface{}) *HashID {
 	case *HashID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *HashID, got %T", i))
+		panic(fmt.Errorf("expected *HashID, got %T", i))
 	}
 }
 

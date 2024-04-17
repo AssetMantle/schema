@@ -4,12 +4,11 @@
 package base
 
 import (
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
+	"strings"
 )
 
 var _ ids.StringID = (*StringID)(nil)
@@ -19,7 +18,7 @@ func (stringID *StringID) Get() string {
 }
 func (stringID *StringID) ValidateBasic() error {
 	if !utilities.IsValidStringID(stringID.AsString()) {
-		return errorConstants.IncorrectFormat.Wrapf("regular expression check failed")
+		return fmt.Errorf("invalid stringID %s", stringID.AsString())
 	}
 	return nil
 }
@@ -62,7 +61,7 @@ func stringIDFromInterface(i interface{}) *StringID {
 	case *StringID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *StringID, got %T", i))
+		panic(fmt.Errorf("expected *StringID, got %T", i))
 	}
 }
 

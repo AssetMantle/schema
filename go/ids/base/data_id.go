@@ -5,13 +5,12 @@ package base
 
 import (
 	"bytes"
-	"strings"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"strings"
 )
 
 var _ ids.DataID = (*DataID)(nil)
@@ -36,7 +35,7 @@ func (dataID *DataID) FromString(idString string) (ids.ID, error) {
 
 	typeIDAndHashID := stringUtilities.SplitCompositeIDString(idString)
 	if len(typeIDAndHashID) != 2 {
-		return PrototypeDataID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")
+		return PrototypeDataID(), fmt.Errorf("invalid dataID string %s", idString)
 	} else if typeID, err := PrototypeStringID().FromString(typeIDAndHashID[0]); err != nil {
 		return PrototypeDataID(), err
 	} else if hashID, err := PrototypeHashID().FromString(typeIDAndHashID[1]); err != nil {
@@ -84,13 +83,13 @@ func dataIDFromInterface(i interface{}) *DataID {
 	case *DataID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *DataID, got %T", i))
+		panic(fmt.Errorf("expected *DataID, got %T", i))
 	}
 }
 
 func GenerateDataID(data data.Data) ids.DataID {
 	if data == nil {
-		panic(errorConstants.MetaDataError.Wrapf("data is nil"))
+		panic(fmt.Errorf("data is nil"))
 	}
 
 	return &DataID{

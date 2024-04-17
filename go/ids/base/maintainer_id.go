@@ -2,12 +2,11 @@ package base
 
 import (
 	"bytes"
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	"strings"
 )
 
 var _ ids.MaintainerID = (*MaintainerID)(nil)
@@ -58,7 +57,7 @@ func maintainerIDFromInterface(i interface{}) *MaintainerID {
 	case *MaintainerID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *MaintainerID, got %T", i))
+		panic(fmt.Errorf("expected *MaintainerID, got %T", i))
 	}
 }
 func NewMaintainerID(maintainerClassificationID ids.ClassificationID, immutables qualified.Immutables) ids.MaintainerID {

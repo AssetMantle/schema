@@ -1,18 +1,17 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	baseData "github.com/AssetMantle/schema/go/data/base"
 	"github.com/AssetMantle/schema/go/documents"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/properties"
 	baseProperties "github.com/AssetMantle/schema/go/properties/base"
 	"github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
 	"github.com/AssetMantle/schema/go/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type identity struct {
@@ -27,7 +26,7 @@ func (identity identity) ValidateBasic() error {
 	}
 
 	if len(identity.GetAuthentication().Get()) > 0 && identity.GetAuthentication().Get()[0].Get().GetTypeID().Compare(baseData.PrototypeAccAddressData().GetTypeID()) != 0 {
-		return errorConstants.MetaDataError.Wrapf("authentication property must contain a list of addresses only")
+		return fmt.Errorf("authentication data type %s does not conform to expected type %s for list", identity.GetAuthentication().Get()[0].Get().GetTypeID().AsString(), baseData.PrototypeAccAddressData().GetTypeID().AsString())
 	}
 
 	return nil

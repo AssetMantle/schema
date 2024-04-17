@@ -4,7 +4,7 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"reflect"
@@ -18,7 +18,7 @@ func Test_IdentityIDValidateBasic(t *testing.T) {
 		want error
 	}{
 		{"+ve", &IdentityID{&HashID{testBytes}}, nil},
-		{"-ve", &IdentityID{&HashID{[]byte("test")}}, errorConstants.IncorrectFormat.Wrapf("invalid hashID length")},
+		{"-ve", &IdentityID{&HashID{[]byte("test")}}, fmt.Errorf("invalid hashID length")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -59,7 +59,7 @@ func Test_IdentityIDFromString(t *testing.T) {
 	}{
 		{"+ve", testValidBase64String, &IdentityID{&HashID{testBytes}}, nil},
 		{"+ve", "", &IdentityID{&HashID{[]byte{}}}, nil},
-		{"+ve", "test", &IdentityID{&HashID{[]byte{}}}, errorConstants.IncorrectFormat.Wrapf("invalid hashID length")},
+		{"+ve", "test", &IdentityID{&HashID{[]byte{}}}, fmt.Errorf("invalid hashID length")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

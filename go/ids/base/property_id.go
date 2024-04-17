@@ -5,12 +5,11 @@ package base
 
 import (
 	"bytes"
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	stringUtilities "github.com/AssetMantle/schema/go/ids/utilities"
+	"strings"
 )
 
 var _ ids.PropertyID = (*PropertyID)(nil)
@@ -35,7 +34,7 @@ func (propertyID *PropertyID) FromString(idString string) (ids.ID, error) {
 
 	keyIDAndTypeID := stringUtilities.SplitCompositeIDString(idString)
 	if len(keyIDAndTypeID) != 2 {
-		return PrototypePropertyID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")
+		return PrototypePropertyID(), fmt.Errorf("invalid propertyID string %s", idString)
 	} else if keyID, err := PrototypeStringID().FromString(keyIDAndTypeID[0]); err != nil {
 		return PrototypePropertyID(), err
 	} else if typeID, err := PrototypeStringID().FromString(keyIDAndTypeID[1]); err != nil {

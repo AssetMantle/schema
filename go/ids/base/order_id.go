@@ -2,12 +2,11 @@ package base
 
 import (
 	"bytes"
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	"strings"
 )
 
 var _ ids.OrderID = (*OrderID)(nil)
@@ -58,7 +57,7 @@ func orderIDFromInterface(i interface{}) *OrderID {
 	case *OrderID:
 		return value
 	default:
-		panic(errorConstants.IncorrectFormat.Wrapf("expected *OrderID, got %T", i))
+		panic(fmt.Errorf("expected *OrderID, got %T", i))
 	}
 }
 

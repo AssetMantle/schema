@@ -5,24 +5,22 @@ package base
 
 import (
 	"bytes"
-	"sort"
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/data/utilities"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"sort"
+	"strings"
 )
 
 var _ data.ListData = (*ListData)(nil)
 
 func (listData *ListData) ValidateBasic() error {
 	if len(listData.Get()) > dataConstants.MaxListLength {
-		return errorConstants.IncorrectFormat.Wrapf("list length %d exceeds max length %d", len(listData.Get()), dataConstants.MaxListLength)
+		return fmt.Errorf("list length %d exceeds max length %d", len(listData.Get()), dataConstants.MaxListLength)
 	}
 
 	return listData.ValidateWithoutLengthCheck()
@@ -33,11 +31,11 @@ func (listData *ListData) ValidateWithoutLengthCheck() error {
 
 		for _, anyListableData := range listData.Value {
 			if err := anyListableData.ValidateBasic(); err != nil {
-				return errorConstants.IncorrectFormat.Wrapf("data %s invalid: %s", anyListableData.AsString(), err)
+				return fmt.Errorf("invalid data in list %s: %s", anyListableData.AsString(), err)
 			}
 
 			if anyListableData.GetTypeID().Compare(expectedTypeID) != 0 {
-				return errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", anyListableData.GetTypeID().AsString(), expectedTypeID.AsString())
+				return fmt.Errorf("data type %s does not conform to expected type %s for list", anyListableData.GetTypeID().AsString(), expectedTypeID.AsString())
 			}
 		}
 	}
@@ -80,14 +78,14 @@ func (listData *ListData) FromString(dataString string) (data.Data, error) {
 		if datum, err := PrototypeAnyData().FromString(datumString); err != nil {
 			return PrototypeListData(), err
 		} else if listableData, ok := datum.ToAnyData().Get().(data.ListableData); !ok {
-			return PrototypeListData(), errorConstants.IncorrectFormat.Wrapf("data type %s is not listable", datum.GetTypeID().AsString())
+			return PrototypeListData(), fmt.Errorf("data type %s cannot be put into a list", datum.GetTypeID().AsString())
 		} else {
 			dataList[i] = listableData
 		}
 		if i == 0 {
 			expectedTypeID = dataList[i].GetTypeID()
 		} else if dataList[i].GetTypeID().Compare(expectedTypeID) != 0 {
-			return PrototypeListData(), errorConstants.IncorrectFormat.Wrapf("data type %s does not conform to expected type %s for list", dataList[i].GetTypeID().AsString(), expectedTypeID.AsString())
+			return PrototypeListData(), fmt.Errorf("data type %s does not conform to expected type %s for list", dataList[i].GetTypeID().AsString(), expectedTypeID.AsString())
 		}
 	}
 

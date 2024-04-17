@@ -4,7 +4,7 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
@@ -20,7 +20,7 @@ func Test_SplitIDValidateBasic(t *testing.T) {
 		want error
 	}{
 		{"+ve", &SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{testBytes}}}, nil},
-		{"-ve", &SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{[]byte("asda")}}}, errorConstants.IncorrectFormat.Wrapf("invalid hashID length")},
+		{"-ve", &SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{[]byte("asda")}}}, fmt.Errorf("invalid hashID length")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

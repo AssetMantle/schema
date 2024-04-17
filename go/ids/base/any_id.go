@@ -1,11 +1,10 @@
 package base
 
 import (
-	"strings"
-
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
+	"strings"
 )
 
 type idGetter interface {
@@ -92,7 +91,7 @@ func (anyID *AnyID) FromString(idString string) (ids.ID, error) {
 		case PrototypeStringID().GetTypeID().AsString():
 			id, err = PrototypeStringID().FromString(idValueString)
 		default:
-			id, err = nil, errorConstants.IncorrectFormat.Wrapf("%s type identifier is not recognised", idTypeString)
+			id, err = nil, fmt.Errorf("%s type identifier is not recognised", idTypeString)
 		}
 
 		if err != nil {
@@ -106,7 +105,7 @@ func (anyID *AnyID) FromString(idString string) (ids.ID, error) {
 		return PrototypeAnyID(), nil
 	}
 
-	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
+	return nil, fmt.Errorf("type identifier is missing")
 }
 func (anyID *AnyID) AsString() string {
 	return joinIDTypeAndValueStrings(anyID.Impl.(idGetter).get().GetTypeID().AsString(), anyID.Impl.(idGetter).get().AsString())

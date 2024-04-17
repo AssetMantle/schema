@@ -2,17 +2,15 @@ package base
 
 import (
 	"bytes"
-	"net/url"
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
 	"github.com/AssetMantle/schema/go/data/utilities"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"net/url"
+	"strings"
 )
 
 var _ data.LinkedData = (*LinkedData)(nil)
@@ -28,14 +26,14 @@ func (linkedData *LinkedData) ValidateBasic() error {
 
 	if linkedData.GetServiceEndpoint() != "" || linkedData.GetExtensionID().Get() != "" {
 		if !dataConstants.IsValidFileExtension(linkedData.GetExtensionID().Get()) {
-			return errorConstants.IncorrectFormat.Wrapf("invalid extension ID: %s", linkedData.GetExtensionID().Get())
+			return fmt.Errorf("invalid extension ID: %s", linkedData.GetExtensionID().Get())
 		}
 
 		if URL, err := url.Parse(linkedData.GetServiceEndpoint()); err != nil || URL.Scheme == "" || URL.Host == "" {
 			if err != nil {
-				return errorConstants.MetaDataError.Wrapf("invalid service endpoint: %s : %s", linkedData.GetServiceEndpoint(), err.Error())
+				return fmt.Errorf("invalid service endpoint: %s : %s", linkedData.GetServiceEndpoint(), err.Error())
 			} else {
-				return errorConstants.MetaDataError.Wrapf("invalid service endpoint: %s : scheme or host is missing", linkedData.GetServiceEndpoint())
+				return fmt.Errorf("invalid service endpoint: %s : scheme or host is missing", linkedData.GetServiceEndpoint())
 			}
 		}
 	}
@@ -68,22 +66,22 @@ func (*LinkedData) FromString(dataString string) (data.Data, error) {
 
 	dataStringList := utilities.SplitCompositeDataString(dataString, 3)
 	if len(dataStringList) != 3 {
-		return PrototypeLinkedData(), errorConstants.IncorrectFormat.Wrapf("linked data is either missing resource ID, extension ID, or service endpoint: %s", dataString)
+		return PrototypeLinkedData(), fmt.Errorf("linked data is either missing resource ID, extension ID, or service endpoint: %s", dataString)
 	}
 
 	resourceID, err := baseIDs.PrototypeHashID().FromString(dataStringList[0])
 	if err != nil {
-		return PrototypeLinkedData(), errorConstants.IncorrectFormat.Wrapf("invalid resource ID: %s: %s", dataStringList[0], err.Error())
+		return PrototypeLinkedData(), fmt.Errorf("invalid resource ID: %s: %s", dataStringList[0], err.Error())
 	}
 
 	extensionID, err := baseIDs.PrototypeStringID().FromString(dataStringList[1])
 	if err != nil {
-		return PrototypeLinkedData(), errorConstants.IncorrectFormat.Wrapf("invalid extension ID: %s: %s", dataStringList[1], err.Error())
+		return PrototypeLinkedData(), fmt.Errorf("invalid extension ID: %s: %s", dataStringList[1], err.Error())
 	}
 
 	linkedData := NewLinkedData(resourceID.(ids.HashID), extensionID.(ids.StringID), dataStringList[2])
 	if err := linkedData.ValidateBasic(); err != nil {
-		return PrototypeLinkedData(), errorConstants.IncorrectFormat.Wrapf("invalid linked data: %s: %s", dataString, err.Error())
+		return PrototypeLinkedData(), fmt.Errorf("invalid linked data: %s: %s", dataString, err.Error())
 	}
 
 	return linkedData, nil

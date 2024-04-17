@@ -4,7 +4,7 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
@@ -20,7 +20,7 @@ func Test_DataIDValidateBasic(t *testing.T) {
 		want error
 	}{
 		{"+ve", &DataID{&StringID{"S"}, &HashID{testBytes}}, nil},
-		{"-ve", &DataID{&StringID{"S"}, &HashID{[]byte("jhavsjh")}}, errorConstants.IncorrectFormat.Wrapf("invalid hashID length")},
+		{"-ve", &DataID{&StringID{"S"}, &HashID{[]byte("jhavsjh")}}, fmt.Errorf("invalid hashID length")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -61,7 +61,7 @@ func Test_DataIDFromString(t *testing.T) {
 	}{
 		{"+ve", strings.Join([]string{"S", testValidBase64URLString}, utilities.IDSeparator), &DataID{&StringID{"S"}, &HashID{testBytes}}, nil},
 		{"+ve", ".", PrototypeDataID(), nil},
-		{"+ve", "test", PrototypeDataID(), errorConstants.IncorrectFormat.Wrapf("expected composite id")},
+		{"+ve", "test", PrototypeDataID(), fmt.Errorf("expected composite id")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

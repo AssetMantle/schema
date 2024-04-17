@@ -4,7 +4,7 @@
 package base
 
 import (
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
@@ -63,7 +63,7 @@ func Test_PropertyIDFromString(t *testing.T) {
 	}{
 		{"+ve", strings.Join([]string{"keyID", "typeID"}, utilities.IDSeparator), &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, nil},
 		{"+ve", "", &PropertyID{&StringID{}, &StringID{}}, nil},
-		{"+ve", "test", &PropertyID{&StringID{}, &StringID{}}, errorConstants.IncorrectFormat.Wrapf("expected composite id")},
+		{"+ve", "test", &PropertyID{&StringID{}, &StringID{}}, fmt.Errorf("expected composite id")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -1,15 +1,14 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/documents"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
 	constantProperties "github.com/AssetMantle/schema/go/properties/constants"
 	"github.com/AssetMantle/schema/go/qualified"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type classification struct {
@@ -24,7 +23,7 @@ func (classification classification) ValidateBasic() error {
 	}
 
 	if property := classification.GetProperty(constantProperties.BondAmountProperty.GetID()); property != nil && !property.IsMeta() {
-		return errorConstants.IncorrectFormat.Wrapf("classification must have a revealed %s", constantProperties.IdentityIDProperty.GetID())
+		return fmt.Errorf("classification must have a revealed %s", constantProperties.BondAmountProperty.GetID())
 	}
 
 	return nil

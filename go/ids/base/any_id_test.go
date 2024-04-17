@@ -5,7 +5,7 @@ package base
 
 import (
 	"encoding/base64"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
+	"fmt"
 	"github.com/AssetMantle/schema/go/ids"
 	"github.com/AssetMantle/schema/go/ids/constants"
 	"github.com/AssetMantle/schema/go/ids/utilities"
@@ -70,7 +70,7 @@ func Test_AnyIDFromString(t *testing.T) {
 		{"+ve", arg{constants.SplitIDType, strings.Join([]string{testValidBase64String, testValidBase64String}, utilities.IDSeparator)}, (&SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{testBytes}}}).ToAnyID(), nil},
 		{"+ve", arg{constants.StringIDType, testValidBase64String}, (&StringID{testValidBase64String}).ToAnyID(), nil},
 		{"+ve", arg{"", ""}, &AnyID{}, nil},
-		{"-ve", arg{"unknown", ""}, nil, errorConstants.IncorrectFormat.Wrapf("unknown type identifier is not recognised")},
+		{"-ve", arg{"unknown", ""}, nil, fmt.Errorf("unknown type identifier is not recognised")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

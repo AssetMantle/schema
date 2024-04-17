@@ -4,14 +4,13 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	"github.com/AssetMantle/schema/go/data/base"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	"github.com/AssetMantle/schema/go/properties"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ properties.MesaProperty = (*MesaProperty)(nil)
@@ -24,7 +23,7 @@ func (mesaProperty *MesaProperty) ValidateBasic() error {
 		return err
 	}
 	if mesaProperty.DataID.TypeID.Compare(mesaProperty.ID.TypeID) != 0 {
-		return errorConstants.IncorrectFormat.Wrapf("property %s typeID %s does not match data type %s", mesaProperty.ID.KeyID.AsString(), mesaProperty.ID.TypeID.AsString(), mesaProperty.DataID.TypeID.AsString())
+		return fmt.Errorf("property %s typeID %s does not match data type %s", mesaProperty.ID.KeyID.AsString(), mesaProperty.ID.TypeID.AsString(), mesaProperty.DataID.TypeID.AsString())
 	}
 	return nil
 }

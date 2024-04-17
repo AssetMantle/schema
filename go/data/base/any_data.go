@@ -1,9 +1,9 @@
 package base
 
 import (
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -82,7 +82,7 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 			case PrototypeStringData().GetTypeID().AsString():
 				Data, err = PrototypeStringData().FromString(dataValueString)
 			default:
-				Data, err = nil, errorConstants.IncorrectFormat.Wrapf("data type %s identifier is not recognized", dataTypeString)
+				Data, err = nil, fmt.Errorf("data type %s identifier is not recognized", dataTypeString)
 			}
 		}
 		if err != nil {
@@ -96,7 +96,7 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 		return PrototypeAnyData(), nil
 	}
 
-	return nil, errorConstants.IncorrectFormat.Wrapf("type identifier is missing")
+	return nil, fmt.Errorf("type identifier is missing")
 }
 func (x *AnyData) Get() data.Data {
 	return x.Impl.(dataGetter).get()

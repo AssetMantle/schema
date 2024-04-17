@@ -4,24 +4,22 @@
 package base
 
 import (
-	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
+	"fmt"
 	"github.com/AssetMantle/schema/go/data"
 	dataConstants "github.com/AssetMantle/schema/go/data/constants"
-	errorConstants "github.com/AssetMantle/schema/go/errors/constants"
 	"github.com/AssetMantle/schema/go/ids"
 	baseIDs "github.com/AssetMantle/schema/go/ids/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"strings"
 )
 
 var _ data.DecData = (*DecData)(nil)
 
 func (decData *DecData) ValidateBasic() error {
 	if dec, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
-		return errorConstants.IncorrectFormat.Wrapf("dec data value %s is not a valid decimal", decData.Value)
+		return fmt.Errorf("dec data value %s is not a valid decimal", decData.Value)
 	} else if !sdkTypes.ValidSortableDec(dec) {
-		return errorConstants.IncorrectFormat.Wrapf("dec value %s out of allowed range of -%s to %s", decData.Value, sdkTypes.MaxSortableDec.String(), sdkTypes.MaxSortableDec.String())
+		return fmt.Errorf("dec value %s out of allowed range of -%s to %s", decData.Value, sdkTypes.MaxSortableDec.String(), sdkTypes.MaxSortableDec.String())
 	}
 
 	return nil
