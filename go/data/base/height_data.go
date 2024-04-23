@@ -63,7 +63,7 @@ func (heightData *HeightData) GetTypeID() ids.StringID {
 	return dataConstants.HeightDataTypeID
 }
 func (heightData *HeightData) ZeroValue() data.Data {
-	return NewHeightData(baseTypes.NewHeight(-1))
+	return NewHeightData(baseTypes.NewHeight(0))
 }
 func (heightData *HeightData) GenerateHashID() ids.HashID {
 	if heightData.Compare(heightData.ZeroValue().(data.ListableData)) == 0 {
