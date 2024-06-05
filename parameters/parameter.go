@@ -4,7 +4,7 @@
 package parameters
 
 import (
-	"github.com/gogo/protobuf/proto"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/properties"
