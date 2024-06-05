@@ -32,8 +32,8 @@ install-buf-dependencies:
 
 protobuf-generate-go:
 	@cd proto; buf generate --template buf.gen.yaml
-	@cp -r go/assetmantle/schema/* ./go
-	@rm -rf go/assetmantle
+	@cp -r assetmantle/schema/* ./
+	@rm -rf assetmantle
 
 all: build test lintci
 
