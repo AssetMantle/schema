@@ -120,14 +120,20 @@ func Test_HeightDataGetID(t *testing.T) {
 		args data.HeightData
 		want ids.DataID
 	}{
-		{"+ve", NewHeightData(base.NewHeight(10)), &baseIDs.DataID{
-			TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
-			HashID: baseIDs.GenerateHashID(NewHeightData(base.NewHeight(10)).Bytes()).(*baseIDs.HashID),
-		}},
-		{"+ve", &HeightData{&base.Height{-1}}, &baseIDs.DataID{
-			TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
-			HashID: baseIDs.GenerateHashID().(*baseIDs.HashID),
-		}},
+		{"+ve",
+			NewHeightData(base.NewHeight(10)),
+			&baseIDs.DataID{
+				TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
+				HashID: baseIDs.GenerateHashID(NewHeightData(base.NewHeight(10)).Bytes()).(*baseIDs.HashID),
+			},
+		},
+		{"+ve",
+			&HeightData{&base.Height{-1}},
+			&baseIDs.DataID{
+				TypeID: idsConstants.HeightDataTypeID.(*baseIDs.StringID),
+				HashID: baseIDs.GenerateHashID(NewHeightData(base.NewHeight(-1)).Bytes()).(*baseIDs.HashID),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -183,7 +189,7 @@ func Test_HeightDataZeroValue(t *testing.T) {
 		args data.HeightData
 		want data.Data
 	}{
-		{"+ve", NewHeightData(base.NewHeight(10)), &HeightData{&base.Height{-1}}},
+		{"+ve", NewHeightData(base.NewHeight(10)), &HeightData{&base.Height{0}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
