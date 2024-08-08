@@ -261,10 +261,10 @@ func Test_listData_AsString(t *testing.T) {
 		args data.ListData
 		want string
 	}{
-		{"+ve", testListData, "Data1,,Data2"},
-		{"+ve", NewListData(NewHeightData(base.NewHeight(20)), NewHeightData(base.NewHeight(11))), "11,,20"},
-		{"+ve", NewListData(NewStringData("")), ""},
-		{"+ve", NewListData(NewHeightData(base.NewHeight(-1))), "-1"},
+		{"+ve", testListData, "S|Data1,,S|Data2"},
+		{"+ve", NewListData(NewHeightData(base.NewHeight(20)), NewHeightData(base.NewHeight(11))), "H|11,,H|20"},
+		{"+ve", NewListData(NewStringData("")), "S|"},
+		{"+ve", NewListData(NewHeightData(base.NewHeight(-1))), "H|-1"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
