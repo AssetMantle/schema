@@ -164,6 +164,7 @@ func anyPropertiesToProperties(anyProperties ...*base.AnyProperty) []properties.
 
 	return returnProperties
 }
+
 func propertiesToAnyProperties(properties ...properties.Property) []*base.AnyProperty {
 	anyProperties := make([]*base.AnyProperty, 0)
 

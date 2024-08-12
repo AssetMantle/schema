@@ -61,7 +61,7 @@ func Test_DataIDFromString(t *testing.T) {
 	}{
 		{"+ve", strings.Join([]string{"S", testValidBase64URLString}, utilities.IDSeparator), &DataID{&StringID{"S"}, &HashID{testBytes}}, nil},
 		{"+ve", ".", PrototypeDataID(), nil},
-		{"+ve", "test", PrototypeDataID(), fmt.Errorf("expected composite id")},
+		{"+ve", "test", PrototypeDataID(), fmt.Errorf("invalid dataID string test")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

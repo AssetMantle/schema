@@ -21,6 +21,8 @@ func (stringID *StringID) ValidateBasic() error {
 		return fmt.Errorf("string ID is empty")
 	}
 
+	fmt.Println(len(stringID.AsString()))
+
 	if !utilities.IsValidStringID(stringID.AsString()) {
 		return fmt.Errorf("invalid stringID %s", stringID.AsString())
 	}

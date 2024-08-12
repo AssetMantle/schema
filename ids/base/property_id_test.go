@@ -63,7 +63,7 @@ func Test_PropertyIDFromString(t *testing.T) {
 	}{
 		{"+ve", strings.Join([]string{"keyID", "typeID"}, utilities.IDSeparator), &PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}, nil},
 		{"+ve", "", &PropertyID{&StringID{}, &StringID{}}, nil},
-		{"+ve", "test", &PropertyID{&StringID{}, &StringID{}}, fmt.Errorf("expected composite id")},
+		{"+ve", "test", &PropertyID{&StringID{}, &StringID{}}, fmt.Errorf("invalid propertyID string test")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

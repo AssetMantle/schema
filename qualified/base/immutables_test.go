@@ -26,7 +26,7 @@ func TestNewImmutables(t *testing.T) {
 		args args
 		want qualified.Immutables
 	}{
-		{"nil", args{}, &Immutables{}},
+		{"nil", args{}, &Immutables{PropertyList: &base.PropertyList{}}},
 		{"+ve empty list", args{base.NewPropertyList()}, &Immutables{PropertyList: &base.PropertyList{}}},
 		{"+ve", args{testImmutablePropertyList}, &Immutables{testImmutablePropertyList.(*base.PropertyList)}},
 	}
