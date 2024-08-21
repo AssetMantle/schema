@@ -76,8 +76,6 @@ func (splitID *SplitID) Bytes() []byte {
 		splitID.AssetID.Bytes(),
 		splitID.OwnerID.Bytes()...)
 }
-
-// TODO optimize this
 func (*SplitID) MustGetFromPrefixedStoreKeyBytes(prefixBytes, storeKeyBytes []byte) ids.SplitID {
 	keyBytes := bytes.TrimPrefix(storeKeyBytes, prefixBytes)
 

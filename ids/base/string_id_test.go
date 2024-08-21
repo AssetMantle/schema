@@ -18,7 +18,6 @@ func Test_StringIDValidateBasic(t *testing.T) {
 	}{
 		{"+ve", &StringID{"test"}, false},
 		{"+ve", &StringID{""}, false},
-		// TODO: Regex always throwing true in testing
 		{"-ve", &StringID{"*&^%$#"}, true},
 	}
 	for _, tt := range tests {
