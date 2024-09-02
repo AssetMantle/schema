@@ -4,12 +4,11 @@
 package constants
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	baseData "github.com/AssetMantle/schema/data/base"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
 	"github.com/AssetMantle/schema/properties/base"
 	baseTypes "github.com/AssetMantle/schema/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var (

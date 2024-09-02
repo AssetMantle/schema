@@ -1,11 +1,10 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/ids"
 	"github.com/AssetMantle/schema/properties"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type getter interface {
