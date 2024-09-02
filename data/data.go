@@ -4,9 +4,8 @@
 package data
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/ids"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 // TODO URI and PropertyID Data type

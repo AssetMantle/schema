@@ -1,5 +1,6 @@
 syntax = "proto3";
 package AssetMantle.schema.data.base;
+
 import "gogoproto/gogo.proto";
 
 message DecData{

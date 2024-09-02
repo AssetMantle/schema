@@ -1,9 +1,8 @@
 package lists
 
 import (
-	"github.com/cosmos/gogoproto/proto"
-
 	"github.com/AssetMantle/schema/parameters"
+	"github.com/cosmos/gogoproto/proto"
 )
 
 type ParameterList interface {

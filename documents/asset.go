@@ -4,9 +4,8 @@
 package documents
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/AssetMantle/schema/types"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Asset interface {

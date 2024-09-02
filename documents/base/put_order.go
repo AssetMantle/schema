@@ -1,8 +1,6 @@
 package base
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-
 	baseData "github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/documents"
 	"github.com/AssetMantle/schema/ids"
@@ -13,6 +11,7 @@ import (
 	baseQualified "github.com/AssetMantle/schema/qualified/base"
 	"github.com/AssetMantle/schema/types"
 	"github.com/AssetMantle/schema/types/base"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ documents.PutOrder = (*order)(nil)
