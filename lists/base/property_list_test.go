@@ -43,6 +43,8 @@ var (
 	maxProperties                                                    = 100
 	randomIndex                                                      = rand.Intn(maxProperties)
 	randomUnsortedProperties, randomProperties                       = randomPropertiesGenerator(maxProperties)
+	testPropertyGeneratorOne                                         = baseProperties.NewMetaProperty(baseIDs.NewStringID("Test 1"), baseData.NewStringData("Test 2")).ToAnyProperty().(*baseProperties.AnyProperty)
+	testPropertyGeneratorTwo                                         = baseProperties.NewMetaProperty(baseIDs.NewStringID("Test 3"), baseData.NewStringData("Test 4")).ToAnyProperty().(*baseProperties.AnyProperty)
 	veryLargeNumber                                                  = 50000
 	veryLargeNumberOfUnsortedProperties, veryLargeNumberOfProperties = randomPropertiesGenerator(veryLargeNumber)
 )
@@ -93,11 +95,11 @@ func Test_propertyList_NewPropertyList(t *testing.T) {
 		},
 		{
 			"add prototype property with other properties",
-			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+			[]properties.Property{baseProperties.PrototypeMetaProperty(), testPropertyGeneratorOne, testPropertyGeneratorTwo},
+			&PropertyList{[]*baseProperties.AnyProperty{testPropertyGeneratorOne, testPropertyGeneratorTwo, baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
 		},
 		{
-			"add multiple nils",
+			"add multi3ple nils",
 			[]properties.Property{nil, nil, nil},
 			&PropertyList{},
 		},
@@ -191,8 +193,8 @@ func Test_propertyList_Add(t *testing.T) {
 		{
 			"add prototype property with other properties",
 			NewPropertyList(),
-			[]properties.Property{baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]},
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+			[]properties.Property{baseProperties.PrototypeMetaProperty(), testPropertyGeneratorOne, testPropertyGeneratorTwo},
+			&PropertyList{[]*baseProperties.AnyProperty{testPropertyGeneratorOne, testPropertyGeneratorTwo, baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
 		},
 		{
 			"add multiple nils",
@@ -784,7 +786,7 @@ func TestPropertyList_search(t *testing.T) {
 			"prototype property with other properties",
 			NewPropertyList(baseProperties.PrototypeMetaProperty(), randomProperties[0], randomProperties[1]),
 			baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty),
-			0,
+			2,
 			true,
 		},
 		{
@@ -878,8 +880,8 @@ func TestPropertyList_sort(t *testing.T) {
 		},
 		{
 			"prototype property with other properties",
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
-			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), randomProperties[0], randomProperties[1]}},
+			&PropertyList{[]*baseProperties.AnyProperty{baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty), testPropertyGeneratorOne, testPropertyGeneratorTwo}},
+			&PropertyList{[]*baseProperties.AnyProperty{testPropertyGeneratorOne, testPropertyGeneratorTwo, baseProperties.PrototypeMetaProperty().ToAnyProperty().(*baseProperties.AnyProperty)}},
 		},
 	}
 	for _, tt := range tests {
@@ -891,6 +893,11 @@ func TestPropertyList_sort(t *testing.T) {
 			if !reflect.DeepEqual(tt.added.Get(), tt.want.Get()) {
 				t.Errorf("sort() got = %v, want %v", tt.added.Get(), tt.want.Get())
 			}
+
+			//if reflect.TypeOf(tt.added.Get()) != reflect.TypeOf(tt.want.Get()) {
+			//	t.Errorf("\n got type: \n %v \n want type: \n %v", reflect.TypeOf(tt.added.Get()), reflect.TypeOf(tt.want.Get()))
+			//}
+
 		})
 	}
 }

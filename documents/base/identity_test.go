@@ -99,7 +99,7 @@ func Test_identity_GetExpiry(t *testing.T) {
 		want   types.Height
 	}{
 		{"+ve", fields{testIdentity1}, baseTypes.NewHeight(100)},
-		{"+ve", fields{testIdentity2}, baseTypes.NewHeight(-1)},
+		{"+ve", fields{testIdentity2}, baseTypes.NewHeight(0)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

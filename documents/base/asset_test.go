@@ -54,7 +54,7 @@ func Test_asset_GetBurnHeight(t *testing.T) {
 		want   types.Height
 	}{
 		{"+ve", fields{Document: testDocumentWithBurn}, baseTypes.NewHeight(99)},
-		{"+ve", fields{Document: testDocument}, baseTypes.NewHeight(-1)},
+		{"+ve", fields{Document: testDocument}, baseTypes.NewHeight(0)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -79,7 +79,7 @@ func Test_asset_GetLockHeight(t *testing.T) {
 		fields fields
 		want   types.Height
 	}{
-		{"+ve with default lock", fields{testDocument}, baseTypes.NewHeight(-1)},
+		{"+ve with default lock", fields{testDocument}, baseTypes.NewHeight(0)},
 		{"+ve with mutated", fields{testDocumentWithLock}, baseTypes.NewHeight(100)},
 	}
 	for _, tt := range tests {

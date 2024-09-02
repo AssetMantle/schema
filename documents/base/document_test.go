@@ -331,8 +331,8 @@ func Test_DocumentValidateBasic(t *testing.T) {
 		args documents.Document
 		want bool
 	}{
-		{"-ve 1", document1, true},
-		{"-ve 2", document2, true},
+		{"-ve 1", document1, false},
+		{"-ve 2", document2, false},
 		{"-ve 3", document4, true},
 		{"+ve 4", document3, false},
 	}

@@ -16,6 +16,7 @@ import (
 
 var (
 	testValidBase64String    = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
+	testStringID             = "testStringID"
 	testValidBase64URLString = "nBuFnhfmBVznCR9vS5/V1mqZim8aclm1jBlqR8NGU94="
 	testBytes, _             = base64.StdEncoding.DecodeString(testValidBase64String)
 )
@@ -68,7 +69,7 @@ func Test_AnyIDFromString(t *testing.T) {
 		{"+ve", arg{constants.OrderIDType, testValidBase64String}, (&OrderID{&HashID{testBytes}}).ToAnyID(), nil},
 		{"+ve", arg{constants.PropertyIDType, strings.Join([]string{"keyID", "typeID"}, utilities.IDSeparator)}, (&PropertyID{&StringID{"keyID"}, &StringID{"typeID"}}).ToAnyID(), nil},
 		{"+ve", arg{constants.SplitIDType, strings.Join([]string{testValidBase64String, testValidBase64String}, utilities.IDSeparator)}, (&SplitID{&AssetID{&HashID{testBytes}}, &IdentityID{&HashID{testBytes}}}).ToAnyID(), nil},
-		{"+ve", arg{constants.StringIDType, testValidBase64String}, (&StringID{testValidBase64String}).ToAnyID(), nil},
+		{"+ve", arg{constants.StringIDType, testStringID}, (&StringID{testStringID}).ToAnyID(), nil},
 		{"+ve", arg{"", ""}, &AnyID{}, nil},
 		{"-ve", arg{"unknown", ""}, nil, fmt.Errorf("unknown type identifier is not recognised")},
 	}

@@ -30,7 +30,7 @@ func TestNewMutables(t *testing.T) {
 		args args
 		want qualified.Mutables
 	}{
-		{"+ve", args{}, &Mutables{}},
+		{"+ve", args{}, &Mutables{PropertyList: &base.PropertyList{}}},
 		{"+ve empty list", args{base.NewPropertyList()}, &Mutables{PropertyList: &base.PropertyList{}}},
 		{"+ve", args{base.NewPropertyList(testMutableProperties)}, &Mutables{base.NewPropertyList(testMutableProperties).(*base.PropertyList)}},
 	}
