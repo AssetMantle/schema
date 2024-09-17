@@ -1,6 +1,6 @@
 module github.com/AssetMantle/schema
 
-go 1.21.1
+go 1.23
 
 require (
 	github.com/cosmos/cosmos-sdk v0.47.11
