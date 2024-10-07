@@ -15,7 +15,7 @@ export GO111MODULE = on
 
 protobuf-generate-go:
 	@echo "Installing protoc-gen-gocosmos..."
-	@go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@latest || { echo "Failed to install protoc-gen-gocosmos"; exit 1; }
+	@go install -mod=readonly github.com/cosmos/gogoproto/protoc-gen-gocosmos@latest || { echo "Failed to install protoc-gen-gocosmos"; exit 1; }
 	@echo "Deleting old proto-generated Go files..."
 	@find . -name '*.pb.go' -delete || { echo "Failed to delete old proto-generated Go files"; exit 1; }
 	@echo "Generating protobuf files..."
