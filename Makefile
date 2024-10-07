@@ -14,10 +14,17 @@ GRPC_GATEWAY_VERSION=1.16.0
 export GO111MODULE = on
 
 protobuf-generate-go:
-	@go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@latest
-	@cd proto; buf generate --template buf.gen.yaml
-	@cp -r github.com/AssetMantle/schema/* ./
-	@rm -rf github.com
+	@echo "Installing protoc-gen-gocosmos..."
+	@go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@latest || { echo "Failed to install protoc-gen-gocosmos"; exit 1; }
+	@echo "Deleting old proto-generated Go files..."
+	@find . -name '*.pb.go' -delete || { echo "Failed to delete old proto-generated Go files"; exit 1; }
+	@echo "Generating protobuf files..."
+	@cd proto && buf generate --template buf.gen.yaml || { echo "Failed to generate protobuf files"; exit 1; }
+	@echo "Copying generated files..."
+	@cp -r github.com/AssetMantle/schema/* ./ || { echo "Failed to copy generated files"; exit 1; }
+	@echo "Cleaning up..."
+	@rm -rf github.com || { echo "Failed to clean up"; exit 1; }
+	@echo "Protobuf generation completed successfully."
 
 all: build test lintci
 
