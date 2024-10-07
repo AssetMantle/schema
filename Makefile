@@ -13,24 +13,8 @@ GRPC_GATEWAY_VERSION=1.16.0
 
 export GO111MODULE = on
 
-#install all dependencies for buf
-install-buf-dependencies:
-	@go install github.com/cosmos/cosmos-proto/cmd/protoc-gen-go-pulsar@latest
-	@go install google.golang.org/protobuf/cmd/protoc-gen-go@v${GOLANG_PROTOBUF_VERSION}
-	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway@v${GRPC_GATEWAY_VERSION}
-	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger@v${GRPC_GATEWAY_VERSION}
-	git clone https://github.com/regen-network/protobuf.git; \
-        cd protobuf; \
-        go mod download; \
-        make install
-	git clone https://github.com/regen-network/cosmos-proto.git; \
-        cd cosmos-proto/protoc-gen-gocosmos; \
-        go install .
-	go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
-	go get github.com/cosmos/cosmos-sdk@v0.45.9
-	rm -rf cosmos-proto protobuf
-
 protobuf-generate-go:
+	@go install github.com/cosmos/gogoproto/protoc-gen-gocosmos@latest
 	@cd proto; buf generate --template buf.gen.yaml
 	@cp -r github.com/AssetMantle/schema/* ./
 	@rm -rf github.com
