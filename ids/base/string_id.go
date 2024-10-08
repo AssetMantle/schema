@@ -61,15 +61,6 @@ func (stringID *StringID) ToAnyID() ids.AnyID {
 	}
 }
 
-func stringIDFromInterface(i interface{}) *StringID {
-	switch value := i.(type) {
-	case *StringID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *StringID, got %T", i))
-	}
-}
-
 func StringIDsToIDs(stringIDs []ids.StringID) []ids.ID {
 	IDs := make([]ids.ID, len(stringIDs))
 

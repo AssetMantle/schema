@@ -67,15 +67,6 @@ func (hashID *HashID) ToAnyID() ids.AnyID {
 	}
 }
 
-func hashIDFromInterface(i interface{}) *HashID {
-	switch value := i.(type) {
-	case *HashID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *HashID, got %T", i))
-	}
-}
-
 // TODO test
 func GenerateHashID(toHashList ...[]byte) ids.HashID {
 	var nonEmptyByteList [][]byte

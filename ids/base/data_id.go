@@ -82,15 +82,6 @@ func (dataID *DataID) ToAnyID() ids.AnyID {
 	}
 }
 
-func dataIDFromInterface(i interface{}) *DataID {
-	switch value := i.(type) {
-	case *DataID:
-		return value
-	default:
-		panic(fmt.Errorf("expected *DataID, got %T", i))
-	}
-}
-
 func GenerateDataID(data data.Data) ids.DataID {
 	if data == nil {
 		panic(fmt.Errorf("data is nil"))

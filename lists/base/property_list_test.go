@@ -432,7 +432,7 @@ func Test_propertyList_GetProperty(t *testing.T) {
 				r := recover()
 
 				if (r != nil) != tt.wantErr {
-					t.Errorf("&StringIDFromInterface() error = %v, wantErr %v", r, tt.wantErr)
+					t.Errorf("got error = %v, wantErr %v", r, tt.wantErr)
 				}
 			}()
 			if got := propertyList.GetProperty(tt.propertyID); !reflect.DeepEqual(got, tt.want) {
