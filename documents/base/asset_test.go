@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/types"
 	"reflect"
 	"testing"

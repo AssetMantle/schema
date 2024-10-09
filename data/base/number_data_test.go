@@ -4,6 +4,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
@@ -81,7 +82,7 @@ func Test_NumberData_GenerateHashID(t *testing.T) {
 		want ids.HashID
 	}{
 		{"+ve", NewNumberData(sdkTypes.NewInt(10)), baseIDs.GenerateHashID([]byte("10")).(*baseIDs.HashID)},
-		{"+ve", NewNumberData(sdkTypes.NewInt(0)), &baseIDs.HashID{[]byte{}}},
+		{name: "+ve", args: NewNumberData(sdkTypes.NewInt(0)), want: &baseIDs.HashID{IDBytes: []byte{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
