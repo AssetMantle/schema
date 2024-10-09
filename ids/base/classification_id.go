@@ -56,15 +56,6 @@ func (classificationID *ClassificationID) ToAnyID() ids.AnyID {
 	}
 }
 
-func classificationIDFromInterface(i interface{}) *ClassificationID {
-	switch value := i.(type) {
-	case *ClassificationID:
-		return value
-	default:
-		panic(fmt.Errorf("expected classificationID, got %T", i))
-	}
-}
-
 func NewClassificationID(immutables qualified.Immutables, mutables qualified.Mutables) ids.ClassificationID {
 	immutableIDByteList := make([][]byte, len(immutables.GetImmutablePropertyList().Get()))
 	for i, property := range immutables.GetImmutablePropertyList().Get() {

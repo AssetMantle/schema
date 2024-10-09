@@ -1,9 +1,9 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/ids"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type listableDataGetter interface {
@@ -45,7 +45,7 @@ func (anyListableData *AnyListableData) Get() data.Data {
 func (anyListableData *AnyListableData) GetID() ids.DataID {
 	return anyListableData.Impl.(listableDataGetter).get().GetID()
 }
-func (anyListableData *AnyListableData) GetBondWeight() sdkTypes.Int {
+func (anyListableData *AnyListableData) GetBondWeight() math.Int {
 	return anyListableData.Impl.(listableDataGetter).get().GetBondWeight()
 }
 func (anyListableData *AnyListableData) ValidateBasic() error {

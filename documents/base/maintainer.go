@@ -82,15 +82,6 @@ func (maintainer maintainer) MaintainsProperty(propertyID ids.PropertyID) bool {
 	return found
 }
 
-// TODO: Move to a common package
-func idListToListData(idList lists.IDList) data.ListData {
-	dataList := baseData.NewListData()
-	for _, id := range idList.GetList() {
-		dataList = dataList.Add(baseData.NewIDData(id))
-	}
-	return dataList
-}
-
 func PrototypeMaintainer() documents.Maintainer {
 	return NewMaintainer(baseIDs.PrototypeIdentityID(), baseIDs.PrototypeClassificationID(), baseLists.NewIDList(), baseLists.NewIDList())
 }
@@ -107,8 +98,8 @@ func NewMaintainer(identityID ids.IdentityID, maintainedClassificationID ids.Cla
 				baseProperties.NewMetaProperty(constantProperties.MaintainedClassificationIDProperty.GetKey(), baseData.NewIDData(maintainedClassificationID)),
 			)),
 			baseQualified.NewMutables(baseLists.NewPropertyList(
-				baseProperties.NewMetaProperty(constantProperties.MaintainedPropertiesProperty.GetKey(), idListToListData(maintainedPropertyIDList)),
-				baseProperties.NewMetaProperty(constantProperties.PermissionsProperty.GetKey(), idListToListData(permissions)),
+				baseProperties.NewMetaProperty(constantProperties.MaintainedPropertiesProperty.GetKey(), maintainedPropertyIDList.ToListData()),
+				baseProperties.NewMetaProperty(constantProperties.PermissionsProperty.GetKey(), permissions.ToListData()),
 			)),
 		),
 	}

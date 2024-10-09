@@ -5,13 +5,13 @@ package base
 
 import (
 	"bytes"
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/data/utilities"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"sort"
 	"strings"
 )
@@ -51,7 +51,7 @@ func (listData *ListData) Get() []data.AnyListableData {
 
 	return anyListableData
 }
-func (listData *ListData) GetBondWeight() sdkTypes.Int {
+func (listData *ListData) GetBondWeight() math.Int {
 	return dataConstants.ListDataWeight
 }
 func (listData *ListData) AsString() string {

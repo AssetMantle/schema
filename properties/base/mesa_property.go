@@ -4,13 +4,13 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
 	"github.com/AssetMantle/schema/properties"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ properties.MesaProperty = (*MesaProperty)(nil)
@@ -39,7 +39,7 @@ func (mesaProperty *MesaProperty) GetKey() ids.StringID {
 func (mesaProperty *MesaProperty) GetDataTypeID() ids.StringID {
 	return mesaProperty.ID.GetDataTypeID()
 }
-func (mesaProperty *MesaProperty) GetBondWeight() sdkTypes.Int {
+func (mesaProperty *MesaProperty) GetBondWeight() math.Int {
 	if zeroData, err := base.PrototypeAnyData().FromString(mesaProperty.GetDataTypeID().AsString()); err != nil {
 		panic(err)
 	} else {
@@ -85,8 +85,4 @@ func NewMesaProperty(key ids.StringID, data data.Data) properties.MesaProperty {
 		ID:     baseIDs.NewPropertyID(key, data.GetTypeID()).(*baseIDs.PropertyID),
 		DataID: data.GetID().(*baseIDs.DataID),
 	}
-}
-
-func PrototypeMesaProperty() properties.MesaProperty {
-	return PrototypeMetaProperty().ScrubData()
 }

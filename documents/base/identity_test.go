@@ -155,9 +155,6 @@ func Test_identity_GetAuthentication(t *testing.T) {
 	fromAddress := "cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"
 	fromAccAddress, err := sdkTypes.AccAddressFromBech32(fromAddress)
 	require.Nil(t, err)
-	type fields struct {
-		Document documents.Identity
-	}
 
 	tests := []struct {
 		name   string

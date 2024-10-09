@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
@@ -22,7 +23,7 @@ func (numberData *NumberData) ValidateBasic() error {
 func (numberData *NumberData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(numberData)
 }
-func (numberData *NumberData) GetBondWeight() sdkTypes.Int {
+func (numberData *NumberData) GetBondWeight() math.Int {
 	return dataConstants.NumberDataWeight
 }
 func (numberData *NumberData) AsString() string {
@@ -84,7 +85,7 @@ func (numberData *NumberData) Compare(listableData data.ListableData) int {
 	}
 	return -1
 }
-func (numberData *NumberData) Get() sdkTypes.Int {
+func (numberData *NumberData) Get() math.Int {
 	if value, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
 		panic("invalid number data")
 	} else {
@@ -96,7 +97,7 @@ func PrototypeNumberData() data.NumberData {
 	return NewNumberData(sdkTypes.ZeroInt()).ZeroValue().(*NumberData)
 }
 
-func NewNumberData(value sdkTypes.Int) data.NumberData {
+func NewNumberData(value math.Int) data.NumberData {
 	return &NumberData{
 		Value: value.String(),
 	}

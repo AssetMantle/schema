@@ -104,15 +104,6 @@ func (splitID *SplitID) ToAnyID() ids.AnyID {
 	}
 }
 
-func splitIDFromInterface(i interface{}) *SplitID {
-	switch value := i.(type) {
-	case *SplitID:
-		return value
-	default:
-		panic(i)
-	}
-}
-
 func NewSplitID(assetID ids.AssetID, ownerID ids.IdentityID) ids.SplitID {
 	return &SplitID{
 		AssetID: assetID.(*AssetID),

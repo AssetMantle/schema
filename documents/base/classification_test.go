@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/properties/constants"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
@@ -59,7 +60,7 @@ func Test_classifiaction_GetSupply(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   sdkTypes.Int
+		want   math.Int
 	}{
 		{"+ve", fields{testDocument}, sdkTypes.ZeroInt()},
 		{"+ve with bondAmount", fields{testDocumentWithSupply}, sdkTypes.NewInt(999)},

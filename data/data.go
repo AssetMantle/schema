@@ -4,14 +4,14 @@
 package data
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/ids"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 // TODO URI and PropertyID Data type
 type Data interface {
 	GetID() ids.DataID
-	GetBondWeight() sdkTypes.Int
+	GetBondWeight() math.Int
 
 	ValidateBasic() error
 	Unmarshal([]byte) error

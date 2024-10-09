@@ -1,10 +1,10 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/ids"
 	"github.com/AssetMantle/schema/properties"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type getter interface {
@@ -23,37 +23,37 @@ func (m *AnyProperty_MesaProperty) get() properties.Property {
 
 var _ properties.AnyProperty = (*AnyProperty)(nil)
 
-func (m *AnyProperty) IsAnyProperty() {}
-func (m *AnyProperty) Get() properties.Property {
-	return m.Impl.(getter).get()
+func (anyProperty *AnyProperty) IsAnyProperty() {}
+func (anyProperty *AnyProperty) Get() properties.Property {
+	return anyProperty.Impl.(getter).get()
 }
-func (m *AnyProperty) GetID() ids.PropertyID {
-	return m.Impl.(getter).get().GetID()
+func (anyProperty *AnyProperty) GetID() ids.PropertyID {
+	return anyProperty.Impl.(getter).get().GetID()
 }
-func (m *AnyProperty) GetDataID() ids.DataID {
-	return m.Impl.(getter).get().GetDataID()
+func (anyProperty *AnyProperty) GetDataID() ids.DataID {
+	return anyProperty.Impl.(getter).get().GetDataID()
 }
-func (m *AnyProperty) GetKey() ids.StringID {
-	return m.Impl.(getter).get().GetKey()
+func (anyProperty *AnyProperty) GetKey() ids.StringID {
+	return anyProperty.Impl.(getter).get().GetKey()
 }
-func (m *AnyProperty) GetDataTypeID() ids.StringID {
-	return m.Impl.(getter).get().GetDataTypeID()
+func (anyProperty *AnyProperty) GetDataTypeID() ids.StringID {
+	return anyProperty.Impl.(getter).get().GetDataTypeID()
 }
-func (m *AnyProperty) GetBondWeight() sdkTypes.Int {
-	return m.Impl.(getter).get().GetBondWeight()
+func (anyProperty *AnyProperty) GetBondWeight() math.Int {
+	return anyProperty.Impl.(getter).get().GetBondWeight()
 }
-func (m *AnyProperty) IsMeta() bool {
-	return m.Impl.(getter).get().IsMeta()
+func (anyProperty *AnyProperty) IsMeta() bool {
+	return anyProperty.Impl.(getter).get().IsMeta()
 }
-func (m *AnyProperty) ToAnyProperty() properties.AnyProperty {
-	return m.Impl.(getter).get().ToAnyProperty()
+func (anyProperty *AnyProperty) ToAnyProperty() properties.AnyProperty {
+	return anyProperty.Impl.(getter).get().ToAnyProperty()
 }
-func (m *AnyProperty) Compare(property properties.Property) int {
-	return m.Impl.(getter).get().Compare(property)
+func (anyProperty *AnyProperty) Compare(property properties.Property) int {
+	return anyProperty.Impl.(getter).get().Compare(property)
 }
-func (m *AnyProperty) ValidateBasic() error {
-	return m.Impl.(getter).get().ValidateBasic()
+func (anyProperty *AnyProperty) ValidateBasic() error {
+	return anyProperty.Impl.(getter).get().ValidateBasic()
 }
-func (m *AnyProperty) Mutate(data data.Data) (properties.Property, error) {
-	return m.Impl.(getter).get().Mutate(data)
+func (anyProperty *AnyProperty) Mutate(data data.Data) (properties.Property, error) {
+	return anyProperty.Impl.(getter).get().Mutate(data)
 }

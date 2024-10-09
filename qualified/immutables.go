@@ -14,7 +14,7 @@ type Immutables interface {
 	// does not return nil
 	GetImmutablePropertyList() lists.PropertyList
 
-	GetProperty(id ids.PropertyID) properties.AnyProperty
+	GetProperty(ids.PropertyID) properties.AnyProperty
 
 	GenerateHashID() ids.ID
 

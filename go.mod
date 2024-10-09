@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/cosmos/cosmos-sdk v0.47.11
-	github.com/cosmos/gogoproto v1.4.10
+	github.com/cosmos/gogoproto v1.7.0
 	github.com/stretchr/testify v1.9.0
 )
 

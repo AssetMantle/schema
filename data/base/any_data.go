@@ -1,12 +1,12 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"strings"
 )
 
@@ -44,18 +44,18 @@ func (x *AnyData_LinkedData) get() data.Data {
 
 var _ data.AnyData = (*AnyData)(nil)
 
-func (x *AnyData) ValidateBasic() error {
-	if x.Impl == nil {
+func (anyData *AnyData) ValidateBasic() error {
+	if anyData.Impl == nil {
 		return nil
 	}
 
-	return x.Impl.(dataGetter).get().ValidateBasic()
+	return anyData.Impl.(dataGetter).get().ValidateBasic()
 }
-func (x *AnyData) IsAnyData() {}
-func (x *AnyData) AsString() string {
-	return joinDataTypeAndValueStrings(x.Impl.(dataGetter).get().GetTypeID().AsString(), x.Impl.(dataGetter).get().AsString())
+func (anyData *AnyData) IsAnyData() {}
+func (anyData *AnyData) AsString() string {
+	return joinDataTypeAndValueStrings(anyData.Impl.(dataGetter).get().GetTypeID().AsString(), anyData.Impl.(dataGetter).get().AsString())
 }
-func (x *AnyData) FromString(dataString string) (data.Data, error) {
+func (anyData *AnyData) FromString(dataString string) (data.Data, error) {
 	dataTypeString, dataValueString := splitDataTypeAndValueStrings(dataString)
 	if dataTypeString != "" {
 		var Data data.Data
@@ -98,40 +98,40 @@ func (x *AnyData) FromString(dataString string) (data.Data, error) {
 
 	return nil, fmt.Errorf("type identifier is missing")
 }
-func (x *AnyData) Get() data.Data {
-	return x.Impl.(dataGetter).get()
+func (anyData *AnyData) Get() data.Data {
+	return anyData.Impl.(dataGetter).get()
 }
-func (x *AnyData) GetID() ids.DataID {
-	if x.Impl == nil {
+func (anyData *AnyData) GetID() ids.DataID {
+	if anyData.Impl == nil {
 		return &baseIDs.DataID{
-			TypeID: x.GetTypeID().(*baseIDs.StringID),
+			TypeID: anyData.GetTypeID().(*baseIDs.StringID),
 			HashID: baseIDs.PrototypeHashID().(*baseIDs.HashID),
 		}
 	}
 
-	return x.Impl.(dataGetter).get().GetID()
+	return anyData.Impl.(dataGetter).get().GetID()
 }
-func (x *AnyData) Bytes() []byte {
-	return x.Impl.(dataGetter).get().Bytes()
+func (anyData *AnyData) Bytes() []byte {
+	return anyData.Impl.(dataGetter).get().Bytes()
 }
-func (x *AnyData) GetTypeID() ids.StringID {
-	if x.Impl != nil {
-		return x.Impl.(dataGetter).get().GetTypeID()
+func (anyData *AnyData) GetTypeID() ids.StringID {
+	if anyData.Impl != nil {
+		return anyData.Impl.(dataGetter).get().GetTypeID()
 	}
 
 	return dataConstants.AnyDataTypeID
 }
-func (x *AnyData) ZeroValue() data.Data {
-	return x.Impl.(dataGetter).get().ZeroValue()
+func (anyData *AnyData) ZeroValue() data.Data {
+	return anyData.Impl.(dataGetter).get().ZeroValue()
 }
-func (x *AnyData) GenerateHashID() ids.HashID {
-	return x.Impl.(dataGetter).get().GenerateHashID()
+func (anyData *AnyData) GenerateHashID() ids.HashID {
+	return anyData.Impl.(dataGetter).get().GenerateHashID()
 }
-func (x *AnyData) ToAnyData() data.AnyData {
-	return x
+func (anyData *AnyData) ToAnyData() data.AnyData {
+	return anyData
 }
-func (x *AnyData) GetBondWeight() sdkTypes.Int {
-	return x.Impl.(dataGetter).get().GetBondWeight()
+func (anyData *AnyData) GetBondWeight() math.Int {
+	return anyData.Impl.(dataGetter).get().GetBondWeight()
 }
 
 func PrototypeAnyData() data.AnyData {

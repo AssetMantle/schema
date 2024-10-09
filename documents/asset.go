@@ -4,14 +4,14 @@
 package documents
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/types"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Asset interface {
 	ValidateAsset() error
 	GetBurnHeight() types.Height
 	GetLockHeight() types.Height
-	GetSupply() sdkTypes.Int
+	GetSupply() math.Int
 	Document
 }

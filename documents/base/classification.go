@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/documents"
@@ -8,7 +9,6 @@ import (
 	"github.com/AssetMantle/schema/properties"
 	constantProperties "github.com/AssetMantle/schema/properties/constants"
 	"github.com/AssetMantle/schema/qualified"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type classification struct {
@@ -28,7 +28,7 @@ func (classification classification) ValidateBasic() error {
 
 	return nil
 }
-func (classification classification) GetBondAmount() sdkTypes.Int {
+func (classification classification) GetBondAmount() math.Int {
 	if property := classification.Document.GetProperty(constantProperties.BondAmountProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}

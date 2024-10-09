@@ -2,13 +2,13 @@ package base
 
 import (
 	"bytes"
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/data/utilities"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"net/url"
 	"strings"
 )
@@ -52,7 +52,7 @@ func (linkedData *LinkedData) Compare(listableData data.ListableData) int {
 func (linkedData *LinkedData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(linkedData)
 }
-func (linkedData *LinkedData) GetBondWeight() sdkTypes.Int {
+func (linkedData *LinkedData) GetBondWeight() math.Int {
 	return dataConstants.LinkedDataWeight
 }
 func (linkedData *LinkedData) AsString() string {

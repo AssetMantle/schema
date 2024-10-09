@@ -6,11 +6,9 @@ package parameters
 import (
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/properties"
-	"github.com/cosmos/gogoproto/proto"
 )
 
 type Parameter interface {
-	proto.Message
 	ValidateBasic() error
 	GetMetaProperty() properties.MetaProperty
 	Mutate(data.Data) Parameter

@@ -1,8 +1,8 @@
 package data
 
-import sdkTypes "github.com/cosmos/cosmos-sdk/types"
+import "cosmossdk.io/math"
 
 type NumberData interface {
 	ListableData
-	Get() sdkTypes.Int
+	Get() math.Int
 }

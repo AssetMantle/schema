@@ -1,4 +1,4 @@
-version: v1
+version: v2
 name: buf.build/assetmantle/schema
 deps:
   - buf.build/cosmos/gogo-proto
@@ -7,7 +7,8 @@ breaking:
     - FILE
 lint:
   use:
-    - DEFAULT
+    - STANDARD
   except:
     - PACKAGE_VERSION_SUFFIX
+    - PACKAGE_LOWER_SNAKE_CASE
 

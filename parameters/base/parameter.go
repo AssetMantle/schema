@@ -9,37 +9,18 @@ import (
 
 var _ parameters.Parameter = (*Parameter)(nil)
 
-func (m *Parameter) ValidateBasic() error {
-	return m.MetaProperty.ValidateBasic()
+func (parameter *Parameter) ValidateBasic() error {
+	return parameter.MetaProperty.ValidateBasic()
 }
-func (m *Parameter) GetMetaProperty() properties.MetaProperty {
-	return m.MetaProperty
+func (parameter *Parameter) GetMetaProperty() properties.MetaProperty {
+	return parameter.MetaProperty
 }
-func (m *Parameter) Mutate(data data.Data) parameters.Parameter {
-	if m.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
-		m.MetaProperty = base.NewMetaProperty(m.MetaProperty.GetKey(), data).(*base.MetaProperty)
-	}
-	return m
-}
-
-func ParametersToInterface(inParameters []*Parameter) []parameters.Parameter {
-	returnParameters := make([]parameters.Parameter, len(inParameters))
-
-	for i, parameter := range inParameters {
-		returnParameters[i] = parameter
+func (parameter *Parameter) Mutate(data data.Data) parameters.Parameter {
+	if parameter.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
+		parameter.MetaProperty = base.NewMetaProperty(parameter.MetaProperty.GetKey(), data).(*base.MetaProperty)
 	}
 
-	return returnParameters
-}
-
-func ParametersFromInterface(parameters []parameters.Parameter) []*Parameter {
-	returnParameters := make([]*Parameter, len(parameters))
-
-	for i, parameter := range parameters {
-		returnParameters[i] = parameter.(*Parameter)
-	}
-
-	return returnParameters
+	return parameter
 }
 
 func NewParameter(metaProperty properties.MetaProperty) *Parameter {

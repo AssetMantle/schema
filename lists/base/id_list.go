@@ -5,6 +5,8 @@ package base
 
 import (
 	"fmt"
+	"github.com/AssetMantle/schema/data"
+	baseData "github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
 	"github.com/AssetMantle/schema/lists"
@@ -79,6 +81,13 @@ func (idList *IDList) Remove(ids ...ids.ID) lists.IDList {
 	}
 
 	return updatedList
+}
+func (idList *IDList) ToListData() data.ListData {
+	dataList := baseData.NewListData()
+	for _, id := range idList.GetList() {
+		dataList = dataList.Add(baseData.NewIDData(id))
+	}
+	return dataList
 }
 func (idList *IDList) sort() lists.IDList {
 	sort.Slice(idList.AnyIDs, func(i, j int) bool {
