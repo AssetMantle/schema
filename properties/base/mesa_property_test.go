@@ -357,7 +357,7 @@ func Test_MesaPropertyGetBondedWeight(t *testing.T) {
 	tests := []struct {
 		name string
 		args properties.MesaProperty
-		want sdkTypes.Int
+		want math.Int
 	}{
 		{"+ve", testMesaProperty, dataConstants.StringDataWeight},
 	}

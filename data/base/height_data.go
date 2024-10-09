@@ -4,11 +4,10 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"encoding/binary"
 	"strconv"
 	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
@@ -26,7 +25,7 @@ func (heightData *HeightData) ValidateBasic() error {
 func (heightData *HeightData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(heightData)
 }
-func (heightData *HeightData) GetBondWeight() sdkTypes.Int {
+func (heightData *HeightData) GetBondWeight() math.Int {
 	return dataConstants.HeightDataWeight
 }
 func (heightData *HeightData) AsString() string {

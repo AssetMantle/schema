@@ -5,6 +5,7 @@ package base
 
 import (
 	"bytes"
+	"cosmossdk.io/math"
 	"strings"
 
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -27,7 +28,7 @@ func (accAddressData *AccAddressData) ValidateBasic() error {
 func (accAddressData *AccAddressData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(accAddressData)
 }
-func (accAddressData *AccAddressData) GetBondWeight() sdkTypes.Int {
+func (accAddressData *AccAddressData) GetBondWeight() math.Int {
 	return dataConstants.AccAddressDataWeight
 }
 func (accAddressData *AccAddressData) Compare(listableData data.ListableData) int {

@@ -17,7 +17,7 @@ import (
 func Test_NewNumberData(t *testing.T) {
 	tests := []struct {
 		name string
-		args sdkTypes.Int
+		args math.Int
 		want data.Data
 	}{
 		{"+ve", sdkTypes.NewInt(10), &NumberData{"10"}},
@@ -97,7 +97,7 @@ func Test_NumberDataGet(t *testing.T) {
 	tests := []struct {
 		name string
 		args data.NumberData
-		want sdkTypes.Int
+		want math.Int
 	}{
 		{"+ve", NewNumberData(sdkTypes.NewInt(10)), sdkTypes.NewInt(10)},
 	}

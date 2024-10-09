@@ -4,14 +4,14 @@
 package types
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 )
 
 type Split interface {
-	GetValue() sdkTypes.Int
-	CanSend(sdkTypes.Int) bool
+	GetValue() math.Int
+	CanSend(math.Int) bool
 
-	Subtract(sdkTypes.Int) Split
-	Add(sdkTypes.Int) Split
+	Subtract(math.Int) Split
+	Add(math.Int) Split
 	ValidateBasic() error
 }

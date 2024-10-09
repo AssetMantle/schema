@@ -4,6 +4,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
@@ -27,7 +28,7 @@ func (decData *DecData) ValidateBasic() error {
 func (decData *DecData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(decData)
 }
-func (decData *DecData) GetBondWeight() sdkTypes.Int {
+func (decData *DecData) GetBondWeight() math.Int {
 	return dataConstants.DecDataWeight
 }
 func (decData *DecData) Compare(listableData data.ListableData) int {

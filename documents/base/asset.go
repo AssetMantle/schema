@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/documents"
@@ -9,7 +10,6 @@ import (
 	"github.com/AssetMantle/schema/properties/constants"
 	"github.com/AssetMantle/schema/qualified"
 	"github.com/AssetMantle/schema/types"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type asset struct {
@@ -51,7 +51,7 @@ func (asset asset) GetLockHeight() types.Height {
 
 	return constants.LockHeightProperty.GetData().Get().(data.HeightData).Get()
 }
-func (asset asset) GetSupply() sdkTypes.Int {
+func (asset asset) GetSupply() math.Int {
 	if property := asset.GetProperty(constants.SupplyProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}

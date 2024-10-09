@@ -1,12 +1,12 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"strings"
 )
 
@@ -130,7 +130,7 @@ func (x *AnyData) GenerateHashID() ids.HashID {
 func (x *AnyData) ToAnyData() data.AnyData {
 	return x
 }
-func (x *AnyData) GetBondWeight() sdkTypes.Int {
+func (x *AnyData) GetBondWeight() math.Int {
 	return x.Impl.(dataGetter).get().GetBondWeight()
 }
 

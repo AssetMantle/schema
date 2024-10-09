@@ -4,9 +4,9 @@
 package properties
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/ids"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Property interface {
@@ -14,7 +14,7 @@ type Property interface {
 	GetDataID() ids.DataID
 	GetKey() ids.StringID
 	GetDataTypeID() ids.StringID
-	GetBondWeight() sdkTypes.Int
+	GetBondWeight() math.Int
 
 	IsMeta() bool
 	ValidateBasic() error

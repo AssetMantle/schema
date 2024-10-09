@@ -59,7 +59,7 @@ func Test_classifiaction_GetSupply(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields fields
-		want   sdkTypes.Int
+		want   math.Int
 	}{
 		{"+ve", fields{testDocument}, sdkTypes.ZeroInt()},
 		{"+ve with bondAmount", fields{testDocumentWithSupply}, sdkTypes.NewInt(999)},

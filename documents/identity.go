@@ -4,6 +4,7 @@
 package documents
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/types"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -21,7 +22,7 @@ type Identity interface {
 	GetAuthentication() data.ListData
 
 	IsProvisioned(sdkTypes.AccAddress) bool
-	GetProvisionedAddressCount() sdkTypes.Int
+	GetProvisionedAddressCount() math.Int
 	ProvisionAddress(...sdkTypes.AccAddress) Identity
 	UnprovisionAddress(...sdkTypes.AccAddress) Identity
 

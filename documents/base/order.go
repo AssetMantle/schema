@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/documents"
@@ -67,13 +68,13 @@ func (order order) GetTakerAssetID() ids.AssetID {
 	}
 	return constants.TakerAssetIDProperty.GetData().Get().(data.IDData).Get().Get().(ids.AssetID)
 }
-func (order order) GetMakerSplit() sdkTypes.Int {
+func (order order) GetMakerSplit() math.Int {
 	if property := order.GetProperty(constants.MakerSplitProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}
 	return constants.MakerSplitProperty.GetData().Get().(data.NumberData).Get()
 }
-func (order order) GetTakerSplit() sdkTypes.Int {
+func (order order) GetTakerSplit() math.Int {
 	if property := order.GetProperty(constants.TakerSplitProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
 	}

@@ -4,9 +4,8 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"strings"
-
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/data"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
@@ -22,7 +21,7 @@ func (idData *IDData) ValidateBasic() error {
 func (idData *IDData) GetID() ids.DataID {
 	return baseIDs.GenerateDataID(idData)
 }
-func (idData *IDData) GetBondWeight() sdkTypes.Int {
+func (idData *IDData) GetBondWeight() math.Int {
 	return dataConstants.IDDataWeight
 }
 func (idData *IDData) AsString() string {

@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	baseData "github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/documents"
 	"github.com/AssetMantle/schema/ids"
@@ -27,7 +28,7 @@ func PrototypePutOrder() documents.PutOrder {
 	return NewPutOrder(baseIDs.PrototypeIdentityID(), baseIDs.PrototypeAssetID(), baseIDs.PrototypeAssetID(), sdkTypes.ZeroInt(), sdkTypes.ZeroInt(), base.NewHeight(-1))
 }
 
-func NewPutOrder(makerID ids.IdentityID, makerAssetID ids.AssetID, takerAssetID ids.AssetID, makerSplit sdkTypes.Int, takerSplit sdkTypes.Int, expiryHeight types.Height) documents.PutOrder {
+func NewPutOrder(makerID ids.IdentityID, makerAssetID ids.AssetID, takerAssetID ids.AssetID, makerSplit math.Int, takerSplit math.Int, expiryHeight types.Height) documents.PutOrder {
 	return NewOrder(putOrderClassificationID, baseQualified.NewImmutables(baseLists.NewPropertyList(
 		baseProperties.NewMetaProperty(propertyConstants.MakerIDProperty.GetKey(), baseData.NewIDData(makerID)),
 		baseProperties.NewMetaProperty(propertyConstants.MakerAssetIDProperty.GetKey(), baseData.NewIDData(makerAssetID)),

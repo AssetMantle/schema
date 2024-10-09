@@ -1,6 +1,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/data"
 	baseData "github.com/AssetMantle/schema/data/base"
@@ -49,7 +50,7 @@ func (identity identity) IsProvisioned(accAddress sdkTypes.AccAddress) bool {
 	_, isProvisioned := identity.GetAuthentication().Search(baseData.NewAccAddressData(accAddress))
 	return isProvisioned
 }
-func (identity identity) GetProvisionedAddressCount() sdkTypes.Int {
+func (identity identity) GetProvisionedAddressCount() math.Int {
 	return sdkTypes.NewInt(int64(len(identity.GetAuthentication().Get())))
 }
 func (identity identity) ProvisionAddress(accAddresses ...sdkTypes.AccAddress) documents.Identity {

@@ -4,6 +4,7 @@
 package documents
 
 import (
+	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/ids"
 	"github.com/AssetMantle/schema/types"
 	sdkTypes "github.com/cosmos/cosmos-sdk/types"
@@ -13,8 +14,8 @@ type Order interface {
 	GetMakerID() ids.IdentityID
 	GetMakerAssetID() ids.AssetID
 	GetTakerAssetID() ids.AssetID
-	GetMakerSplit() sdkTypes.Int
-	GetTakerSplit() sdkTypes.Int
+	GetMakerSplit() math.Int
+	GetTakerSplit() math.Int
 	GetExpiryHeight() types.Height
 
 	GetTakerID() ids.IdentityID
