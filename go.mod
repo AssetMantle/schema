@@ -3,6 +3,7 @@ module github.com/AssetMantle/schema
 go 1.23
 
 require (
+	cosmossdk.io/math v1.3.0
 	github.com/cosmos/cosmos-sdk v0.47.11
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/stretchr/testify v1.9.0
@@ -10,7 +11,6 @@ require (
 
 require (
 	cosmossdk.io/errors v1.0.1 // indirect
-	cosmossdk.io/math v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
