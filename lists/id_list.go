@@ -4,6 +4,7 @@
 package lists
 
 import (
+	"github.com/AssetMantle/schema/data"
 	"github.com/AssetMantle/schema/ids"
 )
 
@@ -14,4 +15,5 @@ type IDList interface {
 	Add(...ids.ID) IDList
 	Remove(...ids.ID) IDList
 	ValidateBasic() error
+	ToListData() data.ListData
 }
