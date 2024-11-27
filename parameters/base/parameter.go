@@ -26,6 +26,11 @@ func (parameter *Parameter) Mutate(data data.Data) parameters.Parameter {
 	return parameter
 }
 
+func NewEmptyParameterFromID(propertyID ids.PropertyID) *Parameter {
+	return &Parameter{
+		MetaProperty: base.NewEmptyMetaPropertyFromID(propertyID).(*base.MetaProperty),
+	}
+}
 func NewParameter(metaProperty properties.MetaProperty) *Parameter {
 	return &Parameter{
 		MetaProperty: metaProperty.(*base.MetaProperty),
