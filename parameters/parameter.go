@@ -9,6 +9,7 @@ import (
 )
 
 type Parameter interface {
+	Compare(Parameter) int
 	ValidateBasic() error
 	GetMetaProperty() properties.MetaProperty
 	Mutate(data.Data) Parameter
