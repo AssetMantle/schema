@@ -14,10 +14,14 @@ func (parameter *Parameter) ValidateBasic() error {
 	return parameter.MetaProperty.ValidateBasic()
 }
 func (parameter *Parameter) GetMetaProperty() properties.MetaProperty {
+	if parameter == nil {
+		return nil
+	}
+
 	return parameter.MetaProperty
 }
 func (parameter *Parameter) Compare(otherParameter parameters.Parameter) int {
-	return parameter.MetaProperty.Compare(otherParameter.GetMetaProperty())
+	return parameter.GetMetaProperty().Compare(otherParameter.GetMetaProperty())
 }
 func (parameter *Parameter) Mutate(data data.Data) parameters.Parameter {
 	if parameter.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
@@ -32,7 +36,7 @@ func NewEmptyParameterFromID(propertyID ids.PropertyID) *Parameter {
 		MetaProperty: base.NewEmptyMetaPropertyFromID(propertyID).(*base.MetaProperty),
 	}
 }
-func NewParameter(metaProperty properties.MetaProperty) *Parameter {
+func NewParameter(metaProperty properties.MetaProperty) parameters.Parameter {
 	return &Parameter{
 		MetaProperty: metaProperty.(*base.MetaProperty),
 	}
