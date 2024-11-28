@@ -232,7 +232,7 @@ func Test_propertyList_Add(t *testing.T) {
 	}
 }
 
-func TestPropertyList_Remove(t *testing.T) {
+func Test_propertyList_Remove(t *testing.T) {
 	tests := []struct {
 		name             string
 		removeProperties []properties.Property
@@ -328,7 +328,7 @@ func TestPropertyList_Remove(t *testing.T) {
 	}
 }
 
-func TestPropertyList_Mutate(t *testing.T) {
+func Test_propertyList_Mutate(t *testing.T) {
 	tests := []struct {
 		name       string
 		added      lists.PropertyList
@@ -406,56 +406,6 @@ func Test_propertyList_GetList(t *testing.T) {
 				if got.Compare(tt.want[i]) != 0 {
 					t.Errorf("GetList() = %v, want %v", got, tt.want[i])
 				}
-			}
-		})
-	}
-}
-
-func Test_propertyList_GetProperty(t *testing.T) {
-
-	tests := []struct {
-		name       string
-		properties []properties.Property
-		propertyID ids.PropertyID
-		want       properties.AnyProperty
-		wantErr    bool
-	}{
-		{"+ve Meta", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), false},
-		{"+ve Mesa", []properties.Property{baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), false},
-		{"panic nil propertyID", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, nil, baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), true}, // TODO: panics if propertyID is nil
-		{"-ve", []properties.Property{baseProperties.NewEmptyMetaPropertyFromID(baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewEmptyMetaPropertyFromID(baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D"))).ToAnyProperty(), false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			propertyList := PropertyList{propertiesToAnyProperties(tt.properties...)}
-			defer func() {
-				r := recover()
-
-				if (r != nil) != tt.wantErr {
-					t.Errorf("got error = %v, wantErr %v", r, tt.wantErr)
-				}
-			}()
-			if got := propertyList.GetProperty(tt.propertyID); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetProperty() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_propertyList_GetPropertyIDList(t *testing.T) {
-
-	tests := []struct {
-		name       string
-		properties []properties.Property
-		want       lists.IDList
-	}{
-		{"+ve", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, NewIDList().Add(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).GetID())},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			propertyList := PropertyList{propertiesToAnyProperties(tt.properties...)}
-			if got := propertyList.GetPropertyIDList(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetPropertyIDList() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -561,7 +511,7 @@ func TestPropertyList_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestPropertyList_GetProperty(t *testing.T) {
+func Test_propertyList_GetProperty(t *testing.T) {
 	tests := []struct {
 		name       string
 		added      lists.PropertyList
@@ -827,7 +777,7 @@ func TestPropertyList_search(t *testing.T) {
 	}
 }
 
-func TestPropertyList_sort(t *testing.T) {
+func Test_propertyList_sort(t *testing.T) {
 	tests := []struct {
 		name  string
 		added lists.PropertyList
@@ -902,7 +852,7 @@ func TestPropertyList_sort(t *testing.T) {
 	}
 }
 
-func TestAnyPropertiesToProperties(t *testing.T) {
+func Test_propertyList_anyPropertiesToProperties(t *testing.T) {
 	tests := []struct {
 		name          string
 		anyProperties []properties.AnyProperty

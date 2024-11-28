@@ -2,6 +2,7 @@ package base
 
 import (
 	"github.com/AssetMantle/schema/data"
+	"github.com/AssetMantle/schema/ids"
 	"github.com/AssetMantle/schema/parameters"
 	"github.com/AssetMantle/schema/properties"
 	"github.com/AssetMantle/schema/properties/base"
@@ -13,7 +14,14 @@ func (parameter *Parameter) ValidateBasic() error {
 	return parameter.MetaProperty.ValidateBasic()
 }
 func (parameter *Parameter) GetMetaProperty() properties.MetaProperty {
+	if parameter == nil {
+		return nil
+	}
+
 	return parameter.MetaProperty
+}
+func (parameter *Parameter) Compare(otherParameter parameters.Parameter) int {
+	return parameter.GetMetaProperty().Compare(otherParameter.GetMetaProperty())
 }
 func (parameter *Parameter) Mutate(data data.Data) parameters.Parameter {
 	if parameter.MetaProperty.GetData().GetTypeID().Compare(data.GetTypeID()) == 0 {
@@ -23,7 +31,12 @@ func (parameter *Parameter) Mutate(data data.Data) parameters.Parameter {
 	return parameter
 }
 
-func NewParameter(metaProperty properties.MetaProperty) *Parameter {
+func NewEmptyParameterFromID(propertyID ids.PropertyID) *Parameter {
+	return &Parameter{
+		MetaProperty: base.NewEmptyMetaPropertyFromID(propertyID).(*base.MetaProperty),
+	}
+}
+func NewParameter(metaProperty properties.MetaProperty) parameters.Parameter {
 	return &Parameter{
 		MetaProperty: metaProperty.(*base.MetaProperty),
 	}
