@@ -36,9 +36,11 @@ func (parameterList *ParameterList) ValidateBasic() error {
 }
 func (parameterList *ParameterList) Get() []parameters.Parameter {
 	parameterList.sort()
-
-	Parameters := make([]parameters.Parameter, len(parameterList.Parameters))
-	for i, parameter := range parameterList.Parameters {
+	return baseParametersToParameters(parameterList.Parameters...)
+}
+func baseParametersToParameters(baseParameters ...*baseParameters.Parameter) []parameters.Parameter {
+	Parameters := make([]parameters.Parameter, len(baseParameters))
+	for i, parameter := range baseParameters {
 		Parameters[i] = parameter
 	}
 
@@ -63,14 +65,19 @@ func (parameterList *ParameterList) Mutate(parameters ...parameters.Parameter) l
 	return parameterList
 }
 func (parameterList *ParameterList) sort() lists.ParameterList {
-	sort.Slice(parameterList.Parameters, func(i, j int) bool {
-		return parameterList.Parameters[i].Compare(parameterList.Parameters[j]) < 0
+	var filteredParameters []*baseParameters.Parameter
+	for _, parameter := range parameterList.Parameters {
+		if parameter != nil {
+			filteredParameters = append(filteredParameters, parameter)
+		}
+	}
+	sort.Slice(filteredParameters, func(i, j int) bool {
+		return filteredParameters[i].Compare(filteredParameters[j]) < 0
 	})
+	parameterList.Parameters = filteredParameters
 	return parameterList
 }
 func (parameterList *ParameterList) search(parameter parameters.Parameter) (index int, found bool) {
-	parameterList.sort()
-
 	if parameter == nil {
 		return -1, false
 	}
