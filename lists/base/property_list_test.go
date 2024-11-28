@@ -232,7 +232,7 @@ func Test_propertyList_Add(t *testing.T) {
 	}
 }
 
-func TestPropertyList_Remove(t *testing.T) {
+func Test_propertyList_Remove(t *testing.T) {
 	tests := []struct {
 		name             string
 		removeProperties []properties.Property
@@ -328,7 +328,7 @@ func TestPropertyList_Remove(t *testing.T) {
 	}
 }
 
-func TestPropertyList_Mutate(t *testing.T) {
+func Test_propertyList_Mutate(t *testing.T) {
 	tests := []struct {
 		name       string
 		added      lists.PropertyList
@@ -561,7 +561,7 @@ func TestPropertyList_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestPropertyList_GetProperty(t *testing.T) {
+func Test_propertyList_GetProperty(t *testing.T) {
 	tests := []struct {
 		name       string
 		added      lists.PropertyList
@@ -827,7 +827,7 @@ func TestPropertyList_search(t *testing.T) {
 	}
 }
 
-func TestPropertyList_sort(t *testing.T) {
+func Test_propertyList_sort(t *testing.T) {
 	tests := []struct {
 		name  string
 		added lists.PropertyList
@@ -902,7 +902,7 @@ func TestPropertyList_sort(t *testing.T) {
 	}
 }
 
-func TestAnyPropertiesToProperties(t *testing.T) {
+func Test_propertyList_anyPropertiesToProperties(t *testing.T) {
 	tests := []struct {
 		name          string
 		anyProperties []properties.AnyProperty
