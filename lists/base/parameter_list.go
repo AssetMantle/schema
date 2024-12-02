@@ -110,6 +110,10 @@ func (parameterList *ParameterList) add(parameters ...parameters.Parameter) list
 	return parameterList
 }
 
+func PrototypeParameterList() lists.ParameterList {
+	return &ParameterList{}
+}
+
 func NewParameterList(parameters ...parameters.Parameter) lists.ParameterList {
 	return (&ParameterList{}).add(parameters...)
 }
