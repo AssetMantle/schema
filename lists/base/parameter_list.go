@@ -36,11 +36,9 @@ func (parameterList *ParameterList) ValidateBasic() error {
 }
 func (parameterList *ParameterList) Get() []parameters.Parameter {
 	parameterList.sort()
-	return baseParametersToParameters(parameterList.Parameters...)
-}
-func baseParametersToParameters(baseParameters ...*baseParameters.Parameter) []parameters.Parameter {
-	Parameters := make([]parameters.Parameter, len(baseParameters))
-	for i, parameter := range baseParameters {
+
+	Parameters := make([]parameters.Parameter, len(parameterList.Parameters))
+	for i, parameter := range parameterList.Parameters {
 		Parameters[i] = parameter
 	}
 
@@ -54,10 +52,10 @@ func (parameterList *ParameterList) GetParameter(propertyID ids.PropertyID) para
 	return nil
 }
 func (parameterList *ParameterList) Mutate(parameters ...parameters.Parameter) lists.ParameterList {
-	for _, property := range parameters {
-		if property != nil {
-			if index, found := parameterList.search(property); found {
-				parameterList.Parameters[index] = parameterList.Parameters[index].Mutate(property.GetMetaProperty().GetData()).(*baseParameters.Parameter)
+	for _, parameter := range parameters {
+		if parameter != nil {
+			if index, found := parameterList.search(parameter); found {
+				parameterList.Parameters[index] = parameterList.Parameters[index].Mutate(parameter.GetMetaProperty().GetData()).(*baseParameters.Parameter)
 			}
 		}
 	}
