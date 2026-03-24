@@ -4,6 +4,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	baseData "github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
@@ -11,7 +12,6 @@ import (
 	"github.com/AssetMantle/schema/lists/constants"
 	"github.com/AssetMantle/schema/properties"
 	baseProperties "github.com/AssetMantle/schema/properties/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"math/rand"
 	"reflect"
 	"sort"
@@ -361,15 +361,15 @@ func Test_propertyList_Mutate(t *testing.T) {
 		},
 		{
 			"mutate one property in one property list",
-			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0)))),
-			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)},
-			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)),
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(0)))),
+			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).(properties.Property)},
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).(properties.Property)),
 		},
 		{
 			"mutate one property in two property list",
-			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0))), randomProperties[randomIndex]),
-			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property)},
-			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).(properties.Property), randomProperties[randomIndex]),
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(0))), randomProperties[randomIndex]),
+			[]properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).(properties.Property)},
+			NewPropertyList(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).(properties.Property), randomProperties[randomIndex]),
 		},
 	}
 	for _, tt := range tests {
@@ -397,7 +397,7 @@ func Test_propertyList_GetList(t *testing.T) {
 		properties []properties.Property
 		want       []properties.Property
 	}{
-		{"+ve", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}},
+		{"+ve", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}, []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -7,7 +7,6 @@ import (
 	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/ids"
 	"github.com/AssetMantle/schema/types"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Order interface {
@@ -19,7 +18,7 @@ type Order interface {
 	GetExpiryHeight() types.Height
 
 	GetTakerID() ids.IdentityID
-	GetExchangeRate() sdkTypes.Dec
+	GetExchangeRate() math.LegacyDec
 	GetExecutionHeight() types.Height
 
 	Document

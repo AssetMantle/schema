@@ -4,10 +4,10 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"bytes"
 	"fmt"
 	"github.com/AssetMantle/schema/types/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -121,7 +121,7 @@ func Test_ListDataAdd(t *testing.T) {
 		{"+ve", []data.ListableData{NewStringData("")}, &ListData{[]*AnyListableData{NewStringData("").ToAnyListableData().(*AnyListableData)}}},
 		{"-ve", []data.ListableData{NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
 		{"-ve", []data.ListableData{NewStringData("Data"), NewStringData("Data")}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
-		{"-ve", []data.ListableData{NewStringData("Data"), NewNumberData(sdkTypes.NewInt(1))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
+		{"-ve", []data.ListableData{NewStringData("Data"), NewNumberData(math.NewInt(1))}, &ListData{[]*AnyListableData{NewStringData("Data").ToAnyListableData().(*AnyListableData)}}},
 		{"-ve", []data.ListableData{NewIDData(baseIDs.NewStringID("ID1")), NewIDData(baseIDs.GenerateHashID(testBytes))}, &ListData{[]*AnyListableData{NewIDData(baseIDs.NewStringID("ID1")).ToAnyListableData().(*AnyListableData)}}},
 		{"+ve", []data.ListableData{NewStringData("Data4"), NewStringData("Data3"), NewStringData("Data2"), NewHeightData(base.NewHeight(10)), NewStringData("Data1")}, &ListData{[]*AnyListableData{NewStringData("Data1").ToAnyListableData().(*AnyListableData), NewStringData("Data2").ToAnyListableData().(*AnyListableData), NewStringData("Data3").ToAnyListableData().(*AnyListableData), NewStringData("Data4").ToAnyListableData().(*AnyListableData)}}},
 	}

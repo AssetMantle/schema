@@ -10,7 +10,6 @@ import (
 	"github.com/AssetMantle/schema/properties/constants"
 	"github.com/AssetMantle/schema/qualified"
 	"github.com/AssetMantle/schema/types"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type order struct {
@@ -92,7 +91,7 @@ func (order order) GetTakerID() ids.IdentityID {
 	}
 	return constants.TakerIDProperty.GetData().Get().(data.IDData).Get().Get().(ids.IdentityID)
 }
-func (order order) GetExchangeRate() sdkTypes.Dec {
+func (order order) GetExchangeRate() math.LegacyDec {
 	// TODO change definition to maker/taker exchange rate
 	if property := order.GetProperty(constants.ExchangeRateProperty.GetID()); property != nil && property.IsMeta() {
 		return property.Get().(properties.MetaProperty).GetData().Get().(data.DecData).Get()

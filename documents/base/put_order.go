@@ -12,7 +12,6 @@ import (
 	baseQualified "github.com/AssetMantle/schema/qualified/base"
 	"github.com/AssetMantle/schema/types"
 	"github.com/AssetMantle/schema/types/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ documents.PutOrder = (*order)(nil)
@@ -25,7 +24,7 @@ func (order order) GetPutOrderID() ids.OrderID {
 
 func PrototypePutOrder() documents.PutOrder {
 	// TODO derive values from zero values of data
-	return NewPutOrder(baseIDs.PrototypeIdentityID(), baseIDs.PrototypeAssetID(), baseIDs.PrototypeAssetID(), sdkTypes.ZeroInt(), sdkTypes.ZeroInt(), base.NewHeight(-1))
+	return NewPutOrder(baseIDs.PrototypeIdentityID(), baseIDs.PrototypeAssetID(), baseIDs.PrototypeAssetID(), math.ZeroInt(), math.ZeroInt(), base.NewHeight(-1))
 }
 
 func NewPutOrder(makerID ids.IdentityID, makerAssetID ids.AssetID, takerAssetID ids.AssetID, makerSplit math.Int, takerSplit math.Int, expiryHeight types.Height) documents.PutOrder {

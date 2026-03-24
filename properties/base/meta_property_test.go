@@ -4,9 +4,9 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"github.com/AssetMantle/schema/types/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -294,7 +294,7 @@ func Test_MetaPropertyValidateBasic(t *testing.T) {
 		}, true},
 		{"-ve", &MetaProperty{
 			ID:   testPropertyID.(*baseIDs.PropertyID),
-			Data: baseData.NewNumberData(sdkTypes.NewInt(10)).ToAnyData().(*baseData.AnyData),
+			Data: baseData.NewNumberData(math.NewInt(10)).ToAnyData().(*baseData.AnyData),
 		}, true},
 		{"-ve", &MetaProperty{
 			ID:   baseIDs.NewPropertyID(baseIDs.NewStringID("id"), baseData.PrototypeHeightData().GetTypeID()).(*baseIDs.PropertyID),
@@ -324,7 +324,7 @@ func Test_MetaPropertyMutate(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve", testMetaProperty, baseData.NewStringData("Data2"), NewMetaProperty(testKey, baseData.NewStringData("Data2")), false},
-		{"-ve", testMetaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), nil, true},
+		{"-ve", testMetaProperty, baseData.NewNumberData(math.NewInt(10)), nil, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

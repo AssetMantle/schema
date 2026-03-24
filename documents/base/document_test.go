@@ -4,12 +4,12 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	baseTypes "github.com/AssetMantle/schema/types/base"
 	"reflect"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -280,7 +280,7 @@ func Test_document_Mutate(t *testing.T) {
 
 func TestDocument_GenerateHashID(t *testing.T) {
 	zeroStringDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewStringData("").ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
-	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(types.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(math.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
 
 	sameKeyDifferentDataImmutables := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroNumberDataProperty))
 	sameKeyAndDataImmutables := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroStringDataProperty))
@@ -312,7 +312,7 @@ func TestDocument_GenerateHashID(t *testing.T) {
 
 func Test_DocumentValidateBasic(t *testing.T) {
 	zeroStringDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewStringData("").ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
-	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(types.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
+	zeroNumberDataProperty := baseProperties.NewMetaProperty(baseIDs.NewStringID("test"), baseData.NewNumberData(math.ZeroInt()).ZeroValue()).ToAnyProperty().(*baseProperties.AnyProperty)
 
 	immutables1 := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroNumberDataProperty))
 	immutables2 := baseQualified.NewImmutables(baseLists.NewPropertyList(zeroStringDataProperty, zeroStringDataProperty))

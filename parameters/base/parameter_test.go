@@ -4,10 +4,10 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"reflect"
 	"testing"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/AssetMantle/schema/data"
 	baseData "github.com/AssetMantle/schema/data/base"
@@ -106,7 +106,7 @@ func Test_parameter_Validate(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve with stringData", fields{id, testData, dummyValidator}, false},
-		{"+ve with decData", fields{baseIDs.NewStringID("ID"), baseData.NewDecData(sdkTypes.SmallestDec()), dummyValidator}, false},
+		{"+ve with decData", fields{baseIDs.NewStringID("ID"), baseData.NewDecData(math.LegacySmallestDec()), dummyValidator}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

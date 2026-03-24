@@ -10,17 +10,16 @@ import (
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
-	"strings"
+		"strings"
 )
 
 var _ data.DecData = (*DecData)(nil)
 
 func (decData *DecData) ValidateBasic() error {
-	if dec, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
+	if dec, err := math.LegacyNewDecFromStr(decData.Value); err != nil {
 		return fmt.Errorf("dec data value %s is not a valid decimal", decData.Value)
-	} else if !sdkTypes.ValidSortableDec(dec) {
-		return fmt.Errorf("dec value %s out of allowed range of -%s to %s", decData.Value, sdkTypes.MaxSortableDec.String(), sdkTypes.MaxSortableDec.String())
+	} else if !math.LegacyValidSortableDec(dec) {
+		return fmt.Errorf("dec value %s out of allowed range of -%s to %s", decData.Value, math.LegacyMaxSortableDec.String(), math.LegacyMaxSortableDec.String())
 	}
 
 	return nil
@@ -40,13 +39,13 @@ func (decData *DecData) Compare(listableData data.ListableData) int {
 	return -1
 }
 func (decData *DecData) Bytes() []byte {
-	return sdkTypes.SortableDecBytes(sdkTypes.MustNewDecFromStr(decData.Value))
+	return math.LegacySortableDecBytes(math.LegacyMustNewDecFromStr(decData.Value))
 }
 func (decData *DecData) GetTypeID() ids.StringID {
 	return dataConstants.DecDataTypeID
 }
 func (decData *DecData) ZeroValue() data.Data {
-	return NewDecData(sdkTypes.ZeroDec())
+	return NewDecData(math.LegacyZeroDec())
 }
 func (decData *DecData) GenerateHashID() ids.HashID {
 	if decData.Compare(decData.ZeroValue().(data.ListableData)) == 0 {
@@ -64,7 +63,7 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 		return PrototypeDecData(), nil
 	}
 
-	dec, err := sdkTypes.NewDecFromStr(dataString)
+	dec, err := math.LegacyNewDecFromStr(dataString)
 	if err != nil {
 		return PrototypeDecData(), err
 	}
@@ -76,12 +75,12 @@ func (decData *DecData) FromString(dataString string) (data.Data, error) {
 
 	return decData, nil
 }
-func (decData *DecData) Get() sdkTypes.Dec {
+func (decData *DecData) Get() math.LegacyDec {
 	if decData.Value == "<nil>" {
-		return sdkTypes.Dec{}
+		return math.LegacyDec{}
 	}
 
-	if value, err := sdkTypes.NewDecFromStr(decData.Value); err != nil {
+	if value, err := math.LegacyNewDecFromStr(decData.Value); err != nil {
 		panic(err)
 	} else {
 		return value
@@ -101,10 +100,10 @@ func (decData *DecData) ToAnyListableData() data.AnyListableData {
 }
 
 func PrototypeDecData() data.DecData {
-	return NewDecData(sdkTypes.ZeroDec()).ZeroValue().(data.DecData)
+	return NewDecData(math.LegacyZeroDec()).ZeroValue().(data.DecData)
 }
 
-func NewDecData(value sdkTypes.Dec) data.DecData {
+func NewDecData(value math.LegacyDec) data.DecData {
 	return &DecData{
 		Value: value.String(),
 	}

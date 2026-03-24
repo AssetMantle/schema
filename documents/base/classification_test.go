@@ -3,7 +3,6 @@ package base
 import (
 	"cosmossdk.io/math"
 	"github.com/AssetMantle/schema/properties/constants"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -53,7 +52,7 @@ func Test_new_Classification(t *testing.T) {
 
 func Test_classifiaction_GetSupply(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constants.BondAmountProperty.GetKey(), baseData.NewNumberData(sdkTypes.NewInt(999))))))
+	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(baseLists.NewPropertyList(baseProperties.NewMetaProperty(constants.BondAmountProperty.GetKey(), baseData.NewNumberData(math.NewInt(999))))))
 	type fields struct {
 		Document documents.Document
 	}
@@ -62,8 +61,8 @@ func Test_classifiaction_GetSupply(t *testing.T) {
 		fields fields
 		want   math.Int
 	}{
-		{"+ve", fields{testDocument}, sdkTypes.ZeroInt()},
-		{"+ve with bondAmount", fields{testDocumentWithSupply}, sdkTypes.NewInt(999)},
+		{"+ve", fields{testDocument}, math.ZeroInt()},
+		{"+ve with bondAmount", fields{testDocumentWithSupply}, math.NewInt(999)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

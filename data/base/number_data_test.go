@@ -5,7 +5,6 @@ package base
 
 import (
 	"cosmossdk.io/math"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -21,7 +20,7 @@ func Test_NewNumberData(t *testing.T) {
 		args math.Int
 		want data.Data
 	}{
-		{"+ve", sdkTypes.NewInt(10), &NumberData{"10"}},
+		{"+ve", math.NewInt(10), &NumberData{"10"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -39,7 +38,7 @@ func Test_NumberDataValidateBasic(t *testing.T) {
 		args data.NumberData
 		want bool
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), false},
+		{"+ve", NewNumberData(math.NewInt(10)), false},
 		{"-ve", &NumberData{"abc"}, true},
 	}
 	for _, tt := range tests {
@@ -61,13 +60,13 @@ func Test_NumberData_Compare(t *testing.T) {
 		args data.NumberData
 		want int
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), 0},
-		{"+ve", NewNumberData(sdkTypes.NewInt(11)), 1},
-		{"+ve", NewNumberData(sdkTypes.NewInt(9)), -1},
+		{"+ve", NewNumberData(math.NewInt(10)), 0},
+		{"+ve", NewNumberData(math.NewInt(11)), 1},
+		{"+ve", NewNumberData(math.NewInt(9)), -1},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.args.Compare(NewNumberData(sdkTypes.NewInt(10)))
+			got := tt.args.Compare(NewNumberData(math.NewInt(10)))
 			if got != tt.want {
 				t.Errorf("NumberData_Compare() = %v, want %v", got, tt.want)
 			}
@@ -81,8 +80,8 @@ func Test_NumberData_GenerateHashID(t *testing.T) {
 		args data.NumberData
 		want ids.HashID
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), baseIDs.GenerateHashID([]byte("10")).(*baseIDs.HashID)},
-		{name: "+ve", args: NewNumberData(sdkTypes.NewInt(0)), want: &baseIDs.HashID{IDBytes: []byte{}}},
+		{"+ve", NewNumberData(math.NewInt(10)), baseIDs.GenerateHashID([]byte("10")).(*baseIDs.HashID)},
+		{name: "+ve", args: NewNumberData(math.NewInt(0)), want: &baseIDs.HashID{IDBytes: []byte{}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -100,7 +99,7 @@ func Test_NumberDataGet(t *testing.T) {
 		args data.NumberData
 		want math.Int
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), sdkTypes.NewInt(10)},
+		{"+ve", NewNumberData(math.NewInt(10)), math.NewInt(10)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -118,7 +117,7 @@ func Test_NumberDataGetID(t *testing.T) {
 		args data.NumberData
 		want ids.DataID
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), &baseIDs.DataID{
+		{"+ve", NewNumberData(math.NewInt(10)), &baseIDs.DataID{
 			TypeID: idsConstants.NumberDataTypeID.(*baseIDs.StringID),
 			HashID: baseIDs.GenerateHashID([]byte("10")).(*baseIDs.HashID),
 		}},
@@ -139,7 +138,7 @@ func Test_NumberDataGetType(t *testing.T) {
 		args data.NumberData
 		want ids.ID
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), idsConstants.NumberDataTypeID},
+		{"+ve", NewNumberData(math.NewInt(10)), idsConstants.NumberDataTypeID},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -157,7 +156,7 @@ func Test_NumberDataAsString(t *testing.T) {
 		args data.NumberData
 		want string
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), "10"},
+		{"+ve", NewNumberData(math.NewInt(10)), "10"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -175,7 +174,7 @@ func Test_NumberDataZeroValue(t *testing.T) {
 		args data.NumberData
 		want data.Data
 	}{
-		{"+ve", NewNumberData(sdkTypes.NewInt(10)), &NumberData{"0"}},
+		{"+ve", NewNumberData(math.NewInt(10)), &NumberData{"0"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -193,8 +192,8 @@ func Test_NumberDataBytes(t *testing.T) {
 		args data.NumberData
 		want []byte
 	}{
-		{name: "+ve", args: NewNumberData(sdkTypes.NewInt(10)), want: []byte("10")},
-		{name: "+ve", args: NewNumberData(sdkTypes.NewInt(0)), want: []byte("0")},
+		{name: "+ve", args: NewNumberData(math.NewInt(10)), want: []byte("10")},
+		{name: "+ve", args: NewNumberData(math.NewInt(0)), want: []byte("0")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -1,15 +1,15 @@
 package constants
 
-import sdkTypes "github.com/cosmos/cosmos-sdk/types"
+import "cosmossdk.io/math"
 
 var (
-	AccAddressDataWeight = sdkTypes.NewInt(90)
-	BooleanDataWeight    = sdkTypes.NewInt(1)
-	DecDataWeight        = sdkTypes.NewInt(16)
-	HeightDataWeight     = sdkTypes.NewInt(8)
-	IDDataWeight         = sdkTypes.NewInt(64)
-	ListDataWeight       = sdkTypes.NewInt(2560)
-	LinkedDataWeight     = sdkTypes.NewInt(384)
-	NumberDataWeight     = sdkTypes.NewInt(8)
-	StringDataWeight     = sdkTypes.NewInt(256)
+	AccAddressDataWeight = math.NewInt(90)
+	BooleanDataWeight    = math.NewInt(1)
+	DecDataWeight        = math.NewInt(16)
+	HeightDataWeight     = math.NewInt(8)
+	IDDataWeight         = math.NewInt(64)
+	ListDataWeight       = math.NewInt(2560)
+	LinkedDataWeight     = math.NewInt(384)
+	NumberDataWeight     = math.NewInt(8)
+	StringDataWeight     = math.NewInt(256)
 )

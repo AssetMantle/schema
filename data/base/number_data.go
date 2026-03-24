@@ -7,14 +7,13 @@ import (
 	dataConstants "github.com/AssetMantle/schema/data/constants"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"strings"
 )
 
 var _ data.NumberData = (*NumberData)(nil)
 
 func (numberData *NumberData) ValidateBasic() error {
-	if _, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
+	if _, ok := math.NewIntFromString(numberData.Value); !ok {
 		return fmt.Errorf("number data value %s is not a valid integer", numberData.Value)
 	}
 
@@ -35,7 +34,7 @@ func (numberData *NumberData) FromString(dataString string) (data.Data, error) {
 		return PrototypeNumberData(), nil
 	}
 
-	value, ok := sdkTypes.NewIntFromString(dataString)
+	value, ok := math.NewIntFromString(dataString)
 	if !ok {
 		return PrototypeNumberData(), fmt.Errorf("number data value %s is not a valid integer", dataString)
 	}
@@ -54,7 +53,7 @@ func (numberData *NumberData) GetTypeID() ids.StringID {
 	return dataConstants.NumberDataTypeID
 }
 func (numberData *NumberData) ZeroValue() data.Data {
-	return NewNumberData(sdkTypes.ZeroInt())
+	return NewNumberData(math.ZeroInt())
 }
 func (numberData *NumberData) GenerateHashID() ids.HashID {
 	if numberData.Compare(numberData.ZeroValue().(data.ListableData)) == 0 {
@@ -86,7 +85,7 @@ func (numberData *NumberData) Compare(listableData data.ListableData) int {
 	return -1
 }
 func (numberData *NumberData) Get() math.Int {
-	if value, ok := sdkTypes.NewIntFromString(numberData.Value); !ok {
+	if value, ok := math.NewIntFromString(numberData.Value); !ok {
 		panic("invalid number data")
 	} else {
 		return value
@@ -94,7 +93,7 @@ func (numberData *NumberData) Get() math.Int {
 }
 
 func PrototypeNumberData() data.NumberData {
-	return NewNumberData(sdkTypes.ZeroInt()).ZeroValue().(*NumberData)
+	return NewNumberData(math.ZeroInt()).ZeroValue().(*NumberData)
 }
 
 func NewNumberData(value math.Int) data.NumberData {

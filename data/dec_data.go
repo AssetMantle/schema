@@ -4,10 +4,10 @@
 package data
 
 import (
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"cosmossdk.io/math"
 )
 
 type DecData interface {
 	ListableData
-	Get() sdkTypes.Dec
+	Get() math.LegacyDec
 }

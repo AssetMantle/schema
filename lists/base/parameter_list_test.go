@@ -4,6 +4,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	baseData "github.com/AssetMantle/schema/data/base"
 	"github.com/AssetMantle/schema/ids"
 	baseIDs "github.com/AssetMantle/schema/ids/base"
@@ -12,7 +13,6 @@ import (
 	baseParameters "github.com/AssetMantle/schema/parameters/base"
 	"github.com/AssetMantle/schema/properties"
 	baseProperties "github.com/AssetMantle/schema/properties/base"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"math/rand"
 	"reflect"
 	"sort"
@@ -182,15 +182,15 @@ func Test_parameterList_Mutate(t *testing.T) {
 		},
 		{
 			"mutate one property in one property list",
-			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0))))),
-			[]parameters.Parameter{baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))))},
-			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))))),
+			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(0))))),
+			[]parameters.Parameter{baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))))},
+			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))))),
 		},
 		{
 			"mutate one property in two property list",
-			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(0)))), randomParameters[randomParameterIndex]),
-			[]parameters.Parameter{baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))))},
-			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))), randomParameters[randomParameterIndex]),
+			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(0)))), randomParameters[randomParameterIndex]),
+			[]parameters.Parameter{baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))))},
+			NewParameterList(baseParameters.NewParameter(baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))), randomParameters[randomParameterIndex]),
 		},
 	}
 	for _, tt := range tests {
@@ -218,8 +218,8 @@ func Test_parameterList_GetList(t *testing.T) {
 	}{
 		{
 			name:       "+ve",
-			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))},
-			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))},
+			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))},
+			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))},
 		},
 		{
 			name:       "empty list",
@@ -228,8 +228,8 @@ func Test_parameterList_GetList(t *testing.T) {
 		},
 		{
 			name:       "multiple properties",
-			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(sdkTypes.NewDec(2)))},
-			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(sdkTypes.NewDec(2)))},
+			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(math.LegacyNewDec(2)))},
+			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(math.LegacyNewDec(2)))},
 		},
 		{
 			name:       "nil property",
@@ -238,8 +238,8 @@ func Test_parameterList_GetList(t *testing.T) {
 		},
 		{
 			name:       "nil property with other properties",
-			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), nil},
-			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))},
+			properties: []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))), nil},
+			want:       []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))},
 		},
 	}
 	for _, tt := range tests {
@@ -263,14 +263,14 @@ func Test_parameterList_GetProperty(t *testing.T) {
 		want       properties.AnyProperty
 		wantErr    bool
 	}{
-		{"+ve Meta", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), false},
-		{"+ve Mesa", []properties.Property{baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), false},
-		{"panic nil propertyID", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, nil, baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))).ToAnyProperty(), true}, // TODO: panics if propertyID is nil
+		{"+ve Meta", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).ToAnyProperty(), false},
+		{"+ve Mesa", []properties.Property{baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewMesaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).ToAnyProperty(), false},
+		{"panic nil propertyID", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}, nil, baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))).ToAnyProperty(), true}, // TODO: panics if propertyID is nil
 		{"-ve", []properties.Property{baseProperties.NewEmptyMetaPropertyFromID(baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")))}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), baseProperties.NewEmptyMetaPropertyFromID(baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D"))).ToAnyProperty(), false},
 		{"empty properties", []properties.Property{}, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), nil, false},
 		{"nil properties", nil, baseIDs.NewPropertyID(baseIDs.NewStringID("supply"), baseIDs.NewStringID("D")), nil, false},
-		{"multiple properties", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(sdkTypes.NewDec(2)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("demand"), baseIDs.NewStringID("D")), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(sdkTypes.NewDec(2))).ToAnyProperty(), false},
-		{"property not found", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(sdkTypes.NewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("demand"), baseIDs.NewStringID("D")), nil, false},
+		{"multiple properties", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1))), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(math.LegacyNewDec(2)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("demand"), baseIDs.NewStringID("D")), baseProperties.NewMetaProperty(baseIDs.NewStringID("demand"), baseData.NewDecData(math.LegacyNewDec(2))).ToAnyProperty(), false},
+		{"property not found", []properties.Property{baseProperties.NewMetaProperty(baseIDs.NewStringID("supply"), baseData.NewDecData(math.LegacyNewDec(1)))}, baseIDs.NewPropertyID(baseIDs.NewStringID("demand"), baseIDs.NewStringID("D")), nil, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

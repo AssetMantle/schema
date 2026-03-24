@@ -51,7 +51,7 @@ func (identity identity) IsProvisioned(accAddress sdkTypes.AccAddress) bool {
 	return isProvisioned
 }
 func (identity identity) GetProvisionedAddressCount() math.Int {
-	return sdkTypes.NewInt(int64(len(identity.GetAuthentication().Get())))
+	return math.NewInt(int64(len(identity.GetAuthentication().Get())))
 }
 func (identity identity) ProvisionAddress(accAddresses ...sdkTypes.AccAddress) documents.Identity {
 	for _, accAddress := range accAddresses {

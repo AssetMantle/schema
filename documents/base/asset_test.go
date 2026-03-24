@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"testing"
 
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 
 	baseData "github.com/AssetMantle/schema/data/base"
 	documentsSchema "github.com/AssetMantle/schema/documents"
@@ -97,7 +96,7 @@ func Test_asset_GetLockHeight(t *testing.T) {
 
 func Test_asset_GetSupply(t *testing.T) {
 	classificationID, immutables, _, testDocument := createTestInput()
-	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMetaProperty(constants.SupplyProperty.GetKey(), baseData.NewNumberData(sdkTypes.NewInt(77))))))
+	testDocumentWithSupply := NewDocument(classificationID, immutables, baseQualified.NewMutables(base.NewPropertyList(baseProperties.NewMetaProperty(constants.SupplyProperty.GetKey(), baseData.NewNumberData(math.NewInt(77))))))
 	type fields struct {
 		Document documentsSchema.Document
 	}
@@ -106,8 +105,8 @@ func Test_asset_GetSupply(t *testing.T) {
 		fields fields
 		want   math.Int
 	}{
-		{"+ve", fields{testDocument}, sdkTypes.OneInt()},
-		{"+ve with supply", fields{testDocumentWithSupply}, sdkTypes.NewInt(77)},
+		{"+ve", fields{testDocument}, math.OneInt()},
+		{"+ve with supply", fields{testDocumentWithSupply}, math.NewInt(77)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

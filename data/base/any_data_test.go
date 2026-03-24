@@ -4,6 +4,7 @@
 package base
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 	"reflect"
 	"testing"
@@ -38,7 +39,7 @@ func Test_AnyDataFromString(t *testing.T) {
 		{"List Data empty list", args{"L|"}, NewListData().ToAnyData(), false},
 		{"Id Data", args{"SI|data"}, NewIDData(baseIDs.NewStringID("data")).ToAnyData(), false},
 		{"Height Data", args{"H|100"}, NewHeightData(baseTypes.NewHeight(100)).ToAnyData(), false},
-		{"Dec Data", args{"D|100"}, NewDecData(sdkTypes.NewDec(100)).ToAnyData(), false},
+		{"Dec Data", args{"D|100"}, NewDecData(math.LegacyNewDec(100)).ToAnyData(), false},
 		{"Bool Data", args{"B|true"}, NewBooleanData(true).ToAnyData(), false},
 		{"+ve", args{""}, PrototypeAnyData(), false},
 		{"AccAddress data", args{"A|cosmos1pkkayn066msg6kn33wnl5srhdt3tnu2vzasz9c"}, NewAccAddressData(fromAccAddress).ToAnyData(), false},
@@ -157,8 +158,8 @@ func Test_readDecData(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve nil", args{}, PrototypeDecData(), false},
-		{"+ve string", args{"100"}, NewDecData(sdkTypes.NewDec(100)), false},
-		{"+ve with nil", args{"-100"}, NewDecData(sdkTypes.NewDec(-100)), false},
+		{"+ve string", args{"100"}, NewDecData(math.LegacyNewDec(100)), false},
+		{"+ve with nil", args{"-100"}, NewDecData(math.LegacyNewDec(-100)), false},
 		{"-ve", args{"testData"}, PrototypeDecData(), true},
 	}
 	for _, tt := range tests {

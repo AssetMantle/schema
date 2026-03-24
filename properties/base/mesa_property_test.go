@@ -6,7 +6,6 @@ package base
 import (
 	"cosmossdk.io/math"
 	dataConstants "github.com/AssetMantle/schema/data/constants"
-	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 	"reflect"
 	"testing"
 
@@ -382,7 +381,7 @@ func Test_MesaPropertyMutate(t *testing.T) {
 		wantErr bool
 	}{
 		{"+ve", testMesaProperty, baseData.NewStringData("Data2"), NewMesaProperty(testKey, baseData.NewStringData("Data2")), false},
-		{"-ve", testMesaProperty, baseData.NewNumberData(sdkTypes.NewInt(10)), nil, true},
+		{"-ve", testMesaProperty, baseData.NewNumberData(math.NewInt(10)), nil, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -415,7 +414,7 @@ func Test_MesaPropertyValidateBasic(t *testing.T) {
 		}, true},
 		{"-ve", &MesaProperty{
 			ID:     testPropertyID.(*baseIDs.PropertyID),
-			DataID: baseData.NewNumberData(sdkTypes.NewInt(10)).GetID().(*baseIDs.DataID),
+			DataID: baseData.NewNumberData(math.NewInt(10)).GetID().(*baseIDs.DataID),
 		}, true},
 		{name: "-ve", args: &MesaProperty{
 			ID:     testPropertyID.(*baseIDs.PropertyID),
