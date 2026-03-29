@@ -50,4 +50,12 @@ var (
 	WrapAllowedCoinsProperty           = base.NewMetaProperty(baseIDs.NewStringID("wrapAllowedCoins"), baseData.NewListData())
 	UnwrapAllowedCoinsProperty         = base.NewMetaProperty(baseIDs.NewStringID("unwrapAllowedCoins"), baseData.NewListData())
 	QuashEnabledProperty               = base.NewMetaProperty(baseIDs.NewStringID("quashEnabled"), baseData.NewBooleanData(false))
+
+	// RWA Compliance Properties
+	ComplianceTierProperty             = base.NewMetaProperty(baseIDs.NewStringID("complianceTier"), baseData.NewNumberData(math.ZeroInt()))              // 0=anonymous, 1=basic KYC, 2=accredited, 3=institutional, 4=custodian
+	JurisdictionProperty               = base.NewMetaProperty(baseIDs.NewStringID("jurisdiction"), baseData.NewStringData(""))                             // ISO-3166 country code
+	AccreditationExpiryProperty        = base.NewMetaProperty(baseIDs.NewStringID("accreditationExpiry"), baseData.NewHeightData(baseTypes.NewHeight(-1))) // block height when accreditation expires
+	SanctionsClearedProperty           = base.NewMetaProperty(baseIDs.NewStringID("sanctionsCleared"), baseData.NewBooleanData(false))                     // whether sanctions screening passed
+	SanctionsClearedHeightProperty     = base.NewMetaProperty(baseIDs.NewStringID("sanctionsClearedHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1))) // block height of last sanctions check
+	VerificationProviderProperty       = base.NewMetaProperty(baseIDs.NewStringID("verificationProvider"), baseData.NewIDData(baseIDs.PrototypeIdentityID())) // identity of KYC provider
 )

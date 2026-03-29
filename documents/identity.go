@@ -26,5 +26,15 @@ type Identity interface {
 	ProvisionAddress(...sdkTypes.AccAddress) Identity
 	UnprovisionAddress(...sdkTypes.AccAddress) Identity
 
+	// RWA Compliance methods
+	// GetComplianceTier returns the compliance tier (0=anonymous, 1=basic, 2=accredited, 3=institutional, 4=custodian)
+	GetComplianceTier() math.Int
+	// GetJurisdiction returns the ISO-3166 jurisdiction code
+	GetJurisdiction() string
+	// GetAccreditationExpiry returns the block height at which accreditation expires
+	GetAccreditationExpiry() types.Height
+	// IsSanctionsCleared returns whether this identity has passed sanctions screening
+	IsSanctionsCleared() bool
+
 	Document
 }

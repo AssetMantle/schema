@@ -68,6 +68,31 @@ func (identity identity) UnprovisionAddress(accAddresses ...sdkTypes.AccAddress)
 	return identity
 }
 
+func (identity identity) GetComplianceTier() math.Int {
+	if property := identity.GetProperty(constants.ComplianceTierProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.NumberData).Get()
+	}
+	return constants.ComplianceTierProperty.GetData().Get().(data.NumberData).Get()
+}
+func (identity identity) GetJurisdiction() string {
+	if property := identity.GetProperty(constants.JurisdictionProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.StringData).Get()
+	}
+	return constants.JurisdictionProperty.GetData().Get().(data.StringData).Get()
+}
+func (identity identity) GetAccreditationExpiry() types.Height {
+	if property := identity.GetProperty(constants.AccreditationExpiryProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.HeightData).Get()
+	}
+	return constants.AccreditationExpiryProperty.GetData().Get().(data.HeightData).Get()
+}
+func (identity identity) IsSanctionsCleared() bool {
+	if property := identity.GetProperty(constants.SanctionsClearedProperty.GetID()); property != nil && property.IsMeta() {
+		return property.Get().(properties.MetaProperty).GetData().Get().(data.BooleanData).Get()
+	}
+	return constants.SanctionsClearedProperty.GetData().Get().(data.BooleanData).Get()
+}
+
 func NewIdentity(classificationID ids.ClassificationID, immutables qualified.Immutables, mutables qualified.Mutables) documents.Identity {
 	return NewIdentityFromDocument(NewDocument(classificationID, immutables, mutables))
 }
