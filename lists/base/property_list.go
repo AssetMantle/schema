@@ -97,6 +97,9 @@ func (propertyList *PropertyList) FromMetaPropertiesString(metaPropertiesString 
 
 	return propertyList, nil
 }
+
+// Add MUTATES the receiver in place and returns the same instance; callers sharing a
+// PropertyList across uses must snapshot it first (see the x/*/simulator snapshot pattern).
 func (propertyList *PropertyList) Add(properties ...properties.Property) lists.PropertyList {
 	propertyList.sort()
 

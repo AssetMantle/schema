@@ -58,4 +58,9 @@ var (
 	SanctionsClearedProperty           = base.NewMetaProperty(baseIDs.NewStringID("sanctionsCleared"), baseData.NewBooleanData(false))                     // whether sanctions screening passed
 	SanctionsClearedHeightProperty     = base.NewMetaProperty(baseIDs.NewStringID("sanctionsClearedHeight"), baseData.NewHeightData(baseTypes.NewHeight(-1))) // block height of last sanctions check
 	VerificationProviderProperty       = base.NewMetaProperty(baseIDs.NewStringID("verificationProvider"), baseData.NewIDData(baseIDs.PrototypeIdentityID())) // identity of KYC provider
+
+	// RWA Compliance Requirements (set on an asset; zero values mean no requirement)
+	RequiredComplianceTierProperty     = base.NewMetaProperty(baseIDs.NewStringID("requiredComplianceTier"), baseData.NewNumberData(math.ZeroInt())) // minimum receiver identity tier to accept a transfer
+	RequiredJurisdictionProperty       = base.NewMetaProperty(baseIDs.NewStringID("requiredJurisdiction"), baseData.NewStringData(""))               // required receiver jurisdiction, ISO-3166
+	RequireSanctionsClearedProperty    = base.NewMetaProperty(baseIDs.NewStringID("requireSanctionsCleared"), baseData.NewBooleanData(false))        // receiver must have passed sanctions screening
 )
